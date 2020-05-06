@@ -112,8 +112,6 @@ public class ApplicationManager {
 
 		// Wait to the window to activate
 		waitFor.windowActive(this.regexAppWindowTitle);
-
-		server.debug("Nasdaq manager window activated");
 	}
 
 }
