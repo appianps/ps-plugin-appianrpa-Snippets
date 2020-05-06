@@ -26,3 +26,10 @@ TEST_ROBOT
 user1, user2, user3 
 
 password1, password2, password3 (the values are not relevant to understand how these are retrieved).
+
+
+2. REST API Example 
+
+Update a queue Item identified by its ID Number as "PENDING" if the previous Status was "FINISHED_WARN". 
+The robot also gives three new attempts to the item to be finished. An error will be thrown if the Item does not exist
+or simply if the Status is different from "FINISHED_WARN"
