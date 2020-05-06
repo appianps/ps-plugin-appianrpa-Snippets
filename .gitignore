@@ -1,0 +1,16 @@
+
+snippets-examples/robot-3270-snippet/.classpath
+snippets-examples/robot-3270-snippet/.project
+snippets-examples/robot-3270-snippet/.settings/org.eclipse.core.resources.prefs
+snippets-examples/robot-3270-snippet/.settings/org.eclipse.jdt.core.prefs
+snippets-examples/robot-3270-snippet/.settings/org.eclipse.m2e.core.prefs
+snippets-examples/robot-3270-snippet/target/classes/com/appian/robot/demo/commons/Commons3270Extended.class
+snippets-examples/robot-3270-snippet/target/classes/com/appian/robot/demo/pages/ConstantsTexts.class
+snippets-examples/robot-3270-snippet/target/classes/com/appian/robot/demo/pages/WelcomePage.class
+snippets-examples/robot-3270-snippet/target/classes/com/appian/robot/demo/Robot3270.class
+snippets-examples/robot-3270-snippet/target/classes/META-INF/Robot3270.json
+snippets-examples/robot-3270-snippet/target/maven-archiver/pom.properties
+snippets-examples/robot-3270-snippet/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+snippets-examples/robot-3270-snippet/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+snippets-examples/robot-3270-snippet/target/robot-3270-snippet-0.0.1-sources.jar
+snippets-examples/robot-3270-snippet/target/robot-3270-snippet-0.0.1.jar
