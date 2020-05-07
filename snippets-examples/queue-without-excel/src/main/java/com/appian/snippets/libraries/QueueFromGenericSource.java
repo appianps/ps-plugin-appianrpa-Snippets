@@ -35,7 +35,7 @@ import com.novayre.jidoka.client.api.queue.ReserveQueueParameters;
  * Class to manage a queue which is going to be updated constantly when new data
  * arrives.
  */
-public abstract class QueueFromGenericSource {
+public class QueueFromGenericSource {
 
 	/** Server instance */
 	private IJidokaServer<?> server;
@@ -50,12 +50,12 @@ public abstract class QueueFromGenericSource {
 	private ReserveItemParameters reserveItemsParameters;
 	
 	/** Model class */
-	private Class<T> modelClass;
+	private Class<?> modelClass;
 
 	/**
 	 * QueueFromGenericSource constructor
 	 */
-	public QueueFromGenericSource(Class<T> clazz) {
+	public QueueFromGenericSource(Class<?> clazz) {
 		this.server = JidokaFactory.getServer();
 		this.queueManager = server.getQueueManager();
 		
