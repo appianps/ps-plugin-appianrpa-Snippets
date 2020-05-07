@@ -72,6 +72,13 @@ public class BrowserManagerRobot implements IRobot {
 
 	}
 
+	public void printWebResultInConsole() {
+		if (!isXPathElementSuccessfullyLoaded(selectors.getSelector("selector.appian-result.xpath"))) {
+			throw new JidokaFatalException("web result not found");
+		}
+		server.info(browser.getText(By.xpath(selectors.getSelector("selector.appian-result.xpath"))));
+	}
+
 	public void searchInformation() {
 		browser.clickSafe(browser.waitElement(By.xpath(selectors.getSelector("selector.searchbar.xpath"))));
 		client.pause(1000);
@@ -83,6 +90,11 @@ public class BrowserManagerRobot implements IRobot {
 	private boolean isClassNameElementSuccessfullyLoaded(String classname) {
 		return client.waitCondition(5, 1000, "Checking if " + classname + " selector appeared successfully", null,
 				(i, c) -> browser.getElement(By.className(classname)) != null);
+	}
+
+	private boolean isXPathElementSuccessfullyLoaded(String xpath) {
+		return client.waitCondition(5, 1000, "Checking if " + xpath + " selector appeared successfully", null,
+				(i, c) -> browser.getElement(By.xpath(xpath)) != null);
 	}
 
 	private void closeBrowser() {
