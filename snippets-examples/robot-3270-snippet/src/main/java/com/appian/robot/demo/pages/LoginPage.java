@@ -9,10 +9,10 @@ import com.novayre.jidoka.windows.api.IWindows;
 /**
  * Class to manage Welcome Page
  */
-public class WelcomePage extends RemotePage {
+public class LoginPage extends RemotePage {
 
 
-	public WelcomePage(IJidokaServer< ? > server, IWindows windows, IRobot robot) throws JidokaException {
+	public LoginPage(IJidokaServer< ? > server, IWindows windows, IRobot robot) throws JidokaException {
 		super(server, windows, robot);
 	}
 	
@@ -20,7 +20,7 @@ public class WelcomePage extends RemotePage {
 	@Override 
 	public String getUnivocalRegex() {
 		
-		return ConstantsTexts.WELCOME_UNIVOCAL_TEXT;
+		return ConstantsTexts.LOGIN_UNIVOCAL_TEXT;
 	}
 	
 	

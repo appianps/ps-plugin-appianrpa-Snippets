@@ -2,14 +2,13 @@ package com.appian.robot.demo;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.text.MessageFormat;
 
 import com.appian.robot.demo.commons.Commons3270Extended;
-import com.appian.robot.demo.pages.WelcomePage;
-import com.appian.rpa.snippet.IBM3270AppManager;
-import com.appian.rpa.snippet.IBM3270Commons;
+import com.appian.robot.demo.commons.IBM3270AppManager;
+import com.appian.robot.demo.pages.ConstantsTexts;
+import com.appian.robot.demo.pages.NetViewPage;
+import com.appian.robot.demo.pages.RemotePage;
 import com.appian.rpa.snippet.TextInScreen;
-import com.appian.rpa.snippet.page.RemotePage;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.JidokaFactory;
@@ -34,13 +33,13 @@ public class Robot3270 implements IRobot {
 	/**
 	 * IBM3270Commons snippet instance
 	 */
-	private IBM3270Commons ibm3270Commons;
+	private Commons3270Extended ibm3270Commons;
 	
 	/**
 	 * IBM3270AppManager instance
 	 */
 	private IBM3270AppManager appManager;
-
+	
 	/**
 	 * Application Name
 	 */
@@ -100,19 +99,12 @@ public class Robot3270 implements IRobot {
 	
 	
 	/**
-	 * Action 'Close 3270'.
-	 */
-	public void close3270 () {
-		appManager.closeIBM3270();
-	}
-	
-	/**
 	 * Action 'Locate text'.
 	 */
 	public void locateText () {
 		TextInScreen textInScreen = ibm3270Commons.locateText(2, "Welcome");
 		if(textInScreen != null) {
-			server.info(MessageFormat.format("Text '%s' found", "Welcome"));
+			server.info(String.format("Text %s found", "Welcome"));
 		}
 	}
 	
@@ -121,17 +113,60 @@ public class Robot3270 implements IRobot {
 	 * Action 'Change screen'.
 	 * @throws JidokaException 
 	 */
-	public void changeScreen () throws JidokaException {
-		server.sendScreen("Before moving to AOF page");
+	public void goToNetView () throws JidokaException {
 		
-		ibm3270Commons.moveToCoodinates("==>", 3, 1);
-		windows.pause(1000);
-		ibm3270Commons.write("AOF");
+		server.sendScreen("Before moving to NetView page");
+		ibm3270Commons.write("NETVIEW");
 		windows.pause(1000);
 		ibm3270Commons.enter();
-		checkScreen(new WelcomePage(server, windows, this));
+		checkScreen(new NetViewPage(server, windows, this));
 		
-		server.sendScreen("Moved to AOF page");
+		server.sendScreen("Moved to NetView page");
+	}
+	
+	/**
+	 * Action 'Change password'.
+	 * @throws JidokaException 
+	 */
+	public void changePassword() throws JidokaException {
+		
+		server.info("Change NetView Password");
+				
+		server.info("Cursor x coordinate: " + windows.getCursorInfo().getInfo().ptScreenPos.x);
+		server.info("Cursor y coordinate: " + windows.getCursorInfo().getInfo().ptScreenPos.y);
+		
+		
+		TextInScreen textInScreen = ibm3270Commons.locateText(2, "ID ==>");
+		ibm3270Commons.moveToCoodinates(textInScreen, 6, 1);
+		ibm3270Commons.write("OPER1");
+		ibm3270Commons.enter();
+		
+		// Change Password Page
+		server.sendScreen("Change password page");
+		ibm3270Commons.waitTillTextDisappears(ConstantsTexts.NETVIEW_UNIVOCAL_TEXT);
+		
+		ibm3270Commons.write("XXX");
+		ibm3270Commons.pressDown(2);
+		ibm3270Commons.pressLeft(3);
+		
+		ibm3270Commons.write("YYY");
+		ibm3270Commons.pressDown(2);
+		ibm3270Commons.pressLeft(3);
+		
+		ibm3270Commons.write("YYY");
+		ibm3270Commons.enter();
+		windows.pause(1000);
+
+		ibm3270Commons.waitTillTextDisappears(2, ConstantsTexts.PWD_UNIVOCAL_TEXT);
+		
+		ibm3270Commons.pressDown(8);
+		TextInScreen textInScreenPwd = ibm3270Commons.locateText(ConstantsTexts.INVALID_USER_UNIVOCAL_TEXT);
+		
+		if(textInScreenPwd != null) {
+			server.sendScreen("Password could not be changed: invalid opertator");
+		} else {
+			server.sendScreen("Password changed");
+		}
 	}
 	
 	
@@ -140,19 +175,24 @@ public class Robot3270 implements IRobot {
 	 * @param welcomePage 
 	 * @throws JidokaException 
 	 */
-	private Boolean checkScreen (RemotePage remotePage) throws JidokaException {
+	private RemotePage checkScreen (RemotePage remotePage) throws JidokaException {
 		
 		server.info("Verifying that we are on the right page");
 		
 		try {
-			remotePage.assertIsThisPage();
-			return true;
+			return remotePage.assertIsThisPage();
 		} catch (Exception e) {
 			server.info("Wrong page");
-			return false;
+			return null;
 		}
 	}
-	
+		
+	/**
+	 * Action 'Close 3270'.
+	 */
+	public void close3270 () {
+		appManager.closeIBM3270();
+	}
 	
 	/**
 	 * Action 'End'.
