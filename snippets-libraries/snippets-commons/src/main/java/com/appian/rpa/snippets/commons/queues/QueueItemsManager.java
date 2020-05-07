@@ -120,7 +120,7 @@ public class QueueItemsManager<T> {
 	 * @param closedQueue If the queue is closed
 	 * @return the queue from id
 	 * 
-	 * @throws @{@link JidokaQueueException}
+	 * @throws JidokaQueueException
 	 */
 	private IQueue getQueueFromId(String queueId) throws JidokaQueueException {
 
@@ -143,7 +143,7 @@ public class QueueItemsManager<T> {
 	 * 
 	 * @return The next item of type {@link org.apache.poi.ss.formula.functions.T}
 	 * 
-	 * @throws @{@link JidokaQueueException}
+	 * @throws JidokaQueueException
 	 */
 	public T getNextItem() throws JidokaQueueException {
 
@@ -172,7 +172,7 @@ public class QueueItemsManager<T> {
 	 * 
 	 * @param currentItem The T object to save as an item.
 	 * 
-	 * @throws @{@link JidokaQueueException}
+	 * @throws JidokaQueueException
 	 */
 	public void saveItem(T currentItem) throws JidokaQueueException {
 
@@ -186,7 +186,7 @@ public class QueueItemsManager<T> {
 	 * @param currentItem The T object to save as an item.
 	 * @param retries     Item retries number.
 	 * 
-	 * @throws @{@link JidokaQueueException}
+	 * @throws JidokaQueueException
 	 */
 	public void saveItem(T currentItem, EQueueItemReleaseRetry retries) throws JidokaQueueException {
 
@@ -202,7 +202,7 @@ public class QueueItemsManager<T> {
 	 * @param retries        Item retries
 	 * @param releaseProcess ReleaseProcess
 	 * 
-	 * @throws @{@link JidokaQueueException}
+	 * @throws JidokaQueueException
 	 */
 	public void saveItem(T currentItem, EQueueItemReleaseRetry retries, EQueueItemReleaseProcess releaseProcess)
 			throws JidokaQueueException {
@@ -240,7 +240,7 @@ public class QueueItemsManager<T> {
 	 * be created a String robot parameter on the console called
 	 * 'numberOfExecutions'.
 	 * 
-	 * @throws @{@link JidokaQueueException}
+	 * @throws JidokaQueueException
 	 */
 	public void assignQueue() throws JidokaQueueException {
 
@@ -292,7 +292,7 @@ public class QueueItemsManager<T> {
 	 * 
 	 * @return The created queue
 	 * 
-	 * @throws @{@link JidokaQueueException}
+	 * @throws JidokaQueueException
 	 */
 	private IQueue createQueueFromFile(File inputFile) throws JidokaQueueException {
 

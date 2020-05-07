@@ -66,6 +66,7 @@ public abstract class QueueFromGenericSource {
 	 * Creates a new queue naming it with the given {@code queueName}
 	 * 
 	 * @param queueName The new queue name
+	 * 
 	 * @throws JidokaQueueException
 	 */
 	public void createQueue(String queueName) throws JidokaQueueException {
@@ -94,6 +95,7 @@ public abstract class QueueFromGenericSource {
 	 * @param queueName The queue name to search
 	 * 
 	 * @return The queue found. If it doesn't found a queue, it returns null
+	 * 
 	 * @throws JidokaQueueException
 	 */
 	public IQueue findQueue(String queueName) throws JidokaQueueException {
@@ -112,9 +114,9 @@ public abstract class QueueFromGenericSource {
 	}
 
 	/**
-	 * Reserves and closes the queue
+	 * Reserves and closes the queue. Only one robot can close the queue.
 	 * 
-	 * @throws @{@link JidokaQueueException}
+	 * @throws JidokaQueueException
 	 */
 	public void closeQueue() throws JidokaQueueException {
 		try {
@@ -149,6 +151,13 @@ public abstract class QueueFromGenericSource {
 		}
 	}
 
+	/** 
+	 * Adds the given {@code object} to the queue, mapping it to a queue item
+	 * 
+	 * @param object Object to map to a queue item
+	 *
+	 * @throws JidokaQueueException
+	 */
 	public void addItem(T object) throws JidokaQueueException {
 
 		try {
@@ -173,12 +182,12 @@ public abstract class QueueFromGenericSource {
 	}
 
 	/**
-	 * Saves the given {@link Object} {@code currentItem} as a queue item. By
+	 * Saves the given {@link Object} {@code object} as a queue item. By
 	 * default, it sets that the retries number decrement by 1.
 	 * 
 	 * @param object The T object to save as an item.
 	 * 
-	 * @throws @{@link JidokaQueueException}
+	 * @throws JidokaQueueException
 	 */
 	public void updateItem(T object) throws JidokaQueueException {
 
@@ -186,13 +195,13 @@ public abstract class QueueFromGenericSource {
 	}
 
 	/**
-	 * Saves the given {@link Object} {@code currentItem} as a queue item. By
+	 * Saves the given {@link Object} {@code object} as a queue item. By
 	 * default, it sets the {@link EQueueItemReleaseProcess} to {@code SYSTEM}
 	 * 
 	 * @param object  The T object to save as an item.
 	 * @param retries Item retries number.
 	 * 
-	 * @throws @{@link JidokaQueueException}
+	 * @throws JidokaQueueException
 	 */
 	public void updateItem(T object, EQueueItemReleaseRetry retries) throws JidokaQueueException {
 
@@ -200,7 +209,7 @@ public abstract class QueueFromGenericSource {
 	}
 
 	/**
-	 * Saves the given {@link Object} {@code currentItem} as a queue item. It maps
+	 * Saves the given {@link Object} {@code object} as a queue item. It maps
 	 * the object to a map with the item functional data and release the item with
 	 * the given retries number and sets the process to the given release process.
 	 * 
@@ -208,7 +217,7 @@ public abstract class QueueFromGenericSource {
 	 * @param retries        Item retries
 	 * @param releaseProcess ReleaseProcess
 	 * 
-	 * @throws @{@link JidokaQueueException}
+	 * @throws JidokaQueueException
 	 */
 	public void updateItem(T object, EQueueItemReleaseRetry retries, EQueueItemReleaseProcess releaseProcess)
 			throws JidokaQueueException {
@@ -229,6 +238,14 @@ public abstract class QueueFromGenericSource {
 		}
 	}
 
+	/**
+	 * Find the list of items that have the same key as the given {@code key}
+	 * 
+	 * @param key key to search for
+	 * @return The list of T objects resulting from the search
+	 * 
+	 * @throws JidokaQueueException
+	 */
 	public List<T> findItems(String key) throws JidokaQueueException {
 		return findItems(key, new ArrayList<EQueueItemCurrentState>());
 	}
@@ -270,7 +287,7 @@ public abstract class QueueFromGenericSource {
 	 * 
 	 * @return The next item of type {@link org.apache.poi.ss.formula.functions.T}
 	 * 
-	 * @throws @{@link JidokaQueueException}
+	 * @throws JidokaQueueException
 	 */
 	public T getNextItem() throws JidokaQueueException {
 
