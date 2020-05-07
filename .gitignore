@@ -4,3 +4,5 @@ snippets-examples/credentials/.project
 snippets-examples/credentials/.classpath
 snippets-examples/RestAPI/.classpath
 snippets-examples/RestAPI/.project
+snippets-examples/browser-manager/.classpath
+snippets-examples/browser-manager/.project
