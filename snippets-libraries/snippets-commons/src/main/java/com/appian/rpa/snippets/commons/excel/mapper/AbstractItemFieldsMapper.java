@@ -223,11 +223,11 @@ public abstract class AbstractItemFieldsMapper<T> implements IRowMapper<IExcel, 
 		List<Field> queueItemFieldKey = AnnotationUtil.getFieldsWithAnnotation(getTClass(), AExcelFieldKey.class);
 
 		if (CollectionUtils.isEmpty(queueItemFieldKey)) {
-			throw new JidokaFatalException("Se debe indicar un campo con AExcelFieldKey");
+			throw new JidokaFatalException("A field must be indicated with AExcelFieldKey");
 		}
 
 		if (queueItemFieldKey.size() > 1) {
-			throw new JidokaFatalException("Se debe indicar un único campo con AExcelFieldKey");
+			throw new JidokaFatalException("Only one field must be entered with AExcelFieldKey");
 		}
 	}
 
