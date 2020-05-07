@@ -24,10 +24,7 @@ import com.novayre.jidoka.windows.api.IWindows;
  */
 public abstract class IBM3270Commons {
 
-	/**
-	 * The Constant WINDOW_TITLE_REGEX.
-	 */
-	public static final String WINDOW_TITLE_REGEX = ".*3270";
+	
 	
 	/**
 	 * Space character
@@ -47,7 +44,7 @@ public abstract class IBM3270Commons {
 	/**
 	 * Y-coordinate
 	 */
-	private static final int MAX_COORD_Y = 24;
+	private static final int MAX_COORD_Y = 48;
 	
 	/**
 	 * Line separator
@@ -89,6 +86,8 @@ public abstract class IBM3270Commons {
 	 */
 	private Boolean traceScreenshots = true;
 	
+	
+	
 	/**
 	 * Instantiates a new IBM3270Commons 
 	 */
@@ -101,14 +100,15 @@ public abstract class IBM3270Commons {
 		keyboard = windows.keyboard();
 	}
 	
-	
 	/**
 	 * Abstract method to select all text in screen
 	 */
 	public abstract void selectAllText();
 
-	
-	
+	/**
+	 * Abstract method to activate a window by its title
+	 */
+	public abstract void activateWindow() ;
 	
 	
 	/**
@@ -165,7 +165,9 @@ public abstract class IBM3270Commons {
 		} else {
 			StringBuffer sb = new StringBuffer("Searching the text  ");
 			for(String t : text) {
-				sb.append(t).append(", ");
+				if(StringUtils.isNotEmpty(t)) {
+					sb.append(t).append(", ");
+				}
 			}
 			textForDebug = sb.toString().substring(0, sb.toString().length()-2);
 		}
@@ -174,6 +176,7 @@ public abstract class IBM3270Commons {
 			waitFor.wait(retries, textForDebug, false, false,
 				() -> {
 
+					// List of lines in screen
 					List<String> screen;
 					
 					if(cachedScreen == null) {
@@ -185,9 +188,15 @@ public abstract class IBM3270Commons {
 					boolean samePage = true;
 					do {
 						for(String t : text) {
-	
+							
+							if(StringUtils.isEmpty(t)) {
+								continue;
+							}
+							
 							Pattern p = Pattern.compile(t);
-							for(int y=0; y < screen.size(); y++) {
+							
+							// Line 0 is the menu bar
+							for(int y=1; y < screen.size(); y++) {
 								
 								Matcher m = p.matcher(screen.get(y));
 								if(m.find()) {
@@ -321,7 +330,7 @@ public abstract class IBM3270Commons {
 		} catch (JidokaUnsatisfiedConditionException e) {;}
 		
 		if(!disappearedText) {
-			throw new JidokaFatalException("No ha desaparecido el texto "+ text);
+			throw new JidokaFatalException("The text has not disappeared :"+ text);
 		}
 	}
 
@@ -365,7 +374,7 @@ public abstract class IBM3270Commons {
 		int targetXCoodinate = (int) (pointInScreen.getX() + offsetX);
 		int targetYCoodinate = (int) (pointInScreen.getY() + offsetY);
 
-		server.debug(String.format("We're moving to the coordinates (%d, %d)", targetXCoodinate, targetYCoodinate));
+		server.debug(String.format("We're moving to the coordinates (%d, %d)", targetYCoodinate, targetXCoodinate));
 		
 		keyboard.control("g").pause();
 		
@@ -374,6 +383,29 @@ public abstract class IBM3270Commons {
 		keyboard.up(MAX_COORD_Y - targetYCoodinate);
 		windows.characterPause(ConstantsWaits.DEFAULT_CHARACTER_PAUSE);
 	}
+	
+	/**
+	 * Write the text on screen
+	 * @param text
+	 * @return
+	 */
+	public IBM3270Commons write(String text) {
+		
+		activateWindow();
+		
+		if(text == null) {
+			
+			text = "";
+		}
+		
+		server.debug(String.format("Writing text %s", text));
+		
+		keyboard.type(text).pause();
+		
+		return this;
+	}
+	
+	
 	
 	/**
 	 * Press enter
@@ -405,32 +437,105 @@ public abstract class IBM3270Commons {
 		return this;
 	}
 	
-	public IBM3270Commons write(String text) {
+	/**
+	 * Press left
+	 * @param repetition
+	 * @return
+	 */
+	public IBM3270Commons pressLeft() {
+		
+		return pressLeft(1);
+	}
+	
+	/**
+	 * Press left
+	 * @param repetition
+	 * @return
+	 */
+	public IBM3270Commons pressLeft(int repetition) {
 		
 		activateWindow();
 		
-		if(text == null) {
-			
-			text = "";
-		}
+		keyboard.left(repetition).pause();
 		
-		server.debug(String.format("Writing text %s", text));
+		return this;
+	}
+	
+	/**
+	 * Press right
+	 * @param repetition
+	 * @return
+	 */
+	public IBM3270Commons pressRight() {
 		
-		keyboard.type(text).pause();
+		return pressRight(1);
+	}
+	
+	/**
+	 * Press right
+	 * @param repetition
+	 * @return
+	 */
+	public IBM3270Commons pressRight(int repetition) {
+		
+		activateWindow();
+		
+		keyboard.right(repetition).pause();
 		
 		return this;
 	}
 	
 	
-	public void activateWindow() {
-	
-		windows.activateWindow(WINDOW_TITLE_REGEX);
+	/**
+	 * Press down
+	 * @param repetition
+	 * @return
+	 */
+	public IBM3270Commons pressDown() {
 		
-		windows.pause();
+		return pressDown(1);
+	}
+	
+	/**
+	 * Press down
+	 * @param repetition
+	 * @return
+	 */
+	public IBM3270Commons pressDown(int repetition) {
+		
+		activateWindow();
+		
+		keyboard.down(repetition).pause();
+		
+		return this;
+	}
+	
+	/**
+	 * Press up
+	 * @param repetition
+	 * @return
+	 */
+	public IBM3270Commons pressUp() {
+		
+		return pressUp(1);
+	}
+	
+	/**
+	 * Press Up
+	 * @param repetition
+	 * @return
+	 */
+	public IBM3270Commons pressUp(int repetition) {
+		
+		activateWindow();
+		
+		keyboard.up(repetition).pause();
+		
+		return this;
 	}
 	
 	
-
+	
 	
 	/**
 	 * Sends all screen text to the log
