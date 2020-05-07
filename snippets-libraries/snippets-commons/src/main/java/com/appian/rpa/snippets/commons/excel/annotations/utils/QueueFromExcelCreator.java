@@ -67,7 +67,7 @@ public class QueueFromExcelCreator<T> {
 	 * @param excelFileFullPath The Excel file full path
 	 * @param mapper            The mapper for mapping the Excel file
 	 * 
-	 * @throws {@link JidokaQueueException}
+	 * @throws JidokaQueueException
 	 */
 	public QueueFromExcelCreator(IRobot robot, String excelFileFullPath, AbstractItemFieldsMapper<T> mapper)
 			throws JidokaQueueException {
@@ -110,7 +110,7 @@ public class QueueFromExcelCreator<T> {
 	 * {@code null}.
 	 * 
 	 * @return The created queue id
-	 * @throws @{@link JidokaQueueException}
+	 * @throws JidokaQueueException
 	 */
 	private String createQueue(File fileInput, List<String> propertiesInResults) throws JidokaQueueException {
 
