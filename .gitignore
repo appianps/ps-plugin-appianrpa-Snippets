@@ -2,3 +2,4 @@
 snippets-examples/credentials/.project
 *.prefs
 snippets-examples/credentials/.classpath
+snippets-examples/queue-without-excel/target/classes/META-INF/maven/com.appian.snippets.examples/DEV-queue-without-excel/pom.properties
