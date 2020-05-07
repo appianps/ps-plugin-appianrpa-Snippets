@@ -1,6 +1,5 @@
 package com.appian.snippets.libraries;
 
-import java.awt.ItemSelectable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,6 @@ import org.apache.poi.ss.formula.functions.T;
 
 import com.appian.rpa.snippets.commons.excel.annotations.AnnotationUtil;
 import com.novayre.jidoka.client.api.IJidokaServer;
-import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.exceptions.JidokaException;
 import com.novayre.jidoka.client.api.exceptions.JidokaQueueException;
@@ -50,13 +48,18 @@ public abstract class QueueFromGenericSource {
 
 	/** ReserveItemsParameters instance */
 	private ReserveItemParameters reserveItemsParameters;
+	
+	/** Model class */
+	private Class<T> modelClass;
 
 	/**
 	 * QueueFromGenericSource constructor
 	 */
-	public QueueFromGenericSource(IRobot robot) {
+	public QueueFromGenericSource(Class<T> clazz) {
 		this.server = JidokaFactory.getServer();
 		this.queueManager = server.getQueueManager();
+		
+		this.modelClass = clazz;
 
 		this.reserveItemsParameters = new ReserveItemParameters();
 		this.reserveItemsParameters.setUseOnlyCurrentQueue(true);
@@ -261,7 +264,7 @@ public abstract class QueueFromGenericSource {
 			if(!states.isEmpty()) {
 				return filteredItems.stream().filter(i -> states.contains(i.state())).map(i -> {
 					try {
-						return (T) QueueConversionUtils.map2Object(i.functionalData(), getTClass());
+						return (T) QueueConversionUtils.map2Object(i.functionalData(), this.modelClass);
 					} catch (JidokaException e) {
 						return null;
 					}
@@ -269,7 +272,7 @@ public abstract class QueueFromGenericSource {
 			} else {
 				return reservedQueue.items().stream().map(i -> {
 					try {
-						return (T) QueueConversionUtils.map2Object(i.functionalData(), getTClass());
+						return (T) QueueConversionUtils.map2Object(i.functionalData(), this.modelClass);
 					} catch (JidokaException e) {
 						return null;
 					}
@@ -285,7 +288,7 @@ public abstract class QueueFromGenericSource {
 	 * Gets the queue next item, mapping the item functional data to an object with
 	 * the model type.
 	 * 
-	 * @return The next item of type {@link org.apache.poi.ss.formula.functions.T}
+	 * @return The next item of type T
 	 * 
 	 * @throws JidokaQueueException
 	 */
@@ -303,18 +306,11 @@ public abstract class QueueFromGenericSource {
 				return null;
 			}
 
-			return (T) QueueConversionUtils.map2Object(currentQueueItem.functionalData(), getTClass());
+			return (T) QueueConversionUtils.map2Object(currentQueueItem.functionalData(), this.modelClass);
 
 		} catch (Exception e) {
 			throw new JidokaQueueException("Error getting the next queue item", e);
 		}
 	}
-
-	/**
-	 * Returns the model T class.
-	 * 
-	 * @return T class
-	 */
-	public abstract Class<T> getTClass();
 
 }
