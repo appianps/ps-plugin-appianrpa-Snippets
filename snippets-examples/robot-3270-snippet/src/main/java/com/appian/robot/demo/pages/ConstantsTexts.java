@@ -30,6 +30,21 @@ public class ConstantsTexts {
 	 * Univocal text for Change Password File
 	 */
 	public static final String INVALID_USER_UNIVOCAL_TEXT = "INVALID OPERATOR";
+	
+	/**
+	 * Operator Id
+	 */
+	public static final String TEST_ID_OPERATOR = "OPER1";
+	
+	/**
+	 * Operator Password
+	 */
+	public static final String TEST_PWD_OPERATOR = "ZZZ";
+	
+	/**
+	 * Operator New Password
+	 */
+	public static final String TEST_NEW_PWD_OPERATOR = "YYY";
 		
 
 }

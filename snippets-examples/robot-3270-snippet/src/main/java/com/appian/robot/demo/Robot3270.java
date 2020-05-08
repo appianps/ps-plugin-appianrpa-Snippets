@@ -3,12 +3,11 @@ package com.appian.robot.demo;
 import java.io.IOException;
 import java.io.Serializable;
 
-import com.appian.robot.demo.commons.Commons3270Extended;
 import com.appian.robot.demo.commons.IBM3270AppManager;
-import com.appian.robot.demo.pages.ConstantsTexts;
 import com.appian.robot.demo.pages.NetViewPage;
 import com.appian.robot.demo.pages.RemotePage;
 import com.appian.rpa.snippet.TextInScreen;
+import com.appian.rpa.snippet.clients.FDZCommonsExtended;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.JidokaFactory;
@@ -33,7 +32,7 @@ public class Robot3270 implements IRobot {
 	/**
 	 * IBM3270Commons snippet instance
 	 */
-	private Commons3270Extended ibm3270Commons;
+	private FDZCommonsExtended ibm3270Commons;
 	
 	/**
 	 * IBM3270AppManager instance
@@ -49,6 +48,9 @@ public class Robot3270 implements IRobot {
 	 * Application Name
 	 */
 	public static final String WINDOW_TITLE_REGEX = ".*3270";
+	
+	
+	public RemotePage currentPage;
 
 	
 	
@@ -80,7 +82,7 @@ public class Robot3270 implements IRobot {
 
 		try {
 			
-			ibm3270Commons = new Commons3270Extended(server, windows, this);
+			ibm3270Commons = new FDZCommonsExtended(server, windows, this);
 			appManager = new IBM3270AppManager(server, windows, this);
 			
 			server.debug("Robot initialized");
@@ -119,7 +121,7 @@ public class Robot3270 implements IRobot {
 		ibm3270Commons.write("NETVIEW");
 		windows.pause(1000);
 		ibm3270Commons.enter();
-		checkScreen(new NetViewPage(server, windows, this));
+		currentPage = checkScreen(new NetViewPage(server, windows, this));
 		
 		server.sendScreen("Moved to NetView page");
 	}
@@ -132,41 +134,7 @@ public class Robot3270 implements IRobot {
 		
 		server.info("Change NetView Password");
 				
-		server.info("Cursor x coordinate: " + windows.getCursorInfo().getInfo().ptScreenPos.x);
-		server.info("Cursor y coordinate: " + windows.getCursorInfo().getInfo().ptScreenPos.y);
-		
-		
-		TextInScreen textInScreen = ibm3270Commons.locateText(2, "ID ==>");
-		ibm3270Commons.moveToCoodinates(textInScreen, 6, 1);
-		ibm3270Commons.write("OPER1");
-		ibm3270Commons.enter();
-		
-		// Change Password Page
-		server.sendScreen("Change password page");
-		ibm3270Commons.waitTillTextDisappears(ConstantsTexts.NETVIEW_UNIVOCAL_TEXT);
-		
-		ibm3270Commons.write("XXX");
-		ibm3270Commons.pressDown(2);
-		ibm3270Commons.pressLeft(3);
-		
-		ibm3270Commons.write("YYY");
-		ibm3270Commons.pressDown(2);
-		ibm3270Commons.pressLeft(3);
-		
-		ibm3270Commons.write("YYY");
-		ibm3270Commons.enter();
-		windows.pause(1000);
-
-		ibm3270Commons.waitTillTextDisappears(2, ConstantsTexts.PWD_UNIVOCAL_TEXT);
-		
-		ibm3270Commons.pressDown(8);
-		TextInScreen textInScreenPwd = ibm3270Commons.locateText(ConstantsTexts.INVALID_USER_UNIVOCAL_TEXT);
-		
-		if(textInScreenPwd != null) {
-			server.sendScreen("Password could not be changed: invalid opertator");
-		} else {
-			server.sendScreen("Password changed");
-		}
+		((NetViewPage) currentPage).changeOperatorPassword(ibm3270Commons);
 	}
 	
 	
