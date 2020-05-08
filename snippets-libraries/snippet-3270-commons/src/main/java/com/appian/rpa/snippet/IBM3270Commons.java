@@ -195,8 +195,7 @@ public abstract class IBM3270Commons {
 							
 							Pattern p = Pattern.compile(t);
 							
-							// Line 0 is the menu bar
-							for(int y=1; y < screen.size(); y++) {
+							for(int y=0; y < screen.size(); y++) {
 								
 								Matcher m = p.matcher(screen.get(y));
 								if(m.find()) {
