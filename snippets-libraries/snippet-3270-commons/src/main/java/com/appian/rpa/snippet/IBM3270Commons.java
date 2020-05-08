@@ -20,10 +20,9 @@ import com.novayre.jidoka.windows.api.IWindows;
 
 
 /**
- * Class for operating an IBM 3270 terminal
+ * Class for operating an IBM 3270 client
  */
 public abstract class IBM3270Commons {
-
 	
 	
 	/**
@@ -57,7 +56,7 @@ public abstract class IBM3270Commons {
 	protected IJidokaServer<?> server;
 
 	/**
-	 * Windows Server Instance
+	 * Windows Module Instance
 	 */
 	protected IWindows windows;
 	
@@ -75,11 +74,6 @@ public abstract class IBM3270Commons {
 	 * Keyboard module instance
 	 */
 	protected IKeyboard keyboard;
-
-	/**
-	 * Mock Page
-	 */
-	private String mockPage;
 	
 	/**
 	 * Trace screenshots?
@@ -213,9 +207,11 @@ public abstract class IBM3270Commons {
 						}
 					
 					} while(!samePage);
+					
 					windows.pause(1000);
 					return false;
 				});
+			
 		} catch (JidokaUnsatisfiedConditionException e) {;}
 		
 		if(textInScreen.get() == null) {
@@ -239,36 +235,40 @@ public abstract class IBM3270Commons {
 	 */
 	public List<String> scrapScreen() {
 		
+		List<String> res =  null;
 		String screen = null;
 		
-		activateWindow();
-		
-		server.debug("Getting all the text on the active screen");
-		
-		selectAllText();
-		
-		windows.pause(500);
-		
 		try {
+			
+			activateWindow();
+			
+			server.debug("Getting all the text on the active screen");
+			
+			selectAllText();
+			
+			windows.pause(500);
+			
 			screen = windows.copyAndGet();
+			
+			if(screen == null) {
+				
+				throw new JidokaFatalException("Unable to read the screen");
+			}
+			
+			String[] lines = screen.split(LINE_SEPARATOR);
+			
+			res =  Arrays.asList(lines);
+			
+			if(traceScreenshots) {
+				logScreen(res, false);
+			}
+			
+			keyboard.home();
+		
 		} catch (Exception e) {
 			throw new JidokaFatalException(e.getMessage(), e);
 		}
 		
-		if(screen == null) {
-			
-			throw new JidokaFatalException("Unable to read the screen");
-		}
-		
-		String[] lines = screen.split(LINE_SEPARATOR);
-		
-		List<String> res =  Arrays.asList(lines);
-		
-		if(traceScreenshots) {
-			logScreen(res, false);
-		}
-		
-		keyboard.home();
 		
 		return res;
 	}
@@ -288,6 +288,7 @@ public abstract class IBM3270Commons {
 		if(pf>12) {
 			
 			windows.keyboardSequence().pressShift().typeFunction(pf-12).releaseShift().apply();
+			
 		} else {
 			
 			keyboard.function(pf);
@@ -333,7 +334,13 @@ public abstract class IBM3270Commons {
 		}
 	}
 
-	
+	/**
+	 * Moves the cursor to the start of the indicated text, 
+	 * makes a correction using the offset parameters
+	 * @param text
+	 * @param offsetX
+	 * @param offsetY
+	 */
 	public void moveToCoodinates(String text, int offsetX, int offsetY) {
 		
 		if(text == null) {
@@ -344,6 +351,13 @@ public abstract class IBM3270Commons {
 		moveToCoodinates(locateText(text), offsetX, offsetY);
 	}
 
+	/**
+	 * Moves the cursor to the start of the indicated text, 
+	 * makes a correction using the offset parameters
+	 * @param textInScreen
+	 * @param offsetX
+	 * @param offsetY
+	 */
 	public void moveToCoodinates(TextInScreen textInScreen, int offsetX, int offsetY) {
 		
 		if(textInScreen == null) {
@@ -438,7 +452,6 @@ public abstract class IBM3270Commons {
 	
 	/**
 	 * Press left
-	 * @param repetition
 	 * @return
 	 */
 	public IBM3270Commons pressLeft() {
@@ -462,7 +475,6 @@ public abstract class IBM3270Commons {
 	
 	/**
 	 * Press right
-	 * @param repetition
 	 * @return
 	 */
 	public IBM3270Commons pressRight() {
@@ -487,7 +499,6 @@ public abstract class IBM3270Commons {
 	
 	/**
 	 * Press down
-	 * @param repetition
 	 * @return
 	 */
 	public IBM3270Commons pressDown() {
@@ -511,7 +522,6 @@ public abstract class IBM3270Commons {
 	
 	/**
 	 * Press up
-	 * @param repetition
 	 * @return
 	 */
 	public IBM3270Commons pressUp() {
@@ -596,14 +606,6 @@ public abstract class IBM3270Commons {
 
 	public void setRobot(IRobot robot) {
 		this.robot = robot;
-	}
-
-	public String getMockPage() {
-		return mockPage;
-	}
-
-	public void setMockPage(String mockPage) {
-		this.mockPage = mockPage;
 	}
 
 	public Boolean getTraceScreenshots() {

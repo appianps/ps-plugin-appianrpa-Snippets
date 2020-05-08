@@ -20,7 +20,7 @@ public class TextInScreen {
 	private String text;
 	
 	/**
-	 * Screens where the text is located
+	 * List of text lines in screen
 	 */
 	private List<String> screen;
 	
