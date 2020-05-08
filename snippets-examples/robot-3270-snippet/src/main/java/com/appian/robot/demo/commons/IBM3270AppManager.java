@@ -10,6 +10,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.IWaitFor;
+import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.client.api.exceptions.JidokaUnsatisfiedConditionException;
 import com.novayre.jidoka.windows.api.IWindows;
@@ -56,10 +57,11 @@ public class IBM3270AppManager {
 	 * @param robot
 	 * @param currentCredential
 	 */
-	public IBM3270AppManager(IJidokaServer<Serializable> server, IWindows windows, IRobot robot) {
+	@SuppressWarnings("unchecked")
+	public IBM3270AppManager(IRobot robot) {
 
-		this.server = server;
-		this.windows = windows;
+		this.server = (IJidokaServer<Serializable>) JidokaFactory.getServer();
+		this.windows = IWindows.getInstance(robot);
 		this.waitFor = windows.getWaitFor(robot);
 	}
 	

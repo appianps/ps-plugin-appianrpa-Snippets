@@ -1,9 +1,7 @@
 package com.appian.robot.demo.pages;
 
-import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
-import com.novayre.jidoka.client.api.exceptions.JidokaException;
-import com.novayre.jidoka.windows.api.IWindows;
+import com.novayre.jidoka.client.api.multios.IClient;
 
 
 /**
@@ -12,8 +10,8 @@ import com.novayre.jidoka.windows.api.IWindows;
 public class WelcomePage extends RemotePage {
 
 
-	public WelcomePage(IJidokaServer< ? > server, IWindows windows, IRobot robot) throws JidokaException {
-		super(server, windows, robot);
+	public WelcomePage(IClient client, IRobot robot) {
+		super(client, robot);
 	}
 	
 	

@@ -15,7 +15,7 @@ import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.annotations.Robot;
 import com.novayre.jidoka.client.api.exceptions.JidokaException;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
-import com.novayre.jidoka.windows.api.IWindows;
+import com.novayre.jidoka.client.api.multios.IClient;
 
 @Robot
 public class Robot3270 implements IRobot {
@@ -26,9 +26,9 @@ public class Robot3270 implements IRobot {
 	private IJidokaServer<Serializable> server;
 
 	/**
-	 * Windows module instance
+	 * Client Module Instance
 	 */
-	private IWindows windows;
+	protected IClient client;
 	
 	/**
 	 * IBM3270Commons snippet instance
@@ -43,7 +43,7 @@ public class Robot3270 implements IRobot {
 	/**
 	 * Application Name
 	 */
-	public static final String APP_NAME = "3270APP";
+	public static final String APP_NAME = "FDZ";
 	
 	/**
 	 * Application Name
@@ -65,7 +65,7 @@ public class Robot3270 implements IRobot {
 		
 		server = (IJidokaServer<Serializable>) JidokaFactory.getServer();
 
-		windows = IWindows.getInstance(this);
+		client = IClient.getInstance(this);
 		
 		return true;
 	}
@@ -83,8 +83,8 @@ public class Robot3270 implements IRobot {
 
 		try {
 			
-			ibm3270Commons = new FDZCommonsExtended(server, windows, this);
-			appManager = new IBM3270AppManager(server, windows, this);
+			ibm3270Commons = new FDZCommonsExtended(client, this);
+			appManager = new IBM3270AppManager(this);
 			
 			server.debug("Robot initialized");
 		} catch (Exception e) {
@@ -120,9 +120,9 @@ public class Robot3270 implements IRobot {
 		
 		server.sendScreen("Screenshot before moving to NetView page");
 		ibm3270Commons.write("NETVIEW");
-		windows.pause(1000);
+		client.pause(1000);
 		ibm3270Commons.enter();
-		currentPage = checkScreen(new NetViewPage(server, windows, this));
+		currentPage = checkScreen(new NetViewPage(client, this));
 		
 		server.sendScreen("Moved to NetView page");
 	}
