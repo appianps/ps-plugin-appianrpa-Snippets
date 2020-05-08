@@ -14,8 +14,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.appian.rpa.snippets.commons.excel.annotations.utils.QueueFromExcelCreator;
 import com.appian.rpa.snippets.commons.excel.mapper.AbstractItemFieldsMapper;
-import com.appian.rpa.snippets.commons.excel.utils.ConversionUtils;
 import com.appian.rpa.snippets.commons.excel.utils.ExcelUtils;
+import com.appian.rpa.snippets.commons.utils.conversion.ConversionUtils;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.JidokaFactory;

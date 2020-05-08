@@ -5,30 +5,28 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.formula.functions.T;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
+import com.appian.snippets.examples.instructions.EInstructions;
 import com.appian.snippets.libraries.QueueFromGenericSource;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.annotations.Robot;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
+import com.novayre.jidoka.client.api.exceptions.JidokaItemException;
 import com.novayre.jidoka.client.api.exceptions.JidokaQueueException;
 import com.novayre.jidoka.client.api.queue.IQueue;
 
 @Robot
 public class FillQueueRobot implements IRobot {
-
-	/**
-	 * Pending files folder directory
-	 */
-	private static final String PARAM_FOLDER = "folder";
 
 	/** Server instance */
 	IJidokaServer<?> server;
@@ -40,7 +38,7 @@ public class FillQueueRobot implements IRobot {
 	private String queueName;
 
 	/** List of new files to add to the queue */
-	private List<File> itemsToAdd;
+	private List<File> filesToAdd;
 
 	@Override
 	public boolean startUp() throws Exception {
@@ -66,7 +64,7 @@ public class FillQueueRobot implements IRobot {
 	 * @return The generated queue name
 	 */
 	private String getQueueName() {
-		return server.getExecution(0).getRobotName() + " - " + getDateFormated(new Date(), "yyyy-MM-dd - HH.mm");
+		return server.getExecution(0).getRobotName() + " - " + getDateFormated(new Date(), "yyyy-MM-dd");
 
 	}
 
@@ -105,38 +103,152 @@ public class FillQueueRobot implements IRobot {
 		}
 	}
 
+	/**
+	 * Checks if there are new files to add to the queue. If there are new files, it
+	 * adds the files to the queue.
+	 * 
+	 * @return If there are new files to add.
+	 */
 	public String hasNewItemsToAdd() {
 
-		List<File> filesList = getFilesList();
+		filesToAdd = new ArrayList<>();
+
+		for (File file : getFilesList()) {
+			if (pendingOfProcess(file)) {
+				filesToAdd.add(file);
+			}
+		}
+
+		if (filesToAdd.isEmpty()) {
+			server.info("No new files to add to the queue");
+			return "no";
+		} else {
+			server.info(filesToAdd.size() + " new files to add to the queue");
+			return "yes";
+		}
 
 	}
 
-	private List<FileModel> getFilesList() {
+	/**
+	 * Gets the full folder files list.
+	 * 
+	 * @return The folder files list
+	 */
+	private List<File> getFilesList() {
 
-		String filesFolder = server.getParameters().get(PARAM_FOLDER);
+		String filesFolder = EInstructions.FOLDER.getInstruction().getAsString();
 
-		if (StringUtils.isBlank(filesFolder)) {
-			throw new JidokaFatalException("You must indicate the input files folder directory");
-		}
 		Path folderPath = Paths.get(server.getCurrentDir(), filesFolder);
 
 		if (!Files.exists(folderPath)) {
-			throw new JidokaFatalException("The path " + folderPath + " doesn't exists");
+			throw new JidokaFatalException("The path " + folderPath + " doesn't exist");
 		}
 
 		File folder = new File(folderPath.toString());
-		List<FileModel> listOfFiles = Arrays.asList(folder.listFiles()).stream().filter(f -> pendingOfProcess(f))
-				.collect(Collectors.toList());
+
+		return Arrays.asList(folder.listFiles());
 
 	}
 
-	private Object pendingOfProcess(File f) {
-		
-		List<FileModel> files = queueFromGenericSourceManager.findItems(f.getName()).stream().map(i -> new FileModel());
-		return null;
+	/**
+	 * Check if the given {@code file} is pending of process.
+	 * 
+	 * @param file File to check if is pending of process.
+	 * @return True if the file is pending of process. In another case, it returns
+	 *         false.
+	 */
+	private boolean pendingOfProcess(File file) {
+
+		try {
+			List<FileModel> filesList = queueFromGenericSourceManager
+					.findItems(FilenameUtils.getBaseName(file.getName()));
+
+			return filesList.isEmpty();
+
+		} catch (JidokaQueueException e) {
+			server.info(e.getStackTrace());
+			throw new JidokaItemException(
+					"Error checking if file " + FilenameUtils.getBaseName(file.getName()) + " is pending of process");
+
+		}
 	}
 
-	public void addNewItems(T object) {
+	/**
+	 * Adds the new files to the queue.
+	 */
+	public void addNewItems() {
 
+		for (File file : filesToAdd) {
+			try {
+				queueFromGenericSourceManager.addItem(new FileModel(file));
+			} catch (JidokaQueueException e) {
+				throw new JidokaItemException("Error adding the file " + FilenameUtils.getBaseName(file.getName()));
+			}
+		}
+	}
+
+	/**
+	 * End action
+	 */
+	public void end() {
+		server.info("No more files to add to the queue");
+	}
+
+	@Override
+	public String[] cleanUp() throws Exception {
+
+		return IRobot.super.cleanUp();
+	}
+
+	/**
+	 * Manage exception.
+	 *
+	 * @param action    the action
+	 * @param exception the exception
+	 * @return the string
+	 * @throws Exception the exception
+	 */
+	@Override
+	public String manageException(String action, Exception exception) throws Exception {
+
+		// We get the message of the exception
+		String errorMessage = ExceptionUtils.getRootCause(exception).getMessage();
+
+		// We send a screenshot to the log so the user can see the screen in the moment
+		// of the error
+		// This is a very useful thing to do
+		server.sendScreen("Screenshot at the moment of the error");
+
+		// If we have a FatalException we should abort the execution.
+		if (ExceptionUtils.indexOfThrowable(exception, JidokaFatalException.class) >= 0) {
+
+			server.error(StringUtils.isBlank(errorMessage) ? "Fatal error" : errorMessage);
+			return IRobot.super.manageException(action, exception);
+		}
+
+		// If the error is processing one items we must mark it as a warning and go on
+		// with the next item
+		if (ExceptionUtils.indexOfThrowable(exception, JidokaItemException.class) >= 0) {
+
+			server.setCurrentItemResultToWarn(errorMessage);
+			reset();
+			return "hasNewItemsToAdd";
+		}
+
+		server.warn("Unknown exception!");
+
+		// If we have any other exception we must abort the execution, we don't know
+		// what has happened
+
+		return IRobot.super.manageException(action, exception);
+	}
+
+	/**
+	 * This method reset the robot state to a stable state after a
+	 * JidokaItemException is thrown
+	 */
+	private void reset() {
+		// In this case the method is empty because
+		// the robot loop reset always to a stable state.
 	}
 }

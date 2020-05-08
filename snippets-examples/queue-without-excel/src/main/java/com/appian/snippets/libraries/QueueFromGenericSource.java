@@ -7,9 +7,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.formula.functions.T;
 
-import com.appian.rpa.snippets.commons.excel.annotations.AnnotationUtil;
+import com.appian.snippets.libraries.annotations.QueueAnnotationUtil;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.exceptions.JidokaException;
@@ -17,11 +16,13 @@ import com.novayre.jidoka.client.api.exceptions.JidokaQueueException;
 import com.novayre.jidoka.client.api.queue.AssignQueueParameters;
 import com.novayre.jidoka.client.api.queue.CreateItemParameters;
 import com.novayre.jidoka.client.api.queue.CreateQueueParameters;
+import com.novayre.jidoka.client.api.queue.DownloadQueueParameters;
 import com.novayre.jidoka.client.api.queue.EPriority;
 import com.novayre.jidoka.client.api.queue.EQueueCurrentState;
 import com.novayre.jidoka.client.api.queue.EQueueItemCurrentState;
 import com.novayre.jidoka.client.api.queue.EQueueItemReleaseProcess;
 import com.novayre.jidoka.client.api.queue.EQueueItemReleaseRetry;
+import com.novayre.jidoka.client.api.queue.IDownloadedQueue;
 import com.novayre.jidoka.client.api.queue.IQueue;
 import com.novayre.jidoka.client.api.queue.IQueueItem;
 import com.novayre.jidoka.client.api.queue.IQueueManager;
@@ -46,9 +47,6 @@ public class QueueFromGenericSource {
 	/** IQueueManager instance */
 	private IQueueManager queueManager;
 
-	/** ReserveItemsParameters instance */
-	private ReserveItemParameters reserveItemsParameters;
-	
 	/** Model class */
 	private Class<?> modelClass;
 
@@ -58,34 +56,45 @@ public class QueueFromGenericSource {
 	public QueueFromGenericSource(Class<?> clazz) {
 		this.server = JidokaFactory.getServer();
 		this.queueManager = server.getQueueManager();
-		
-		this.modelClass = clazz;
 
-		this.reserveItemsParameters = new ReserveItemParameters();
-		this.reserveItemsParameters.setUseOnlyCurrentQueue(true);
+		this.modelClass = clazz;
 	}
 
 	/**
-	 * Creates a new queue naming it with the given {@code queueName}
+	 * Creates a new queue naming it with the given {@code queueName}.<br>
+	 * It creates the queue with the given queue name, a {@link EPriority#HIGH}
+	 * priority and 1 attempt by default.
 	 * 
 	 * @param queueName The new queue name
 	 * 
 	 * @throws JidokaQueueException
 	 */
 	public void createQueue(String queueName) throws JidokaQueueException {
+		CreateQueueParameters queueParams = new CreateQueueParameters();
+
+		queueParams.setDescription("Queue " + queueName);
+
+		queueParams.setName(queueName);
+		queueParams.setPriority(EPriority.HIGH);
+		queueParams.setAttemptsByDefault(1);
+
+		createQueue(queueParams);
+	}
+
+	/**
+	 * Creates a new queue using the given customized {@code queueParams}
+	 * 
+	 * @param queueParams Parameters to create the new queue
+	 * 
+	 * @throws JidokaQueueException
+	 */
+	public void createQueue(CreateQueueParameters queueParams) throws JidokaQueueException {
 
 		try {
-			CreateQueueParameters queueParams = new CreateQueueParameters();
-
-			queueParams.setDescription("Queue " + queueName);
-
-			queueParams.setName(queueName);
-			queueParams.setPriority(EPriority.HIGH);
-			queueParams.setAttemptsByDefault(1);
 
 			currentQueueId = queueManager.createQueue(queueParams);
 
-			server.info("Queue created: " + currentQueueId);
+			server.info("Queue " + queueParams.getName() + " created with id: " + currentQueueId);
 		} catch (IOException | JidokaQueueException e) {
 			throw new JidokaQueueException("Error creating the queue", e);
 		}
@@ -108,7 +117,9 @@ public class QueueFromGenericSource {
 
 			IQueue createdQueue = queueManager.assignQueue(qqp);
 
-			currentQueueId = createdQueue.queueId();
+			if (createdQueue != null) {
+				currentQueueId = createdQueue.queueId();
+			}
 
 			return createdQueue;
 		} catch (IOException | JidokaQueueException e) {
@@ -154,19 +165,19 @@ public class QueueFromGenericSource {
 		}
 	}
 
-	/** 
+	/**
 	 * Adds the given {@code object} to the queue, mapping it to a queue item
 	 * 
 	 * @param object Object to map to a queue item
 	 *
 	 * @throws JidokaQueueException
 	 */
-	public void addItem(T object) throws JidokaQueueException {
+	public <T> void addItem(T object) throws JidokaQueueException {
 
 		try {
 			CreateItemParameters cip = new CreateItemParameters();
 
-			String keyValue = AnnotationUtil.getKeyFieldValue(object);
+			String keyValue = QueueAnnotationUtil.getKeyFieldValue(object);
 
 			cip.setKey(keyValue);
 			cip.setPriority(EPriority.NORMAL);
@@ -185,36 +196,36 @@ public class QueueFromGenericSource {
 	}
 
 	/**
-	 * Saves the given {@link Object} {@code object} as a queue item. By
-	 * default, it sets that the retries number decrement by 1.
+	 * Saves the given {@link Object} {@code object} as a queue item. By default, it
+	 * sets that the retries number decrement by 1.
 	 * 
 	 * @param object The T object to save as an item.
 	 * 
 	 * @throws JidokaQueueException
 	 */
-	public void updateItem(T object) throws JidokaQueueException {
+	public <T> void updateItem(T object) throws JidokaQueueException {
 
 		updateItem(object, EQueueItemReleaseRetry.DECREMENT_BY_1);
 	}
 
 	/**
-	 * Saves the given {@link Object} {@code object} as a queue item. By
-	 * default, it sets the {@link EQueueItemReleaseProcess} to {@code SYSTEM}
+	 * Saves the given {@link Object} {@code object} as a queue item. By default, it
+	 * sets the {@link EQueueItemReleaseProcess} to {@code SYSTEM}
 	 * 
 	 * @param object  The T object to save as an item.
 	 * @param retries Item retries number.
 	 * 
 	 * @throws JidokaQueueException
 	 */
-	public void updateItem(T object, EQueueItemReleaseRetry retries) throws JidokaQueueException {
+	public <T> void updateItem(T object, EQueueItemReleaseRetry retries) throws JidokaQueueException {
 
 		updateItem(object, retries, EQueueItemReleaseProcess.SYSTEM);
 	}
 
 	/**
-	 * Saves the given {@link Object} {@code object} as a queue item. It maps
-	 * the object to a map with the item functional data and release the item with
-	 * the given retries number and sets the process to the given release process.
+	 * Saves the given {@link Object} {@code object} as a queue item. It maps the
+	 * object to a map with the item functional data and release the item with the
+	 * given retries number and sets the process to the given release process.
 	 * 
 	 * @param object         The item to save
 	 * @param retries        Item retries
@@ -222,7 +233,7 @@ public class QueueFromGenericSource {
 	 * 
 	 * @throws JidokaQueueException
 	 */
-	public void updateItem(T object, EQueueItemReleaseRetry retries, EQueueItemReleaseProcess releaseProcess)
+	public <T> void updateItem(T object, EQueueItemReleaseRetry retries, EQueueItemReleaseProcess releaseProcess)
 			throws JidokaQueueException {
 
 		try {
@@ -249,19 +260,30 @@ public class QueueFromGenericSource {
 	 * 
 	 * @throws JidokaQueueException
 	 */
-	public List<T> findItems(String key) throws JidokaQueueException {
+	public <T> List<T> findItems(String key) throws JidokaQueueException {
 		return findItems(key, new ArrayList<EQueueItemCurrentState>());
 	}
 
-	public List<T> findItems(String itemKey, List<EQueueItemCurrentState> states) throws JidokaQueueException {
-		
+	/**
+	 * Find the list of items that have the same key as the given {@code key}
+	 * 
+	 * @param key    key to search for
+	 * @param states List of queue item states to filter by
+	 * @return The list of T objects resulting from the search
+	 * 
+	 * @throws JidokaQueueException
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> List<T> findItems(String itemKey, List<EQueueItemCurrentState> states) throws JidokaQueueException {
+
 		try {
-			ReserveQueueParameters rqp = new ReserveQueueParameters().queueId(currentQueueId.trim());
-			IReservedQueue reservedQueue = queueManager.reserveQueue(rqp);
-			
-			List<IQueueItem> filteredItems = reservedQueue.items().stream().filter(i -> i.key().equals(itemKey)).collect(Collectors.toList());
-			
-			if(!states.isEmpty()) {
+			DownloadQueueParameters dqp = new DownloadQueueParameters().queueId(currentQueueId.trim());
+			IDownloadedQueue downloadedQueue = queueManager.downloadQueue(dqp);
+
+			List<IQueueItem> filteredItems = downloadedQueue.items().stream().filter(i -> i.key().equals(itemKey))
+					.collect(Collectors.toList());
+
+			if (!states.isEmpty()) {
 				return filteredItems.stream().filter(i -> states.contains(i.state())).map(i -> {
 					try {
 						return (T) QueueConversionUtils.map2Object(i.functionalData(), this.modelClass);
@@ -270,7 +292,7 @@ public class QueueFromGenericSource {
 					}
 				}).collect(Collectors.toList());
 			} else {
-				return reservedQueue.items().stream().map(i -> {
+				return filteredItems.stream().map(i -> {
 					try {
 						return (T) QueueConversionUtils.map2Object(i.functionalData(), this.modelClass);
 					} catch (JidokaException e) {
@@ -278,7 +300,7 @@ public class QueueFromGenericSource {
 					}
 				}).collect(Collectors.toList());
 			}
-	
+
 		} catch (IOException | JidokaQueueException e) {
 			throw new JidokaQueueException("Error finding the given item", e);
 		}
@@ -292,13 +314,17 @@ public class QueueFromGenericSource {
 	 * 
 	 * @throws JidokaQueueException
 	 */
-	public T getNextItem() throws JidokaQueueException {
+	@SuppressWarnings("unchecked")
+	public <T> T getNextItem() throws JidokaQueueException {
 
 		try {
 
 			if (StringUtils.isBlank(currentQueueId)) {
 				return null;
 			}
+
+			ReserveItemParameters reserveItemsParameters = new ReserveItemParameters();
+			reserveItemsParameters.setUseOnlyCurrentQueue(true);
 
 			IQueueItem currentQueueItem = queueManager.reserveItem(reserveItemsParameters);
 
@@ -310,6 +336,24 @@ public class QueueFromGenericSource {
 
 		} catch (Exception e) {
 			throw new JidokaQueueException("Error getting the next queue item", e);
+		}
+	}
+
+	/**
+	 * Returns the current queue.
+	 * 
+	 * @return The current queue.
+	 * 
+	 * @throws JidokaQueueException 
+	 */
+	public IQueue getQueue() throws JidokaQueueException {
+		try {
+			AssignQueueParameters qqp = new AssignQueueParameters();
+			qqp.queueId(this.currentQueueId);
+
+			return queueManager.assignQueue(qqp);
+		} catch (IOException | JidokaQueueException e) {
+			throw new JidokaQueueException("Error getting the current queue");
 		}
 	}
 

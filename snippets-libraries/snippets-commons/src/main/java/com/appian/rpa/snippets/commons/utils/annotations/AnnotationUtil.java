@@ -1,4 +1,4 @@
-package com.appian.rpa.snippets.commons.excel.annotations;
+package com.appian.rpa.snippets.commons.utils.annotations;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 
+import com.appian.rpa.snippets.commons.excel.annotations.AExcelFieldKey;
 import com.appian.rpa.snippets.commons.excel.annotations.utils.ReflectionUtil;
 import com.novayre.jidoka.client.api.exceptions.JidokaException;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
@@ -104,6 +105,14 @@ public final class AnnotationUtil {
 		}
 	}
 
+	/**
+	 * Gets the value of the key field given
+	 * 
+	 * @param <T> Type of the value returned
+	 * @param currentItem Object where to search the key field
+	 * 
+	 * @return The key field value
+	 */
 	public static <T> String getKeyFieldValue(T currentItem) {
 
 		Field fieldKey = getFirstFieldWithAnnotation(currentItem.getClass(), AExcelFieldKey.class);

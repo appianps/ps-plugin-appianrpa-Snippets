@@ -22,36 +22,36 @@ public class CountWordsRobot implements IRobot {
 	/** QueueItemsManager instance */
 	private QueueItemsManager<FileModel> queueItemsManager;
 
-	@Override
-	public boolean startUp() throws Exception {
-
-		// QueueItemsManager init
-		queueItemsManager = new QueueItemsManager<>(this, new FileMapper());
-
-		return IRobot.super.startUp();
-	}
-
-	/**
-	 * Inits the robot variables
-	 */
-	public void init() {
-
-	}
-
-	/**
-	 * Check if there are files without being processed
-	 * 
-	 * @return A list with the pending files
-	 */
-	public void createQueueIfNotExists() {
-
-	}
-
-	public String newItemsToAdd() {
-
-	}
-
-	public void addNewItems(T object) {
-
-	}
+//	@Override
+//	public boolean startUp() throws Exception {
+//
+//		// QueueItemsManager init
+//		queueItemsManager = new QueueItemsManager<>(this, new FileMapper());
+//
+//		return IRobot.super.startUp();
+//	}
+//
+//	/**
+//	 * Inits the robot variables
+//	 */
+//	public void init() {
+//
+//	}
+//
+//	/**
+//	 * Check if there are files without being processed
+//	 * 
+//	 * @return A list with the pending files
+//	 */
+//	public void createQueueIfNotExists() {
+//
+//	}
+//
+//	public String newItemsToAdd() {
+//
+//	}
+//
+//	public void addNewItems(T object) {
+//
+//	}
 }
