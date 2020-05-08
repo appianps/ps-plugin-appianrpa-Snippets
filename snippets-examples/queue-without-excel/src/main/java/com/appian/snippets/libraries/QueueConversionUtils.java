@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.appian.rpa.snippets.commons.excel.annotations.AnnotationUtil;
-import com.appian.rpa.snippets.commons.excel.utils.ConversionUtils;
+import com.appian.rpa.snippets.commons.utils.annotations.AnnotationUtil;
+import com.appian.rpa.snippets.commons.utils.conversion.ConversionUtils;
 import com.appian.snippets.libraries.annotations.AItemField;
 import com.novayre.jidoka.client.api.exceptions.JidokaException;
 

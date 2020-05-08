@@ -1,0 +1,9 @@
+com\appian\snippets\examples\FileModel.class
+com\appian\snippets\libraries\annotations\AItemKey.class
+com\appian\snippets\libraries\QueueConversionUtils.class
+com\appian\snippets\libraries\QueueFromGenericSource.class
+com\appian\snippets\examples\instructions\EInstructions.class
+com\appian\snippets\libraries\annotations\AItemField.class
+com\appian\snippets\libraries\annotations\QueueAnnotationUtil.class
+com\appian\snippets\examples\FillQueueRobot.class
+com\appian\snippets\examples\CountWordsRobot.class

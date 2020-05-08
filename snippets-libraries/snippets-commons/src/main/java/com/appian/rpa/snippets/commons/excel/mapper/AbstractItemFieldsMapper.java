@@ -19,8 +19,8 @@ import org.apache.poi.ss.util.CellReference;
 
 import com.appian.rpa.snippets.commons.excel.annotations.AExcelField;
 import com.appian.rpa.snippets.commons.excel.annotations.AExcelFieldKey;
-import com.appian.rpa.snippets.commons.excel.annotations.AnnotationUtil;
 import com.appian.rpa.snippets.commons.excel.annotations.utils.ColumnAtEndCreator;
+import com.appian.rpa.snippets.commons.utils.annotations.AnnotationUtil;
 import com.novayre.jidoka.client.api.exceptions.JidokaException;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.data.provider.api.IExcel;
