@@ -9,7 +9,7 @@ public class ConstantsTexts {
 	/**
 	 * Univocal text for Welcome Page
 	 */
-	public static final String WELCOME_UNIVOCAL_TEXT = "Welcome to Fan DeZhi Mainframe System";
+	public static final String WELCOME_UNIVOCAL_TEXT = "Welcome";
 	
 	/**
 	 * Univocal text for Login Page

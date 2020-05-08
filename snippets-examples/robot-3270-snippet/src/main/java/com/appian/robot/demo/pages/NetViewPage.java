@@ -26,7 +26,6 @@ public class NetViewPage extends RemotePage {
 	}
 	
 	
-	
 	/**
 	 * Changes the password of an operator
 	 */
@@ -44,11 +43,11 @@ public class NetViewPage extends RemotePage {
 		
 		ibm3270Commons.write(ConstantsTexts.TEST_PWD_OPERATOR);
 		ibm3270Commons.pressDown(2);
-		ibm3270Commons.pressLeft(3);
+		ibm3270Commons.pressLeft(ConstantsTexts.TEST_PWD_OPERATOR.length());
 		
 		ibm3270Commons.write(ConstantsTexts.TEST_NEW_PWD_OPERATOR);
 		ibm3270Commons.pressDown(2);
-		ibm3270Commons.pressLeft(3);
+		ibm3270Commons.pressLeft(ConstantsTexts.TEST_NEW_PWD_OPERATOR.length());
 		
 		ibm3270Commons.write(ConstantsTexts.TEST_NEW_PWD_OPERATOR);
 		ibm3270Commons.enter();

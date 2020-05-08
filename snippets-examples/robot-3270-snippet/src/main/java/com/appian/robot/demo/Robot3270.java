@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 
 import com.appian.robot.demo.commons.IBM3270AppManager;
+import com.appian.robot.demo.pages.ConstantsTexts;
 import com.appian.robot.demo.pages.NetViewPage;
 import com.appian.robot.demo.pages.RemotePage;
 import com.appian.rpa.snippet.TextInScreen;
@@ -101,12 +102,12 @@ public class Robot3270 implements IRobot {
 	
 	
 	/**
-	 * Action 'Locate text'.
+	 * Action 'Validate page'.
 	 */
-	public void locateText () {
-		TextInScreen textInScreen = ibm3270Commons.locateText(2, "Welcome");
+	public void validateMainPage () {
+		TextInScreen textInScreen = ibm3270Commons.locateText(2, ConstantsTexts.WELCOME_UNIVOCAL_TEXT);
 		if(textInScreen != null) {
-			server.info(String.format("Text %s found", "Welcome"));
+			server.info(String.format("Text %s found", ConstantsTexts.WELCOME_UNIVOCAL_TEXT));
 		}
 	}
 	
@@ -117,7 +118,7 @@ public class Robot3270 implements IRobot {
 	 */
 	public void goToNetView () throws JidokaException {
 		
-		server.sendScreen("Before moving to NetView page");
+		server.sendScreen("Screenshot before moving to NetView page");
 		ibm3270Commons.write("NETVIEW");
 		windows.pause(1000);
 		ibm3270Commons.enter();
@@ -137,23 +138,6 @@ public class Robot3270 implements IRobot {
 		((NetViewPage) currentPage).changeOperatorPassword(ibm3270Commons);
 	}
 	
-	
-	/**
-	 * Action 'Change screen'.
-	 * @param welcomePage 
-	 * @throws JidokaException 
-	 */
-	private RemotePage checkScreen (RemotePage remotePage) throws JidokaException {
-		
-		server.info("Verifying that we are on the right page");
-		
-		try {
-			return remotePage.assertIsThisPage();
-		} catch (Exception e) {
-			server.info("Wrong page");
-			return null;
-		}
-	}
 		
 	/**
 	 * Action 'Close 3270'.
@@ -168,7 +152,6 @@ public class Robot3270 implements IRobot {
 	public void end() {
 
 		// continue the process, here the robot ends its execution
-
 	}
 
 	/**
@@ -195,8 +178,25 @@ public class Robot3270 implements IRobot {
 	@Override
 	public String manageException(String action, Exception exception) throws Exception {
 
-		
 		return IRobot.super.manageException(action, exception);
+	}
+	
+
+	/**
+	 * Method Change screen.
+	 * @param welcomePage 
+	 * @throws JidokaException 
+	 */
+	private RemotePage checkScreen (RemotePage remotePage) throws JidokaException {
+		
+		server.info("Verifying that we are on the right page");
+		
+		try {
+			return remotePage.assertIsThisPage();
+		} catch (Exception e) {
+			server.info("Wrong page");
+			return null;
+		}
 	}
 
 }
