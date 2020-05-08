@@ -1,9 +1,8 @@
 package com.appian.rpa.snippet.clients;
 
 import com.appian.rpa.snippet.IBM3270Commons;
-import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
-import com.novayre.jidoka.windows.api.IWindows;
+import com.novayre.jidoka.client.api.multios.IClient;
 
 
 /**
@@ -16,15 +15,30 @@ public class FDZCommonsExtended extends IBM3270Commons {
 	 */
 	public static final String WINDOW_TITLE_REGEX = ".*3270";
 	
+	/**
+	 * Default X-coordinate
+	 */
+	private static final int MAX_COORD_X = 80;
+	
+	/**
+	 * Default Y-coordinate
+	 */
+	private static final int MAX_COORD_Y = 24;
+	
+	
 	
 	/**
 	 * Default constructor
 	 * @param server
-	 * @param windows
+	 * @param client
 	 * @param robot
 	 */
-	public FDZCommonsExtended(IJidokaServer<?> server, IWindows windows, IRobot robot) {
-		super(server, windows, robot);
+	public FDZCommonsExtended(IClient client, IRobot robot) {
+		
+		super(client, robot);
+		
+		setMaxCoordX(MAX_COORD_X);
+		setMaxCoordY(MAX_COORD_Y);
 	}
 
 	
@@ -32,7 +46,8 @@ public class FDZCommonsExtended extends IBM3270Commons {
 	 * Select all text in the screen
 	 */
 	public void selectAllText() {
-		keyboard.down().pause(); 
+		
+		moveToBottonRightCorner(); 
 		keyboard.control("a").pause();
 	}
 	
@@ -42,9 +57,28 @@ public class FDZCommonsExtended extends IBM3270Commons {
 	 */
 	public void activateWindow() {
 		
-		windows.activateWindow(WINDOW_TITLE_REGEX);
+		client.activateWindow(WINDOW_TITLE_REGEX);
 		
-		windows.pause();
+		client.pause();
+	}
+	
+	/**
+	 * Move the cursor to the bottom right corner of the screen
+	 */
+	@Override
+	public void moveToBottonRightCorner() {
+		
+		keyboard.down().pause(); 
+		keyboard.control("g").pause().control("g").pause();
 	}
 
+	/**
+	 * Split the lines of text on the screen
+	 */
+	@Override
+	public String[] splitScreenLines(String screen) {
+		return screen.split("(?<=\\G.{80})");
+	}
+	
+	
 }

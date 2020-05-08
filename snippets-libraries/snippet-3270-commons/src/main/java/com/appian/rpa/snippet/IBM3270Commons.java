@@ -16,7 +16,7 @@ import com.novayre.jidoka.client.api.IWaitFor;
 import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.client.api.exceptions.JidokaUnsatisfiedConditionException;
-import com.novayre.jidoka.windows.api.IWindows;
+import com.novayre.jidoka.client.api.multios.IClient;
 
 
 /**
@@ -36,29 +36,14 @@ public abstract class IBM3270Commons {
 	private static final String SPACE_HTML = "&#160;";
 
 	/**
-	 * X-coordinate
-	 */
-	private static final int MAX_COORD_X = 80;
-	
-	/**
-	 * Y-coordinate
-	 */
-	private static final int MAX_COORD_Y = 48;
-	
-	/**
-	 * Line separator
-	 */
-	private static final String LINE_SEPARATOR = "\n";
-
-	/**
 	 * Jidoka Server Instance
 	 */
 	protected IJidokaServer<?> server;
 
 	/**
-	 * Windows Module Instance
+	 * Client Module Instance
 	 */
-	protected IWindows windows;
+	protected IClient client;
 	
 	/**
 	 * IRobot instance
@@ -80,18 +65,26 @@ public abstract class IBM3270Commons {
 	 */
 	private Boolean traceScreenshots = true;
 	
+	/**
+	 * Max X-coordinate value
+	 */
+	private int maxCoordX = 80;
 	
+	/**
+	 * Max Y-coordinate value
+	 */
+	private int maxCoordY = 24;
 	
 	/**
 	 * Instantiates a new IBM3270Commons 
 	 */
-	public IBM3270Commons(IJidokaServer<?> server, IWindows windows, IRobot robot) {
+	public IBM3270Commons(IClient client, IRobot robot) {
 		
-		this.server = server;
-		this.windows = windows; 
+		this.server = JidokaFactory.getServer();
+		this.client = client; 
 		this.robot = robot;
-		waitFor = windows.waitFor(robot);
-		keyboard = windows.keyboard();
+		waitFor = client.waitFor(robot);
+		keyboard = client.keyboard();
 	}
 	
 	/**
@@ -102,7 +95,18 @@ public abstract class IBM3270Commons {
 	/**
 	 * Abstract method to activate a window by its title
 	 */
-	public abstract void activateWindow() ;
+	public abstract void activateWindow();
+	
+	/**
+	 * Abstract method to move the cursor to the bottom right corner of the screen
+	 */
+	public abstract void moveToBottonRightCorner();
+	
+	/**
+	 * Abstract method to split the lines of text on the screen
+	 * @param screen 
+	 */
+	public abstract String[] splitScreenLines(String screen);
 	
 	
 	/**
@@ -208,7 +212,7 @@ public abstract class IBM3270Commons {
 					
 					} while(!samePage);
 					
-					windows.pause(1000);
+					client.pause(1000);
 					return false;
 				});
 			
@@ -246,16 +250,16 @@ public abstract class IBM3270Commons {
 			
 			selectAllText();
 			
-			windows.pause(500);
+			client.pause(500);
 			
-			screen = windows.copyAndGet();
+			screen = client.copyAndGet();
 			
 			if(screen == null) {
 				
 				throw new JidokaFatalException("Unable to read the screen");
 			}
 			
-			String[] lines = screen.split(LINE_SEPARATOR);
+			String[] lines = splitScreenLines(screen);
 			
 			res =  Arrays.asList(lines);
 			
@@ -279,7 +283,7 @@ public abstract class IBM3270Commons {
 	 * @param pf
 	 * @return
 	 */
-	public IWindows pressPF(int pf) {
+	public IClient pressPF(int pf) {
 
 		activateWindow();
 		
@@ -287,16 +291,16 @@ public abstract class IBM3270Commons {
 		
 		if(pf>12) {
 			
-			windows.keyboardSequence().pressShift().typeFunction(pf-12).releaseShift().apply();
+			client.keyboardSequence().pressShift().typeFunction(pf-12).releaseShift().apply();
 			
 		} else {
 			
 			keyboard.function(pf);
 		}
 		
-		windows.pause();
+		client.pause();
 		
-		return windows;
+		return client;
 	}
 	
 	/**
@@ -324,7 +328,7 @@ public abstract class IBM3270Commons {
 					if(locateText(1, false, null, null, text) == null) {
 						return true;
 					};
-					windows.pause(1000);
+					client.pause(1000);
 					return false;
 				});
 		} catch (JidokaUnsatisfiedConditionException e) {;}
@@ -389,12 +393,12 @@ public abstract class IBM3270Commons {
 
 		server.debug(String.format("We're moving to the coordinates (%d, %d)", targetYCoodinate, targetXCoodinate));
 		
-		keyboard.control("g").pause();
+		moveToBottonRightCorner();
 		
-		windows.characterPause(10);
-		keyboard.left(MAX_COORD_X - targetXCoodinate);
-		keyboard.up(MAX_COORD_Y - targetYCoodinate);
-		windows.characterPause(ConstantsWaits.DEFAULT_CHARACTER_PAUSE);
+		client.characterPause(10);
+		keyboard.left(getMaxCoordX() - targetXCoodinate);
+		keyboard.up(getMaxCoordY() - targetYCoodinate);
+		client.characterPause(ConstantsWaits.DEFAULT_CHARACTER_PAUSE);
 	}
 	
 	/**
@@ -544,6 +548,34 @@ public abstract class IBM3270Commons {
 	}
 	
 	
+	/**
+	 * Gets Max X-coordinate value
+	 */
+	public int getMaxCoordX() {
+		return maxCoordX;
+	}
+
+	/**
+	 * Sets Max X-coordinate value
+	 */
+	public void setMaxCoordX(int maxCoordX) {
+		this.maxCoordX = maxCoordX;
+	}
+
+	/**
+	 * Gets Max Y-coordinate value
+	 */
+	public int getMaxCoordY() {
+		return maxCoordY;
+	}
+
+	/**
+	 * Sets Max Y-coordinate value
+	 */
+	public void setMaxCoordY(int maxCoordY) {
+		this.maxCoordY = maxCoordY;
+	}
+
 	
 	
 	/**
@@ -582,23 +614,6 @@ public abstract class IBM3270Commons {
 		}
 	}
 	
-	
-	
-	public IJidokaServer<?> getServer() {
-		return server;
-	}
-
-	public void setServer(IJidokaServer<?> server) {
-		this.server = server;
-	}
-
-	public IWindows getWindows() {
-		return windows;
-	}
-
-	public void setWindows(IWindows windows) {
-		this.windows = windows;
-	}
 
 	public IRobot getRobot() {
 		return robot;

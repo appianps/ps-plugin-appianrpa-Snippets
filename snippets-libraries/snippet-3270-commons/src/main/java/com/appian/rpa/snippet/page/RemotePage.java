@@ -2,10 +2,9 @@ package com.appian.rpa.snippet.page;
 
 import com.appian.rpa.snippet.ConstantsWaits;
 import com.appian.rpa.snippet.IBM3270Commons;
-import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.exceptions.JidokaException;
-import com.novayre.jidoka.windows.api.IWindows;
+import com.novayre.jidoka.client.api.multios.IClient;
 
 
 /**
@@ -27,8 +26,8 @@ public abstract class RemotePage extends IBM3270Commons {
 	 * @param windows
 	 * @param robot
 	 */
-	public RemotePage(IJidokaServer<?> server, IWindows windows, IRobot robot) {
-		super(server, windows, robot);
+	public RemotePage(IClient client, IRobot robot) {
+		super(client, robot);
 	}
 
 	/**

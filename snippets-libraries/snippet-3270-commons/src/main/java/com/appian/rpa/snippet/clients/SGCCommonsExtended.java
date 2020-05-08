@@ -2,9 +2,8 @@ package com.appian.rpa.snippet.clients;
 
 import com.appian.rpa.snippet.ConstantsWaits;
 import com.appian.rpa.snippet.IBM3270Commons;
-import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
-import com.novayre.jidoka.windows.api.IWindows;
+import com.novayre.jidoka.client.api.multios.IClient;
 
 
 /**
@@ -17,15 +16,36 @@ public class SGCCommonsExtended extends IBM3270Commons {
 	 */
 	public static final String IBM3270_LOGIN_TITLE_REGEX = "(?i)SGC verde - wc3270";
 	
+	/**
+	 * Line separator
+	 */
+	private static final String LINE_SEPARATOR = "\n";
+
+	
+	/**
+	 * Default X-coordinate
+	 */
+	private static final int MAX_COORD_X = 80;
+	
+	/**
+	 * Default Y-coordinate
+	 */
+	private static final int MAX_COORD_Y = 24;
+	
+	
 	
 	/**
 	 * Default constructor
 	 * @param server
-	 * @param windows
+	 * @param client
 	 * @param robot
 	 */
-	public SGCCommonsExtended(IJidokaServer<?> server, IWindows windows, IRobot robot) {
-		super(server, windows, robot);
+	public SGCCommonsExtended(IClient client, IRobot robot) {
+		
+		super(client, robot);
+
+		setMaxCoordX(MAX_COORD_X);
+		setMaxCoordY(MAX_COORD_Y);
 	}
 
 	
@@ -34,8 +54,7 @@ public class SGCCommonsExtended extends IBM3270Commons {
 	 */
 	public void selectAllText() {
 		
-		keyboard.down().pause(); 
-		keyboard.control("g").pause().control("g").pause();
+		moveToBottonRightCorner();
 		
 		keyboard.alt(" ").pause(ConstantsWaits.PAUSE_MENU_COPY).type("e").pause(ConstantsWaits.PAUSE_MENU_COPY).type("s").pause();
 		keyboard.alt(" ").pause(ConstantsWaits.PAUSE_MENU_COPY).type("e").pause(ConstantsWaits.PAUSE_MENU_COPY).type("o").pause();
@@ -48,9 +67,28 @@ public class SGCCommonsExtended extends IBM3270Commons {
 	 */
 	public void activateWindow() {
 		
-		windows.activateWindow(IBM3270_LOGIN_TITLE_REGEX);
+		client.activateWindow(IBM3270_LOGIN_TITLE_REGEX);
 		
-		windows.pause();
+		client.pause();
+	}
+	
+	/**
+	 * Move the cursor to the bottom right corner of the screen
+	 */
+	@Override
+	public void moveToBottonRightCorner() {
+		
+		keyboard.down().pause(); 
+		keyboard.control("g").pause().control("g").pause();
+		
+	}
+	
+	/**
+	 * Split the lines of text on the screen
+	 */
+	@Override
+	public String[] splitScreenLines(String screen) {
+		return screen.split(LINE_SEPARATOR);
 	}
 
 }
