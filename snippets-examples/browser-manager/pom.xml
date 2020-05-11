@@ -18,7 +18,7 @@
 	</parent>
 
 	<properties>
-		<jidoka.serverId>rpa-repo</jidoka.serverId>
+		<jidoka.serverId>rpa-coe-lab</jidoka.serverId>
 		<junit.jupyter.version>5.4.0</junit.jupyter.version>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -41,7 +41,7 @@
 
 			<repositories>
 				<repository>
-					<id>rpa-repo</id>
+					<id>rpa-coe-lab</id>
 					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
 					<releases>
 					</releases>
@@ -52,7 +52,7 @@
 
 			<pluginRepositories>
 				<pluginRepository>
-					<id>rpa-repo</id>
+					<id>rpa-coe-lab</id>
 					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
 					<releases>
 					</releases>
@@ -62,7 +62,7 @@
 			</pluginRepositories>
 			<distributionManagement>
 				<repository>
-					<id>rpa-repo</id>
+					<id>rpa-coe-lab</id>
 					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
 					<layout>default</layout>
 				</repository>

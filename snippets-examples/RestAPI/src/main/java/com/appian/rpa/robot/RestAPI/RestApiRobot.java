@@ -43,7 +43,7 @@ public class RestApiRobot implements IRobot {
 	 * Credential for the API key
 	 */
 	private static final String CREDENTIAL_API_KEY = "API_KEY";
-	
+
 	/**
 	 * Item id
 	 */
@@ -63,7 +63,7 @@ public class RestApiRobot implements IRobot {
 	 * API Key
 	 */
 	private String apiKey;
-	
+
 	private String itemID;
 
 	@Override
@@ -85,7 +85,7 @@ public class RestApiRobot implements IRobot {
 		if (credentials == null) {
 			throw new JidokaFatalException("Robot doesn't have access to any credentials");
 		}
-		
+
 		this.apiKey = credentials.getPassword();
 	}
 
