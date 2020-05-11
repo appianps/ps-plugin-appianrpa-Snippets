@@ -60,6 +60,15 @@ public class BrowserManager {
 	}
 
 	/**
+	 * 
+	 * Return the browser object to let the users interact with the same instance.
+	 */
+
+	public IWebBrowserSupport getBrowser() {
+		return browser;
+	}
+
+	/**
 	 * Init and opens the browser. Sets the browser type to the given by the
 	 * constructor.
 	 */
@@ -92,7 +101,7 @@ public class BrowserManager {
 		try {
 			// Focus on the app and activate the window on client module
 			client.activateWindow(getBrowserWindowTitle());
-			
+
 			client.showWindow(client.getWindow(getBrowserWindowTitle()).getId(), EClientShowWindowType.MAXIMIZE);
 
 			// Navigate to the URL

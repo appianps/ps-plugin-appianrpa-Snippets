@@ -9,6 +9,7 @@ com\appian\rpa\snippets\commons\credentials\CredentialsUtils.class
 com\appian\rpa\snippets\commons\excel\utils\ConversionUtils.class
 com\appian\rpa\snippets\commons\instructions\Instruction.class
 com\appian\rpa\snippets\commons\excel\annotations\AnnotationUtil.class
+com\appian\rpa\snippets\commons\application\ApplicationManager.class
 com\appian\rpa\snippets\commons\browser\BrowserManager$1.class
 com\appian\rpa\snippets\commons\excel\annotations\AExcelFieldKey.class
 com\appian\rpa\snippets\commons\excel\annotations\utils\ColumnAtEndCreator.class

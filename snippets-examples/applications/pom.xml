@@ -5,11 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.appian.rpa.robot</groupId>
-	<artifactId>applications</artifactId>
+	<artifactId>applications-advani</artifactId>
 	<packaging>jar</packaging>
 	<version>0.0.1</version>
 
-	<name>applications</name>
+	<name>applications-advani</name>
 
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>
@@ -17,10 +17,6 @@
 		<version>7.0.0</version> <!-- VC -->
 	</parent>
 
-	<properties>
-		<jidoka.serverId>rpa-repo</jidoka.serverId>
-		<junit.jupyter.version>5.4.0</junit.jupyter.version>
-	</properties>
 
 
 
@@ -37,19 +33,33 @@
 
 
 			<repositories>
+
 				<repository>
-					<id>rpa-repo</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
 					<releases>
+						<enabled>true</enabled>
 					</releases>
 					<snapshots>
+						<enabled>false</enabled>
 					</snapshots>
 				</repository>
+				<repository>
+					<id>rpa-coe-lab-snapshots</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka-snapshots</url>
+					<releases>
+						<enabled>false</enabled>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</repository>
+
 			</repositories>
 
 			<pluginRepositories>
 				<pluginRepository>
-					<id>rpa-repo</id>
+					<id>rpa-coe-lab</id>
 					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
 					<releases>
 					</releases>
@@ -59,16 +69,24 @@
 			</pluginRepositories>
 			<distributionManagement>
 				<repository>
-					<id>rpa-repo</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
+					<id>rpa-coe-lab</id>
+					<name>rpa-coe-lab</name>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
 					<layout>default</layout>
 				</repository>
+				<snapshotRepository>
+					<id>rpa-coe-lab-snapshots</id>
+					<name>rpa-coe-lab</name>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka-snapshots</url>
+					<layout>default</layout>
+				</snapshotRepository>
 			</distributionManagement>
 		</profile>
 
 	</profiles>
 
 	<dependencies>
+
 		<dependency>
 			<groupId>com.appian.snippets.commons</groupId>
 			<artifactId>snippets-commons</artifactId>
@@ -78,11 +96,6 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.9</version>
-		</dependency>
-		<dependency>
-			<groupId>com.novayre.jidoka.module</groupId>
-			<artifactId>jidoka-browser-api</artifactId>
-			<version>${jidoka.version}</version>
 		</dependency>
 	</dependencies>
 </project>

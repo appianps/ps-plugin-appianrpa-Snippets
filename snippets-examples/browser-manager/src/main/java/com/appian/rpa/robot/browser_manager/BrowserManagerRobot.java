@@ -54,7 +54,6 @@ public class BrowserManagerRobot implements IRobot {
 	 */
 	public void openBrowser() {
 		browserManager.openBrowser();
-		client.pause(3000);
 	}
 
 	/**
@@ -65,7 +64,8 @@ public class BrowserManagerRobot implements IRobot {
 	 */
 	public void navigateToWeb() throws JidokaFatalException {
 		browserManager.navigateTo(searcherURL);
-		client.pause(3000);
+		//dynamic wait 
+		//client.pause(3000);
 		if (!isClassNameElementSuccessfullyLoaded(selectors.getSelector("selector.search-button.classname"))) {
 			throw new JidokaFatalException("page could not be loaded");
 		}
@@ -107,6 +107,11 @@ public class BrowserManagerRobot implements IRobot {
 	 */
 	public void close() {
 		closeBrowser();
+	}
+	
+	@Override
+	public void cleanUp() {
+		
 	}
 
 	/**

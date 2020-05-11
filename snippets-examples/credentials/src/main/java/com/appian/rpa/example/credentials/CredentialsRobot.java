@@ -51,7 +51,7 @@ public class CredentialsRobot implements IRobot {
 		// CredentialsUtils init
 		this.credentialsUtils = CredentialsUtils.getInstance(this);
 
-		return IRobot.super.startUp();
+		return true;
 	}
 
 	/**

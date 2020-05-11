@@ -69,7 +69,7 @@ public class ApplicationManager {
 
 		try {
 			// Get the App executable path
-			String execPath = Paths.get(server.getCurrentDir(), this.appDir, this.appLauncher).toString();
+			String execPath = Paths.get(this.appDir, this.appLauncher).toString();
 
 			// Init application
 			Application app = automation.launchOrAttach(execPath);
