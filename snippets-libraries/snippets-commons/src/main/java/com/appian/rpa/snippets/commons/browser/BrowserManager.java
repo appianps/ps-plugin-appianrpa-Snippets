@@ -1,6 +1,7 @@
 package com.appian.rpa.snippets.commons.browser;
 
 import java.io.Serializable;
+
 import org.openqa.selenium.NoSuchSessionException;
 
 import com.novayre.jidoka.browser.api.EBrowsers;
@@ -15,8 +16,8 @@ import com.novayre.jidoka.client.api.multios.EClientShowWindowType;
 import com.novayre.jidoka.client.api.multios.IClient;
 
 /**
- * Class to manage Chrome Browser. To use differents browsers, use different
- * instances of the class.
+ * Class to manage a Browser. To use different browsers, use different instances
+ * of the class.
  */
 public class BrowserManager {
 
@@ -67,7 +68,7 @@ public class BrowserManager {
 
 		try {
 
-			// Pick Chrome as default browser
+			// Pick the as default browser
 			browser.setBrowserType(this.selectedBrowser);
 
 			// init browser
@@ -92,7 +93,7 @@ public class BrowserManager {
 		try {
 			// Focus on the app and activate the window on client module
 			client.activateWindow(getBrowserWindowTitle());
-			
+
 			client.showWindow(client.getWindow(getBrowserWindowTitle()).getId(), EClientShowWindowType.MAXIMIZE);
 
 			// Navigate to the URL
@@ -110,6 +111,7 @@ public class BrowserManager {
 	 * @return The browser window title
 	 */
 	private String getBrowserWindowTitle() {
+
 		switch (this.selectedBrowser) {
 		case CHROME:
 			return ".*Chrome.*";

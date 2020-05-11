@@ -41,6 +41,7 @@ public class BrowserManagerRobot implements IRobot {
 	 */
 
 	public void start() throws Exception {
+		
 		browserManager = new BrowserManager(this, EBrowsers.CHROME);
 		server = (IJidokaServer<?>) JidokaFactory.getServer();
 		client = IClient.getInstance(this);

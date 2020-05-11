@@ -17,17 +17,6 @@
 		<version>7.0.0</version> <!-- VC -->
 	</parent>
 
-	<properties>
-		<jidoka.serverId>rpa-coe-lab</jidoka.serverId>
-		<junit.jupyter.version>5.4.0</junit.jupyter.version>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-	</properties>
-
-
-
-
-
 	<profiles>
 
 		<profile>
@@ -38,14 +27,25 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 
-
 			<repositories>
 				<repository>
 					<id>rpa-coe-lab</id>
 					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
 					<releases>
+						<enabled>true</enabled>
 					</releases>
 					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</repository>
+				<repository>
+					<id>rpa-coe-lab-snapshots</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka-snapshots</url>
+					<releases>
+						<enabled>false</enabled>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
 					</snapshots>
 				</repository>
 			</repositories>
@@ -75,17 +75,7 @@
 		<dependency>
 			<groupId>com.appian.snippets.commons</groupId>
 			<artifactId>snippets-commons</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>3.9</version>
-		</dependency>
-		<dependency>
-			<groupId>com.novayre.jidoka.module</groupId>
-			<artifactId>jidoka-browser-api</artifactId>
-			<version>${jidoka.version}</version>
+			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
