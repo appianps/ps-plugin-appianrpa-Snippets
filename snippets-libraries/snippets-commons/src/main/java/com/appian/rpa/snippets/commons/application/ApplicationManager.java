@@ -2,6 +2,7 @@ package com.appian.rpa.snippets.commons.application;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.IWaitFor;
@@ -36,16 +37,16 @@ public class ApplicationManager {
 
 	/** Application relative directory */
 	private String appDir;
-	
-	/** Application window title regex*/
+
+	/** Application window title regex */
 	private String regexAppWindowTitle;
 
-	/** 
-	 * ApplicationManager constructor 
+	/**
+	 * ApplicationManager constructor
 	 * 
-	 * @param robot IRobot instance
-	 * @param appLauncher App launcher name
-	 * @param appDir App launcher directory
+	 * @param robot               IRobot instance
+	 * @param appLauncher         App launcher name
+	 * @param appDir              App launcher directory
 	 * @param regexAppWindowTitle App window title regex
 	 * 
 	 */
@@ -84,7 +85,7 @@ public class ApplicationManager {
 			throw new JidokaFatalException("Error initializing the APP: " + e.getMessage(), e);
 		}
 	}
-	
+
 	/**
 	 * Close the application
 	 */
@@ -96,22 +97,30 @@ public class ApplicationManager {
 		} catch (IOException e) {
 			throw new JidokaFatalException("Error closing the application", e);
 		}
-
 	}
 
+	// TODO que lance una excepción si no se ha podido llevar a cabo la acción.
 	/**
-	 * Activate the window and shows it.
-	 * Waits until the window is active.
+	 * Activate the window and shows it. Waits until the window is active.
 	 */
 	public void activateWindow() {
 
-		// Activate the Nasdaq Manager Application
+		// Activate the Application
 		client.activateWindow(this.regexAppWindowTitle);
-		client.showWindow(client.getWindow(this.regexAppWindowTitle).getId(),
-				EClientShowWindowType.SHOW);
+		client.showWindow(client.getWindow(this.regexAppWindowTitle).getId(), EClientShowWindowType.SHOW);
 
 		// Wait to the window to activate
 		waitFor.windowActive(this.regexAppWindowTitle);
 	}
 
+	/**
+	 * 
+	 * Returns the UIAutomation Driver
+	 * 
+	 * @return the UIAutomation Driver
+	 */
+	public UIAutomation getUiAutomation() {
+
+		return automation;
+	}
 }
