@@ -8,6 +8,7 @@ import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.annotations.Robot;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
+import com.novayre.jidoka.client.api.multios.IClient;
 
 /**
  * Application Manager Robot provides a complete usage example from all the
@@ -25,6 +26,7 @@ public class ApplicationManagerRobot implements IRobot {
 	private ApplicationManager calculatorApp;
 	private ApplicationManager notepadApp;
 	private IJidokaServer<Serializable> server;
+	private IClient client;
 
 	/**
 	 * Override startup method to initialize some variables involved in our process.
@@ -33,7 +35,7 @@ public class ApplicationManagerRobot implements IRobot {
 	@SuppressWarnings("unchecked")
 	public boolean startUp() throws Exception {
 		server = (IJidokaServer<Serializable>) JidokaFactory.getServer();
-
+		client = IClient.getInstance(this);
 		return true;
 
 	}
@@ -73,6 +75,7 @@ public class ApplicationManagerRobot implements IRobot {
 
 	public void setCalculatorAsForegroundApp() {
 		calculatorApp.activateWindow();
+		client.characterPause(2000);
 	}
 
 	/**
@@ -88,9 +91,12 @@ public class ApplicationManagerRobot implements IRobot {
 
 	/**
 	 * Close Calculator application
+	 * 
+	 * @throws InterruptedException
 	 */
 	public void closeCalculator() {
 		try {
+			client.characterPause(2000);
 			calculatorApp.closeApp();
 		} catch (Exception e) {
 			throw new JidokaFatalException("An error appeared while closing the Calculator");

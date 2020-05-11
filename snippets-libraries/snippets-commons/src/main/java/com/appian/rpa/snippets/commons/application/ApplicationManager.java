@@ -82,7 +82,8 @@ public class ApplicationManager {
 			// Send a screenshot to the console
 			server.sendScreen("Applicacion started");
 		} catch (Exception e) {
-			throw new JidokaFatalException("Error initializing the APP: " + e.getMessage(), e);
+			throw new JidokaFatalException(
+					"An error appeared while attempting to open the application " + e.getMessage(), e);
 		}
 	}
 
@@ -95,22 +96,26 @@ public class ApplicationManager {
 			// Close the application instances
 			client.killProcess(appLauncher);
 		} catch (IOException e) {
-			throw new JidokaFatalException("Error closing the application", e);
+			throw new JidokaFatalException("Error while closing the application", e);
 		}
 	}
 
-	// TODO que lance una excepción si no se ha podido llevar a cabo la acción.
 	/**
 	 * Activate the window and shows it. Waits until the window is active.
 	 */
 	public void activateWindow() {
+		try {
+			// Activate the Application
+			client.activateWindow(this.regexAppWindowTitle);
+			client.showWindow(client.getWindow(this.regexAppWindowTitle).getId(), EClientShowWindowType.SHOW);
 
-		// Activate the Application
-		client.activateWindow(this.regexAppWindowTitle);
-		client.showWindow(client.getWindow(this.regexAppWindowTitle).getId(), EClientShowWindowType.SHOW);
-
-		// Wait to the window to activate
-		waitFor.windowActive(this.regexAppWindowTitle);
+			// Wait to the window to activate
+			waitFor.windowActive(this.regexAppWindowTitle);
+		} catch (Exception e) {
+			throw new JidokaFatalException(
+					"An unexpected error appeared while attempting to activate the application window as foreground element",
+					e);
+		}
 	}
 
 	/**

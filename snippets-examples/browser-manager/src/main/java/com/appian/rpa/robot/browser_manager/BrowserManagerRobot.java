@@ -2,6 +2,8 @@ package com.appian.rpa.robot.browser_manager;
 
 import org.openqa.selenium.By;
 
+import com.appian.rpa.snippets.commons.browser.BrowserManager;
+import com.appian.rpa.snippets.commons.browser.SelectorsManager;
 import com.novayre.jidoka.browser.api.EBrowsers;
 import com.novayre.jidoka.browser.api.IWebBrowserSupport;
 import com.novayre.jidoka.client.api.IJidokaServer;
@@ -10,9 +12,6 @@ import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.annotations.Robot;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.client.api.multios.IClient;
-
-import com.appian.rpa.snippets.commons.browser.BrowserManager;
-import com.appian.rpa.snippets.commons.browser.SelectorsManager;
 
 /**
  * 
@@ -41,9 +40,9 @@ public class BrowserManagerRobot implements IRobot {
 	 */
 
 	public void start() throws Exception {
-		
+
 		browserManager = new BrowserManager(this, EBrowsers.CHROME);
-		server = (IJidokaServer<?>) JidokaFactory.getServer();
+		server = JidokaFactory.getServer();
 		client = IClient.getInstance(this);
 		browser = IWebBrowserSupport.getInstance(this, client);
 		searcherURL = server.getParameters().get("platformURL");
@@ -65,8 +64,8 @@ public class BrowserManagerRobot implements IRobot {
 	 */
 	public void navigateToWeb() throws JidokaFatalException {
 		browserManager.navigateTo(searcherURL);
-		//dynamic wait 
-		//client.pause(3000);
+		// dynamic wait
+		// client.pause(3000);
 		if (!isClassNameElementSuccessfullyLoaded(selectors.getSelector("selector.search-button.classname"))) {
 			throw new JidokaFatalException("page could not be loaded");
 		}
@@ -79,6 +78,10 @@ public class BrowserManagerRobot implements IRobot {
 		}
 		server.info(browser.getText(By.xpath(selectors.getSelector("selector.appian-result.xpath"))));
 	}
+
+	/**
+	 * Search results for "Appian" String
+	 */
 
 	public void searchInformation() {
 		browser.clickSafe(browser.waitElement(By.xpath(selectors.getSelector("selector.searchbar.xpath"))));
@@ -98,6 +101,10 @@ public class BrowserManagerRobot implements IRobot {
 				(i, c) -> browser.getElement(By.xpath(xpath)) != null);
 	}
 
+	/**
+	 * close Chrome Browser
+	 */
+
 	private void closeBrowser() {
 		browserManager.browserCleanUp();
 
@@ -109,10 +116,15 @@ public class BrowserManagerRobot implements IRobot {
 	public void close() {
 		closeBrowser();
 	}
-	
+
+	/**
+	 * Override cleanUp method
+	 */
+
 	@Override
-	public void cleanUp() {
-		
+	public String[] cleanUp() throws Exception {
+		return IRobot.super.cleanUp();
+
 	}
 
 	/**
