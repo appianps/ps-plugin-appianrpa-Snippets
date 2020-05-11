@@ -14,7 +14,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import com.appian.snippets.examples.instructions.EInstructions;
+import com.appian.snippets.examples.params.EInstructions;
 import com.appian.snippets.libraries.QueueFromGenericSource;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
