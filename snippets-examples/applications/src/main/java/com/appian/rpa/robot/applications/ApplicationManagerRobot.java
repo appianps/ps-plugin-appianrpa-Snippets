@@ -48,7 +48,7 @@ public class ApplicationManagerRobot implements IRobot {
 	}
 
 	/**
-	 * Init application
+	 * Open Calculator application
 	 */
 	public void openCalculator() {
 
@@ -59,6 +59,9 @@ public class ApplicationManagerRobot implements IRobot {
 		}
 	}
 
+	/**
+	 * Open Notepad application
+	 */
 	public void openNotepad() {
 
 		try {
@@ -72,6 +75,9 @@ public class ApplicationManagerRobot implements IRobot {
 		calculatorApp.activateWindow();
 	}
 
+	/**
+	 * Close Notepad application
+	 */
 	public void closeNotepad() {
 		try {
 			notepadApp.closeApp();
@@ -80,6 +86,9 @@ public class ApplicationManagerRobot implements IRobot {
 		}
 	}
 
+	/**
+	 * Close Calculator application
+	 */
 	public void closeCalculator() {
 		try {
 			calculatorApp.closeApp();
@@ -88,10 +97,16 @@ public class ApplicationManagerRobot implements IRobot {
 		}
 	}
 
+	/**
+	 * This is the last action from robot workflow.
+	 */
 	public void end() {
 		server.info("end");
 	}
 
+	/**
+	 * Override from the cleanUp method
+	 */
 	@Override
 	public String[] cleanUp() throws Exception {
 
