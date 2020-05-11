@@ -1,4 +1,4 @@
-package com.appian.snippets.examples.instructions;
+package com.appian.snippets.examples.params;
 
 import com.appian.rpa.snippets.commons.instructions.Instruction;
 
