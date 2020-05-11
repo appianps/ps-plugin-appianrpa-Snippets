@@ -70,7 +70,7 @@ public class ApplicationManager {
 
 		try {
 			// Get the App executable path
-			String execPath = Paths.get(this.appDir, this.appLauncher).toString();
+			String execPath = Paths.get(appDir, appLauncher).toString();
 
 			// Init application
 			Application app = automation.launchOrAttach(execPath);
@@ -93,7 +93,7 @@ public class ApplicationManager {
 
 		try {
 			// Close the application instances
-			client.killProcess(this.appLauncher);
+			client.killProcess(appLauncher);
 		} catch (IOException e) {
 			throw new JidokaFatalException("Error closing the application", e);
 		}
