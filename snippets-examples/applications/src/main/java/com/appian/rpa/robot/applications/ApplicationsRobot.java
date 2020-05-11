@@ -9,6 +9,7 @@ import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.annotations.Robot;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 
+//TODO document javadoc for the whole class
 @Robot
 public class ApplicationsRobot implements IRobot {
 
