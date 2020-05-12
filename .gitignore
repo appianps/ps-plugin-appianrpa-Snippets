@@ -12,3 +12,5 @@ snippets-examples/robot-applications/.classpath
 snippets-examples/robot-applications/.project
 snippets-examples/robot-browser-manager/.classpath
 snippets-examples/robot-browser-manager/.project
+snippets-libraries/snippets-commons/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+*.lst

@@ -7,7 +7,6 @@ import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.annotations.Robot;
-import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 
 /**
  * Application Manager Robot provides a complete usage example from all the
@@ -52,11 +51,7 @@ public class ApplicationManagerRobot implements IRobot {
 	 */
 	public void openCalculator() {
 
-		try {
-			calculatorApp.startApplication();
-		} catch (Exception e) {
-			throw new JidokaFatalException("Error starting the Calculator");
-		}
+		calculatorApp.startApplication();
 	}
 
 	/**
@@ -64,11 +59,8 @@ public class ApplicationManagerRobot implements IRobot {
 	 */
 	public void openNotepad() {
 
-		try {
-			notepadApp.startApplication();
-		} catch (Exception e) {
-			throw new JidokaFatalException("Error starting the Notepad");
-		}
+		notepadApp.startApplication();
+
 	}
 
 	public void setCalculatorAsForegroundApp() {
@@ -79,25 +71,20 @@ public class ApplicationManagerRobot implements IRobot {
 	 * Close Notepad application
 	 */
 	public void closeNotepad() {
-		try {
-			notepadApp.closeApp();
-		} catch (Exception e) {
-			throw new JidokaFatalException("An error appeared while closing the Notepad");
-		}
+
+		notepadApp.closeApp();
+
 	}
 
 	/**
 	 * Close Calculator application using alt+F4, as some applications are executing
 	 * sometimes with unexpected names or unreachable user access to .exe file
 	 * 
-	 * @throws InterruptedException
 	 */
 	public void closeCalculator() {
-		try {
-			calculatorApp.getClient().typeText(calculatorApp.getClient().keyboardSequence().typeAltF(4));
-		} catch (Exception e) {
-			throw new JidokaFatalException("An error appeared while closing the Calculator");
-		}
+		calculatorApp.closeApp();
+		// calculatorApp.getClient().typeText(calculatorApp.getClient().keyboardSequence().typeAltF(4));
+
 	}
 
 	/**

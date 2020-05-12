@@ -1,6 +1,5 @@
 package com.appian.rpa.snippets.commons.application;
 
-import java.io.IOException;
 import java.nio.file.Paths;
 
 import com.novayre.jidoka.client.api.IJidokaServer;
@@ -39,18 +38,21 @@ public class ApplicationManager {
 	private String appDir;
 
 	/** Application window title regex */
-	private String regexAppWindowTitle;
+	private String windowTittle;
+
+	/** Application */
+	private Application application;
 
 	/**
 	 * ApplicationManager constructor
 	 * 
-	 * @param robot               IRobot instance
-	 * @param appLauncher         App launcher name
-	 * @param appDir              App launcher directory
-	 * @param regexAppWindowTitle App window title regex
+	 * @param robot        IRobot instance
+	 * @param appLauncher  App launcher name
+	 * @param appDir       App launcher directory
+	 * @param windowTittle App window title regex
 	 * 
 	 */
-	public ApplicationManager(IRobot robot, String appLauncher, String appDir, String windowTitle) {
+	public ApplicationManager(IRobot robot, String appLauncher, String appDir, String windowTittle) {
 
 		this.server = JidokaFactory.getServer();
 		this.client = IClient.getInstance(robot);
@@ -59,25 +61,25 @@ public class ApplicationManager {
 
 		this.appLauncher = appLauncher;
 		this.appDir = appDir;
-		this.regexAppWindowTitle = windowTitle;
+		this.windowTittle = windowTittle;
 
 	}
 
 	/**
 	 * Starts the application and wait until the window opens.
 	 */
-	public void startApplication() {
+	public void startApplication() throws JidokaFatalException {
 
 		try {
 			// Get the App executable path
 			String execPath = Paths.get(appDir, appLauncher).toString();
 
 			// Init application
-			Application app = automation.launchOrAttach(execPath);
-			app.waitForInputIdle(30);
+			application = automation.launchOrAttach(execPath);
+			application.waitForInputIdle(30);
 
 			// wait app opened
-			waitFor.window(this.regexAppWindowTitle);
+			waitFor.window(this.windowTittle);
 
 			// Send a screenshot to the console
 			server.sendScreen("Applicacion started");
@@ -90,12 +92,12 @@ public class ApplicationManager {
 	/**
 	 * Close the application
 	 */
-	public void closeApp() {
+	public void closeApp() throws JidokaFatalException {
 
 		try {
-			// Close the application instances
-			client.killProcess(appLauncher);
-		} catch (IOException e) {
+			this.activateWindow();
+			client.typeText(client.keyboardSequence().typeAltF(4));
+		} catch (Exception e) {
 			throw new JidokaFatalException("Error while closing the application", e);
 		}
 	}
@@ -103,14 +105,14 @@ public class ApplicationManager {
 	/**
 	 * Activate the window and shows it. Waits until the window is active.
 	 */
-	public void activateWindow() {
+	public void activateWindow() throws JidokaFatalException {
 		try {
 			// Activate the Application
-			client.activateWindow(this.regexAppWindowTitle);
-			client.showWindow(client.getWindow(this.regexAppWindowTitle).getId(), EClientShowWindowType.SHOW);
+			client.activateWindow(this.windowTittle);
+			client.showWindow(client.getWindow(this.windowTittle).getId(), EClientShowWindowType.SHOW);
 
 			// Wait to the window to activate
-			waitFor.windowActive(this.regexAppWindowTitle);
+			waitFor.windowActive(this.windowTittle);
 		} catch (Exception e) {
 			throw new JidokaFatalException(
 					"An unexpected error appeared while attempting to activate the application window as foreground element",
@@ -120,23 +122,10 @@ public class ApplicationManager {
 
 	/**
 	 * 
-	 * Returns the UIAutomation Driver
-	 * 
-	 * @return the UIAutomation Driver
+	 * @return application
 	 */
-	public UIAutomation getUiAutomation() {
-
-		return automation;
+	public Application getApplication() {
+		return application;
 	}
 
-	/**
-	 * get client instance
-	 * 
-	 * @return IClient client
-	 */
-
-	public IClient getClient() {
-		return client;
-
-	}
 }
