@@ -5,9 +5,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.appian.rpa.robot</groupId>
-	<artifactId>RestAPI</artifactId>
+	<artifactId>robot-rest-api</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.1</version>
+	<version>0.0.2</version>
 
 	<name>browser</name>
 

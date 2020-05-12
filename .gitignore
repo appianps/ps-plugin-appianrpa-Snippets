@@ -18,3 +18,7 @@ snippets-libraries/snippets-commons/target/maven-status/maven-compiler-plugin/co
 snippets-libraries/snippets-commons/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
 snippets-libraries/snippets-commons/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
 *.lst
+snippets-examples/robot-rest-api/.project
+snippets-examples/robot-rest-api/.classpath
+snippets-examples/robot-credentials/.classpath
+snippets-examples/robot-credentials/.project
