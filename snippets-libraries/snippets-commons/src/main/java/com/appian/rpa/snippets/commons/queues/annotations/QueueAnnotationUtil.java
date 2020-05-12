@@ -1,4 +1,4 @@
-package com.appian.snippets.libraries.annotations;
+package com.appian.rpa.snippets.commons.queues.annotations;
 
 import java.lang.reflect.Field;
 

@@ -7,8 +7,8 @@ import java.nio.file.Files;
 
 import org.apache.commons.io.FilenameUtils;
 
-import com.appian.snippets.libraries.annotations.AItemField;
-import com.appian.snippets.libraries.annotations.AItemKey;
+import com.appian.rpa.snippets.commons.queues.annotations.AItemField;
+import com.appian.rpa.snippets.commons.queues.annotations.AItemKey;
 import com.novayre.jidoka.client.api.exceptions.JidokaItemException;
 
 public class FileModel implements Serializable {

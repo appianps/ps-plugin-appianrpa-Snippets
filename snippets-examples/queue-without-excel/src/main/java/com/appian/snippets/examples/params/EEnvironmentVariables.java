@@ -4,7 +4,7 @@ import com.appian.rpa.snippets.commons.instructions.EnvironmentVariable;
 
 /**
  * 
- * Enum in which all the instructions of a robot are defined
+ * Enum in which all the environment variables of a robot are defined
  *
  */
 public enum EEnvironmentVariables {
