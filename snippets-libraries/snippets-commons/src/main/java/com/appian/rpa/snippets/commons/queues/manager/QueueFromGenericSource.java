@@ -1,4 +1,4 @@
-package com.appian.snippets.libraries;
+package com.appian.rpa.snippets.commons.queues.manager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,7 +8,8 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.appian.snippets.libraries.annotations.QueueAnnotationUtil;
+import com.appian.rpa.snippets.commons.queues.annotations.QueueAnnotationUtil;
+import com.appian.rpa.snippets.commons.queues.conversion.QueueConversionUtils;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.exceptions.JidokaException;
@@ -22,6 +23,7 @@ import com.novayre.jidoka.client.api.queue.EQueueCurrentState;
 import com.novayre.jidoka.client.api.queue.EQueueItemCurrentState;
 import com.novayre.jidoka.client.api.queue.EQueueItemReleaseProcess;
 import com.novayre.jidoka.client.api.queue.EQueueItemReleaseRetry;
+import com.novayre.jidoka.client.api.queue.FindQueuesParameters;
 import com.novayre.jidoka.client.api.queue.IDownloadedQueue;
 import com.novayre.jidoka.client.api.queue.IQueue;
 import com.novayre.jidoka.client.api.queue.IQueueItem;
@@ -54,6 +56,7 @@ public class QueueFromGenericSource {
 	 * QueueFromGenericSource constructor
 	 */
 	public QueueFromGenericSource(Class<?> clazz) {
+
 		this.server = JidokaFactory.getServer();
 		this.queueManager = server.getQueueManager();
 
@@ -112,16 +115,39 @@ public class QueueFromGenericSource {
 	 */
 	public IQueue findQueue(String queueName) throws JidokaQueueException {
 		try {
-			AssignQueueParameters qqp = new AssignQueueParameters();
-			qqp.name(queueName);
 
-			IQueue createdQueue = queueManager.assignQueue(qqp);
+			FindQueuesParameters fqp = new FindQueuesParameters();
+			fqp.nameRegex(queueName);
 
-			if (createdQueue != null) {
-				currentQueueId = createdQueue.queueId();
+			List<IQueue> foundQueueList = queueManager.findQueues(fqp);
+
+			IQueue foundQueue;
+
+			if (!foundQueueList.isEmpty()) {
+				foundQueue = foundQueueList.get(0);
+			} else {
+				return null;
 			}
 
-			return createdQueue;
+			if (foundQueue.state().equals(EQueueCurrentState.FINISHED)) {
+				ReserveQueueParameters rqp = new ReserveQueueParameters();
+				rqp.queueId(foundQueue.queueId());
+
+				queueManager.reserveQueue(rqp);
+
+				ReleaseQueueParameters rlqp = new ReleaseQueueParameters().closed(false)
+						.state(EQueueCurrentState.PENDING);
+				queueManager.releaseQueue(rlqp);
+			}
+
+			AssignQueueParameters aqp = new AssignQueueParameters();
+			aqp.queueId(foundQueue.queueId());
+
+			queueManager.assignQueue(aqp);
+
+			currentQueueId = foundQueue.queueId();
+			return foundQueue;
+
 		} catch (IOException | JidokaQueueException e) {
 			throw new JidokaQueueException("Error getting the queue from the given id", e);
 		}
@@ -197,7 +223,8 @@ public class QueueFromGenericSource {
 
 	/**
 	 * Saves the given {@link Object} {@code object} as a queue item. By default, it
-	 * sets that the retries number decrement by 1.
+	 * sets that the retries number decrement by 1 and release process
+	 * {@link EQueueItemReleaseProcess#SYSTEM}.
 	 * 
 	 * @param object The T object to save as an item.
 	 * 
@@ -210,7 +237,8 @@ public class QueueFromGenericSource {
 
 	/**
 	 * Saves the given {@link Object} {@code object} as a queue item. By default, it
-	 * sets the {@link EQueueItemReleaseProcess} to {@code SYSTEM}
+	 * sets the {@link EQueueItemReleaseProcess} to
+	 * {@link EQueueItemReleaseProcess#SYSTEM}
 	 * 
 	 * @param object  The T object to save as an item.
 	 * @param retries Item retries number.
@@ -248,7 +276,7 @@ public class QueueFromGenericSource {
 			queueManager.releaseItem(tiop);
 
 		} catch (Exception e) {
-			throw new JidokaQueueException("Error saving the item: ", e);
+			throw new JidokaQueueException("Error updating the item: ", e);
 		}
 	}
 
@@ -328,7 +356,8 @@ public class QueueFromGenericSource {
 
 			IQueueItem currentQueueItem = queueManager.reserveItem(reserveItemsParameters);
 
-			if (currentQueueItem == null) {
+			if (currentQueueItem == null || currentQueueItem.state().equals(EQueueItemCurrentState.FINISHED_OK)
+					|| currentQueueItem.state().equals(EQueueItemCurrentState.FINISHED_WARN)) {
 				return null;
 			}
 
@@ -344,7 +373,7 @@ public class QueueFromGenericSource {
 	 * 
 	 * @return The current queue.
 	 * 
-	 * @throws JidokaQueueException 
+	 * @throws JidokaQueueException
 	 */
 	public IQueue getQueue() throws JidokaQueueException {
 		try {

@@ -1,13 +1,13 @@
-package com.appian.snippets.libraries;
+package com.appian.rpa.snippets.commons.queues.conversion;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.appian.rpa.snippets.commons.queues.annotations.AItemField;
 import com.appian.rpa.snippets.commons.utils.annotations.AnnotationUtil;
 import com.appian.rpa.snippets.commons.utils.conversion.ConversionUtils;
-import com.appian.snippets.libraries.annotations.AItemField;
 import com.novayre.jidoka.client.api.exceptions.JidokaException;
 
 public class QueueConversionUtils {
