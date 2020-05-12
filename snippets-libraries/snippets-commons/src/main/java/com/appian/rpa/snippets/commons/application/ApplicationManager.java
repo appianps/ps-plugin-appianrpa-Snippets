@@ -128,4 +128,15 @@ public class ApplicationManager {
 
 		return automation;
 	}
+
+	/**
+	 * get client instance
+	 * 
+	 * @return IClient client
+	 */
+
+	public IClient getClient() {
+		return client;
+
+	}
 }
