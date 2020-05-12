@@ -19,7 +19,7 @@ How to use and run the example:
 1. Upload the zip file located in snippets-examples/credentials/console as is. 
 It will automatically generate the robotic process with all the requirements needed. 
 
-2. reate three credentials as described: 
+2. Create three credentials as described: 
 
 TEST_ROBOT 
 
