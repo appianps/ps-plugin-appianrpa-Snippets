@@ -1,16 +1,15 @@
 package com.appian.robot.demo.commons;
 
-
 /**
  * IBM 3270 terminal constants
  */
 public class IBM3270Constants {
 
 	/**
-	 * Pause in seconds 
+	 * Pause in seconds
 	 */
 	public static final int LONG_WAIT_SECONDS = 60;
-	
+
 	/**
 	 * Default pause in milliseconds
 	 */
@@ -20,4 +19,25 @@ public class IBM3270Constants {
 	 * Constant CONTROLLED_ERROR
 	 */
 	public static final String CONTROLLED_ERROR = "Application error";
+
+	/**
+	 * Application Name wc3270
+	 */
+	public static final String APP_NAME_WC3270 = "FDZ";
+
+	/**
+	 * Application Name PCOM
+	 */
+	public static final String APP_NAME_PCOMM = "PCOMM";
+
+	/**
+	 * Process Name wc3270
+	 */
+	public static final String PROCESS_NAME_WC3270 = "wc3270.exe";
+
+	/**
+	 * Process Name PCOMM
+	 */
+	public static final String PROCESS_NAME_PCOMM = "pcsws.exe";
+
 }
