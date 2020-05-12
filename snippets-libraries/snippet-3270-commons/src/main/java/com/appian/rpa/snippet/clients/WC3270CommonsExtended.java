@@ -4,71 +4,69 @@ import com.appian.rpa.snippet.IBM3270Commons;
 import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.multios.IClient;
 
-
 /**
- * IBM3270Commons extension for FanDeZhi client
+ * IBM3270Commons extension for wc3270
  */
-public class FDZCommonsExtended extends IBM3270Commons {
-	
+public class WC3270CommonsExtended extends IBM3270Commons {
+
 	/**
 	 * The Constant WINDOW_TITLE_REGEX.
 	 */
 	public static final String WINDOW_TITLE_REGEX = ".*3270";
-	
+
 	/**
 	 * Default X-coordinate
 	 */
 	private static final int MAX_COORD_X = 80;
-	
+
 	/**
 	 * Default Y-coordinate
 	 */
 	private static final int MAX_COORD_Y = 24;
-	
-	
-	
+
 	/**
 	 * Default constructor
+	 * 
 	 * @param server
 	 * @param client
 	 * @param robot
 	 */
-	public FDZCommonsExtended(IClient client, IRobot robot) {
-		
+	public WC3270CommonsExtended(IClient client, IRobot robot) {
+
 		super(client, robot);
-		
+
 		setMaxCoordX(MAX_COORD_X);
 		setMaxCoordY(MAX_COORD_Y);
 	}
 
-	
 	/**
 	 * Select all text in the screen
 	 */
+	@Override
 	public void selectAllText() {
-		
-		moveToBottonRightCorner(); 
+
+		moveToBottonRightCorner();
 		keyboard.control("a").pause();
 	}
-	
-	
+
 	/**
 	 * Activate a window by title
 	 */
+	@Override
 	public void activateWindow() {
-		
+
 		client.activateWindow(WINDOW_TITLE_REGEX);
-		
+
 		client.pause();
 	}
-	
+
 	/**
 	 * Move the cursor to the bottom right corner of the screen
 	 */
 	@Override
 	public void moveToBottonRightCorner() {
-		
-		keyboard.down().pause(); 
+
+		keyboard.down().pause();
 		keyboard.control("g").pause().control("g").pause();
 	}
 
@@ -79,6 +77,13 @@ public class FDZCommonsExtended extends IBM3270Commons {
 	public String[] splitScreenLines(String screen) {
 		return screen.split("(?<=\\G.{80})");
 	}
-	
-	
+
+	/**
+	 * Returns the window title regex
+	 * 
+	 * @return
+	 */
+	public String getWindowTitleRegex() {
+		return WINDOW_TITLE_REGEX;
+	}
 }
