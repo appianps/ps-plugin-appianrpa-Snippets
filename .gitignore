@@ -15,3 +15,6 @@ snippets-examples/robot-browser-manager/.project
 snippets-libraries/snippets-commons/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
 *.lst
 *.lst
+snippets-libraries/snippets-commons/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+snippets-libraries/snippets-commons/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+*.lst
