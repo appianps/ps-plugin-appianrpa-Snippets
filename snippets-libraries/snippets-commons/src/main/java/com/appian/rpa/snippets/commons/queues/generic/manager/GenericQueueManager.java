@@ -54,6 +54,8 @@ public class GenericQueueManager {
 
 	/**
 	 * GenericQueueManager constructor
+	 * 
+	 * @param clazz Class of the model object
 	 */
 	private GenericQueueManager(Class<?> clazz) {
 
@@ -61,6 +63,23 @@ public class GenericQueueManager {
 		queueManager = server.getQueueManager();
 
 		this.modelClass = clazz;
+
+		checkClass();
+	}
+
+	/**
+	 * Checks if the class meets the requirements for the library to work
+	 */
+	private void checkClass() {
+
+		CheckModelUtils.hasNoArgumentsPublicConstructor(modelClass);
+
+		CheckModelUtils.checkGettersSetters(modelClass);
+
+		CheckModelUtils.checkFieldsWithAnnotations(modelClass);
+
+		CheckModelUtils.checkExtendsSerializable(modelClass);
+
 	}
 
 	/**
@@ -228,6 +247,10 @@ public class GenericQueueManager {
 
 			String keyValue = QueueAnnotationUtil.getKeyFieldValue(object);
 
+			if (StringUtils.isBlank(keyValue)) {
+				throw new JidokaQueueException("The value of the key field must not be null or blank");
+			}
+
 			cip.setKey(keyValue);
 			cip.setPriority(EPriority.NORMAL);
 			cip.setQueueId(currentQueueId);
@@ -236,7 +259,11 @@ public class GenericQueueManager {
 
 			cip.setFunctionalData(map);
 
-			queueManager.createItem(cip);
+			String itemId = queueManager.createItem(cip);
+
+			if (StringUtils.isBlank(itemId)) {
+				throw new JidokaQueueException("The item " + keyValue + " was not created correctly");
+			}
 
 			server.debug(String.format("Added item to queue %s with id %s", cip.getQueueId(), cip.getKey()));
 		} catch (JidokaException | IOException | JidokaQueueException e) {
@@ -304,19 +331,20 @@ public class GenericQueueManager {
 	}
 
 	/**
-	 * Find the list of items that have the same key as the given {@code key}
+	 * Returns items whose key matches the given regular expression {@code keyRegex}
 	 * 
 	 * @param key key to search for
 	 * @return The list of T objects resulting from the search
 	 * 
 	 * @throws JidokaQueueException
 	 */
-	public <T> List<T> findItems(String key) throws JidokaQueueException {
-		return findItems(key, new ArrayList<EQueueItemCurrentState>());
+	public <T> List<T> findItems(String keyRegex) throws JidokaQueueException {
+		return findItems(keyRegex, new ArrayList<EQueueItemCurrentState>());
 	}
 
 	/**
-	 * Find the list of items that have the same key as the given {@code key}
+	 * Returns items whose key matches the given regular expression {@code keyRegex}
+	 * and are on one of the given states {@code states}
 	 * 
 	 * @param key    key to search for
 	 * @param states List of queue item states to filter by
@@ -325,13 +353,13 @@ public class GenericQueueManager {
 	 * @throws JidokaQueueException
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> List<T> findItems(String itemKey, List<EQueueItemCurrentState> states) throws JidokaQueueException {
+	public <T> List<T> findItems(String keyRegex, List<EQueueItemCurrentState> states) throws JidokaQueueException {
 
 		try {
 			DownloadQueueParameters dqp = new DownloadQueueParameters().queueId(currentQueueId.trim());
 			IDownloadedQueue downloadedQueue = queueManager.downloadQueue(dqp);
 
-			List<IQueueItem> filteredItems = downloadedQueue.items().stream().filter(i -> i.key().equals(itemKey))
+			List<IQueueItem> filteredItems = downloadedQueue.items().stream().filter(i -> i.key().matches(keyRegex))
 					.collect(Collectors.toList());
 
 			if (!states.isEmpty()) {

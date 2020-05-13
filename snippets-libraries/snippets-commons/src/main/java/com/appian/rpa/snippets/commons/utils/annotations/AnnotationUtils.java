@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 
-import com.appian.rpa.snippets.commons.excel.annotations.utils.ReflectionUtil;
+import com.appian.rpa.snippets.commons.utils.reflection.ReflectionUtil;
 import com.novayre.jidoka.client.api.exceptions.JidokaException;
 
 public class AnnotationUtils {
