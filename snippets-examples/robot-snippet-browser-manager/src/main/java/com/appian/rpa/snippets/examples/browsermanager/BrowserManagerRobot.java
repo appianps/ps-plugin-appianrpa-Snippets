@@ -1,4 +1,4 @@
-package com.appian.rpa.robot.browser_manager;
+package com.appian.rpa.snippets.examples.browsermanager;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -17,8 +17,10 @@ import com.novayre.jidoka.client.api.multios.IClient;
 /**
  * 
  * This robotic process has been created to illustrate how the Browser Manager
- * Snippet should be integrated in your process. AS IS scheme, Further
- * instructions to configure and execute the process can be found here:
+ * Snippet should be integrated in your process. It basically searches the word
+ * "Appian" in Google and shows up the first result found in the console. An
+ * exception will be thrown if any error occurs during the process execution.
+ * Further instructions to configure and execute the process can be found here:
  * https://github.com/appianps/ps-plugin-appianrpa-Snippets
  * 
  * @author javier.advani
@@ -26,11 +28,18 @@ import com.novayre.jidoka.client.api.multios.IClient;
 
 @Robot
 public class BrowserManagerRobot implements IRobot {
+
+	/** Jidoka server */
 	private IJidokaServer<?> server;
+	/** Browser Manager to apply common functions */
 	private BrowserManager browserManager;
 	/** The IClient module. */
 	private IClient client;
+	/** Browser Manager to apply selector utilities */
 	private SelectorsManager selectors;
+	/**
+	 * This parameter provides the website where the search term will be placed in
+	 **/
 	private String searcherURL;
 
 	/**
