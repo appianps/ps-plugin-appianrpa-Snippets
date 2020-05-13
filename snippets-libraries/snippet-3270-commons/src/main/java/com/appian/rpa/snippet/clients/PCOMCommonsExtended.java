@@ -8,7 +8,7 @@ import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.multios.IClient;
 
 /**
- * IBM3270Commons extension for FanDeZhi client
+ * IBM3270Commons extension for PCOMM emulator
  */
 public class PCOMCommonsExtended extends IBM3270Commons {
 
