@@ -12,8 +12,8 @@ import java.util.Map;
 import org.apache.poi.ss.usermodel.Cell;
 
 import com.appian.rpa.snippets.commons.excel.mapper.AbstractItemFieldsMapper;
-import com.appian.rpa.snippets.commons.utils.annotations.AnnotationUtil;
-import com.appian.rpa.snippets.commons.utils.conversion.ConversionUtils;
+import com.appian.rpa.snippets.commons.queues.excel.annotations.ExcelAnnotationUtil;
+import com.appian.rpa.snippets.commons.queues.excel.conversion.ExcelConversionUtils;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.JidokaFactory;
@@ -209,18 +209,18 @@ public class QueueFromExcelCreator<T> {
 				continue;
 			}
 
-			Object excelRow = (Object) dp.getCurrentItem();
+			Object excelRow = dp.getCurrentItem();
 
 			CreateItemParameters cip = new CreateItemParameters();
 
-			String keyValue = AnnotationUtil.getKeyFieldValue(excelRow);
+			String keyValue = ExcelAnnotationUtil.getKeyFieldValue(excelRow);
 
 			cip.setKey(keyValue);
 			cip.setPriority(EPriority.NORMAL);
 			cip.setQueueId(createdQueueId);
 			cip.setReference(String.valueOf(dp.getCurrentItemNumber()));
 
-			Map mapa = ConversionUtils.object2Map(excelRow);
+			Map mapa = ExcelConversionUtils.object2Map(excelRow);
 
 			cip.setFunctionalData(mapa);
 

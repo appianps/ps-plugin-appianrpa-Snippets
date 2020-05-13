@@ -1,4 +1,4 @@
-package com.appian.rpa.snippets.commons.queues.annotations;
+package com.appian.rpa.snippets.commons.queues.generic.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

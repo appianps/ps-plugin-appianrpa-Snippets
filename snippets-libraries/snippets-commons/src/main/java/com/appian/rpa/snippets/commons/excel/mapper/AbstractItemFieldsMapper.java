@@ -17,10 +17,11 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.util.CellReference;
 
-import com.appian.rpa.snippets.commons.excel.annotations.AExcelField;
-import com.appian.rpa.snippets.commons.excel.annotations.AExcelFieldKey;
 import com.appian.rpa.snippets.commons.excel.annotations.utils.ColumnAtEndCreator;
-import com.appian.rpa.snippets.commons.utils.annotations.AnnotationUtil;
+import com.appian.rpa.snippets.commons.queues.excel.annotations.AExcelField;
+import com.appian.rpa.snippets.commons.queues.excel.annotations.AExcelFieldKey;
+import com.appian.rpa.snippets.commons.queues.excel.annotations.ExcelAnnotationUtil;
+import com.appian.rpa.snippets.commons.utils.annotations.AnnotationUtils;
 import com.novayre.jidoka.client.api.exceptions.JidokaException;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.data.provider.api.IExcel;
@@ -104,7 +105,7 @@ public abstract class AbstractItemFieldsMapper<T> implements IRowMapper<IExcel, 
 			return true;
 		}
 
-		String keyValue = AnnotationUtil.getKeyFieldValue(row);
+		String keyValue = ExcelAnnotationUtil.getKeyFieldValue(row);
 
 		return StringUtils.isBlank(keyValue);
 	}
@@ -122,7 +123,7 @@ public abstract class AbstractItemFieldsMapper<T> implements IRowMapper<IExcel, 
 
 		T row = null;
 
-		List<Field> queueFields = AnnotationUtil.getFieldsWithAnnotation(getTClass(), AExcelField.class);
+		List<Field> queueFields = AnnotationUtils.getFieldsWithAnnotation(getTClass(), AExcelField.class);
 
 		for (Field field : queueFields) {
 
@@ -139,7 +140,7 @@ public abstract class AbstractItemFieldsMapper<T> implements IRowMapper<IExcel, 
 	@Override
 	public void update(IExcel data, int rowNum, T row) {
 
-		List<Field> fields = AnnotationUtil.getFieldsWithAnnotation(getTClass(), AExcelField.class);
+		List<Field> fields = AnnotationUtils.getFieldsWithAnnotation(getTClass(), AExcelField.class);
 
 		for (Field field : fields) {
 
@@ -157,7 +158,7 @@ public abstract class AbstractItemFieldsMapper<T> implements IRowMapper<IExcel, 
 
 			Object value;
 			try {
-				value = AnnotationUtil.getFieldValue(row, field);
+				value = AnnotationUtils.getFieldValue(row, field);
 			} catch (JidokaException e) {
 				throw new JidokaFatalException("Error while updating Excel", e);
 			}
@@ -220,7 +221,7 @@ public abstract class AbstractItemFieldsMapper<T> implements IRowMapper<IExcel, 
 			return;
 		}
 
-		List<Field> queueItemFieldKey = AnnotationUtil.getFieldsWithAnnotation(getTClass(), AExcelFieldKey.class);
+		List<Field> queueItemFieldKey = AnnotationUtils.getFieldsWithAnnotation(getTClass(), AExcelFieldKey.class);
 
 		if (CollectionUtils.isEmpty(queueItemFieldKey)) {
 			throw new JidokaFatalException("A field must be indicated with AExcelFieldKey");
@@ -265,7 +266,7 @@ public abstract class AbstractItemFieldsMapper<T> implements IRowMapper<IExcel, 
 
 		try {
 
-			AnnotationUtil.setFieldValue(result, field.getName(), valueFromExcel);
+			AnnotationUtils.setFieldValue(result, field.getName(), valueFromExcel);
 
 		} catch (JidokaException e) {
 			throw new JidokaFatalException("An error occurred when setting the value of the Excel file", e);
@@ -340,7 +341,7 @@ public abstract class AbstractItemFieldsMapper<T> implements IRowMapper<IExcel, 
 	 */
 	private void initTitlePositionMap() {
 
-		List<Field> excelFields = AnnotationUtil.getFieldsWithAnnotation(getTClass(), AExcelField.class);
+		List<Field> excelFields = AnnotationUtils.getFieldsWithAnnotation(getTClass(), AExcelField.class);
 
 		for (Field field : excelFields) {
 
@@ -424,7 +425,7 @@ public abstract class AbstractItemFieldsMapper<T> implements IRowMapper<IExcel, 
 	 */
 	private void initCreateColumns(IExcel data, int titleRowIndex) {
 
-		List<Field> excelFields = AnnotationUtil.getFieldsWithAnnotation(getTClass(), AExcelField.class);
+		List<Field> excelFields = AnnotationUtils.getFieldsWithAnnotation(getTClass(), AExcelField.class);
 
 		List<String> columnsToAdd = new ArrayList<>();
 

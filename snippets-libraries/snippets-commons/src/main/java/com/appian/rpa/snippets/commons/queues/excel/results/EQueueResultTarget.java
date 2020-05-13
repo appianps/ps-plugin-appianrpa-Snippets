@@ -1,4 +1,4 @@
-package com.appian.rpa.snippets.commons.queues;
+package com.appian.rpa.snippets.commons.queues.excel.results;
 
 /**
  * Enum with result target types

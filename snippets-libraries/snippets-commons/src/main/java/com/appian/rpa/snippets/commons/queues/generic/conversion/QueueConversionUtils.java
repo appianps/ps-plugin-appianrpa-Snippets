@@ -1,12 +1,12 @@
-package com.appian.rpa.snippets.commons.utils.conversion;
+package com.appian.rpa.snippets.commons.queues.generic.conversion;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.appian.rpa.snippets.commons.excel.annotations.AExcelField;
-import com.appian.rpa.snippets.commons.utils.annotations.AnnotationUtil;
+import com.appian.rpa.snippets.commons.queues.generic.annotations.AItemField;
+import com.appian.rpa.snippets.commons.utils.annotations.AnnotationUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,16 +15,11 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.novayre.jidoka.client.api.exceptions.JidokaException;
 
-/**
- * Class with Excel conversion utils
- */
-public class ConversionUtils {
+public class QueueConversionUtils {
 
-	/**
-	 * Private constructor
-	 */
-	private ConversionUtils() {
-
+	/** Private constructor */
+	private QueueConversionUtils() {
+		// Private constructor
 	}
 
 	/**
@@ -46,15 +41,15 @@ public class ConversionUtils {
 
 			object = clazz.newInstance();
 
-			List<Field> fields = AnnotationUtil.getFieldsWithAnnotation(clazz, AExcelField.class);
+			List<Field> fields = AnnotationUtils.getFieldsWithAnnotation(clazz, AItemField.class);
 
 			for (Field field : fields) {
 
-				AExcelField annotation = field.getAnnotation(AExcelField.class);
+				AItemField annotation = field.getAnnotation(AItemField.class);
 
 				Object contenido = jacksonToObject(map.get(annotation.fieldName()), field.getType());
 
-				AnnotationUtil.setFieldValue(object, field.getName(), contenido);
+				AnnotationUtils.setFieldValue(object, field.getName(), contenido);
 
 			}
 
@@ -80,13 +75,13 @@ public class ConversionUtils {
 
 		try {
 
-			List<Field> fields = AnnotationUtil.getFieldsWithAnnotation(object.getClass(), AExcelField.class);
+			List<Field> fields = AnnotationUtils.getFieldsWithAnnotation(object.getClass(), AItemField.class);
 
 			for (Field field : fields) {
 
-				AExcelField annotation = field.getAnnotation(AExcelField.class);
+				AItemField annotation = field.getAnnotation(AItemField.class);
 
-				Object value = AnnotationUtil.getFieldValue(object, field);
+				Object value = AnnotationUtils.getFieldValue(object, field);
 
 				map.put(annotation.fieldName(), objectToJackson(value));
 
@@ -132,14 +127,15 @@ public class ConversionUtils {
 				.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 
 		ObjectReader or = mapper.readerFor(clazz);
-		
+
 		T readValue;
 		try {
 			readValue = or.readValue(jackson);
 		} catch (JsonProcessingException e) {
 			readValue = or.readValue(objectToJackson(jackson));
 		}
-		
+
 		return readValue;
 	}
+
 }
