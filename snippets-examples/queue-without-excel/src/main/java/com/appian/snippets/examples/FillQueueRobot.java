@@ -24,7 +24,6 @@ import com.novayre.jidoka.client.api.annotations.Robot;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.client.api.exceptions.JidokaItemException;
 import com.novayre.jidoka.client.api.exceptions.JidokaQueueException;
-import com.novayre.jidoka.client.api.queue.IQueue;
 
 @Robot
 public class FillQueueRobot implements IRobot {
@@ -33,7 +32,7 @@ public class FillQueueRobot implements IRobot {
 	IJidokaServer<?> server;
 
 	/** GenericQueueManager instance */
-	private GenericQueueManager queueFromGenericSourceManager;
+	private GenericQueueManager genericQueueManager;
 
 	/** Queue name */
 	private String queueName;
@@ -45,7 +44,6 @@ public class FillQueueRobot implements IRobot {
 	public boolean startUp() throws Exception {
 		// Init modules and managers
 		server = JidokaFactory.getServer();
-		queueFromGenericSourceManager = new GenericQueueManager(FileModel.class);
 
 		return IRobot.super.startUp();
 	}
@@ -93,10 +91,10 @@ public class FillQueueRobot implements IRobot {
 	 */
 	public void checkIfQueueExists() {
 		try {
-			IQueue existingQueue = queueFromGenericSourceManager.findQueue(this.queueName);
+			genericQueueManager = GenericQueueManager.assignExistingQueue(FileModel.class, this.queueName);
 
-			if (existingQueue == null) {
-				queueFromGenericSourceManager.createQueue(this.queueName);
+			if (genericQueueManager == null) {
+				genericQueueManager = GenericQueueManager.createAndAssingNewQueue(FileModel.class, this.queueName);
 			}
 
 		} catch (JidokaQueueException e) {
@@ -174,7 +172,7 @@ public class FillQueueRobot implements IRobot {
 	private boolean pendingOfProcess(File file) {
 
 		try {
-			List<FileModel> filesList = queueFromGenericSourceManager
+			List<FileModel> filesList = genericQueueManager
 					.findItems(FilenameUtils.getBaseName(file.getName()));
 
 			return filesList.isEmpty();
@@ -194,7 +192,7 @@ public class FillQueueRobot implements IRobot {
 
 		for (File file : filesToAdd) {
 			try {
-				queueFromGenericSourceManager.addItem(new FileModel(file));
+				genericQueueManager.addItem(new FileModel(file));
 			} catch (JidokaQueueException e) {
 				throw new JidokaItemException("Error adding the file " + FilenameUtils.getBaseName(file.getName()));
 			}

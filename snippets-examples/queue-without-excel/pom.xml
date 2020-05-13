@@ -2,10 +2,10 @@
   <modelVersion>4.0.0</modelVersion>
   
   <groupId>com.appian.snippets.examples</groupId>
-  <artifactId>DEV-queue-without-excel</artifactId>
+  <artifactId>DEV-fill-generic-queue</artifactId>
   <version>0.0.1</version>
   
-  <name>queue-without-excel</name>
+  <name>DEV-fill-generic-queue</name>
   
   <parent>
     <groupId>com.novayre.jidoka.robot</groupId>

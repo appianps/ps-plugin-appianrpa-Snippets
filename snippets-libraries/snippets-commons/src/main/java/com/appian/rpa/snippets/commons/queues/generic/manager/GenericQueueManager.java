@@ -41,13 +41,13 @@ import com.novayre.jidoka.client.api.queue.ReserveQueueParameters;
 public class GenericQueueManager {
 
 	/** Server instance */
-	private IJidokaServer<?> server;
+	private static IJidokaServer<?> server;
 
 	/** Current queue id */
-	String currentQueueId;
+	private static String currentQueueId;
 
 	/** IQueueManager instance */
-	private IQueueManager queueManager;
+	private static IQueueManager queueManager;
 
 	/** Model class */
 	private Class<?> modelClass;
@@ -55,24 +55,27 @@ public class GenericQueueManager {
 	/**
 	 * GenericQueueManager constructor
 	 */
-	public GenericQueueManager(Class<?> clazz) {
+	private GenericQueueManager(Class<?> clazz) {
 
-		this.server = JidokaFactory.getServer();
-		this.queueManager = server.getQueueManager();
+		server = JidokaFactory.getServer();
+		queueManager = server.getQueueManager();
 
 		this.modelClass = clazz;
 	}
 
 	/**
 	 * Creates a new queue naming it with the given {@code queueName}.<br>
-	 * It creates the queue with the given queue name, a {@link EPriority#HIGH}
+	 * It creates the queue with the given queue name, a {@linkplain EPriority#HIGH}
 	 * priority and 1 attempt by default.
 	 * 
+	 * @param clazz     Class of the model object
 	 * @param queueName The new queue name
+	 * @return {@linkplain GenericQueueManager} instance
 	 * 
 	 * @throws JidokaQueueException
 	 */
-	public void createQueue(String queueName) throws JidokaQueueException {
+	public static GenericQueueManager createAndAssingNewQueue(Class<?> clazz, String queueName)
+			throws JidokaQueueException {
 		CreateQueueParameters queueParams = new CreateQueueParameters();
 
 		queueParams.setDescription("Queue " + queueName);
@@ -81,23 +84,33 @@ public class GenericQueueManager {
 		queueParams.setPriority(EPriority.HIGH);
 		queueParams.setAttemptsByDefault(1);
 
-		createQueue(queueParams);
+		return createAndAssingNewQueue(clazz, queueParams);
 	}
 
 	/**
 	 * Creates a new queue using the given customized {@code queueParams}
 	 * 
+	 * @param clazz       Class of the model object
 	 * @param queueParams Parameters to create the new queue
+	 * @return {@linkplain GenericQueueManager} instance
 	 * 
 	 * @throws JidokaQueueException
 	 */
-	public void createQueue(CreateQueueParameters queueParams) throws JidokaQueueException {
+	public static GenericQueueManager createAndAssingNewQueue(Class<?> clazz, CreateQueueParameters queueParams)
+			throws JidokaQueueException {
 
 		try {
+			GenericQueueManager instance = new GenericQueueManager(clazz);
 
 			currentQueueId = queueManager.createQueue(queueParams);
 
+			if (StringUtils.isBlank(currentQueueId)) {
+				throw new JidokaQueueException("Queue not created correctly");
+			}
+
 			server.info("Queue " + queueParams.getName() + " created with id: " + currentQueueId);
+
+			return instance;
 		} catch (IOException | JidokaQueueException e) {
 			throw new JidokaQueueException("Error creating the queue", e);
 		}
@@ -107,14 +120,23 @@ public class GenericQueueManager {
 	/**
 	 * Search for a queue which is named as same as the given {@code queueName}
 	 * 
+	 * @param clazz     Class of the model object
 	 * @param queueName The queue name to search
 	 * 
-	 * @return The queue found. If it doesn't found a queue, it returns null
+	 * @return {@linkplain GenericQueueManager} instance. If it doesn't find a queue
+	 *         with the given name, it returns null.
 	 * 
 	 * @throws JidokaQueueException
 	 */
-	public IQueue findQueue(String queueName) throws JidokaQueueException {
+	public static GenericQueueManager assignExistingQueue(Class<?> clazz, String queueName)
+			throws JidokaQueueException {
 		try {
+
+			GenericQueueManager instance = new GenericQueueManager(clazz);
+
+			if (StringUtils.isBlank(queueName)) {
+				throw new JidokaQueueException("The queue name can't be null or empty. Name given: " + queueName);
+			}
 
 			FindQueuesParameters fqp = new FindQueuesParameters();
 			fqp.nameRegex(queueName);
@@ -146,10 +168,11 @@ public class GenericQueueManager {
 			queueManager.assignQueue(aqp);
 
 			currentQueueId = foundQueue.queueId();
-			return foundQueue;
+
+			return instance;
 
 		} catch (IOException | JidokaQueueException e) {
-			throw new JidokaQueueException("Error getting the queue from the given id", e);
+			throw new JidokaQueueException("Error getting the queue with the given name '" + queueName + "'", e);
 		}
 	}
 
@@ -377,13 +400,31 @@ public class GenericQueueManager {
 	 */
 	public IQueue getQueue() throws JidokaQueueException {
 		try {
-			AssignQueueParameters qqp = new AssignQueueParameters();
-			qqp.queueId(this.currentQueueId);
 
-			return queueManager.assignQueue(qqp);
+			FindQueuesParameters fqp = new FindQueuesParameters();
+			fqp.queueId(currentQueueId);
+
+			List<IQueue> foundQueueList = queueManager.findQueues(fqp);
+
+			if (!foundQueueList.isEmpty()) {
+				return foundQueueList.get(0);
+			} else {
+				return null;
+			}
+
 		} catch (IOException | JidokaQueueException e) {
 			throw new JidokaQueueException("Error getting the current queue");
 		}
+	}
+
+	/**
+	 * Returns the current instantiated queue manager.
+	 * 
+	 * @return The current instantiated queue manager.
+	 */
+	public IQueueManager getQueueManager() {
+
+		return queueManager;
 	}
 
 }

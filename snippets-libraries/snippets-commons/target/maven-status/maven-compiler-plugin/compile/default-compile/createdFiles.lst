@@ -8,8 +8,10 @@ com\appian\rpa\snippets\commons\credentials\CredentialsUtils.class
 com\appian\rpa\snippets\commons\instructions\Instruction.class
 com\appian\rpa\snippets\commons\queues\generic\annotations\QueueAnnotationUtil.class
 com\appian\rpa\snippets\commons\queues\generic\conversion\QueueConversionUtils.class
-com\appian\rpa\snippets\commons\queues\excel\conversion\ConversionUtils.class
+com\appian\rpa\snippets\commons\queues\excel\annotations\AExcelField.class
+com\appian\rpa\snippets\commons\queues\excel\annotations\AExcelFieldKey.class
 com\appian\rpa\snippets\commons\queues\excel\results\QueueResults.class
+com\appian\rpa\snippets\commons\queues\excel\conversion\ExcelConversionUtils.class
 com\appian\rpa\snippets\commons\queues\excel\annotations\ExcelAnnotationUtil.class
 com\appian\rpa\snippets\commons\queues\generic\annotations\AItemKey.class
 com\appian\rpa\snippets\commons\browser\SelectorsManager.class
@@ -17,10 +19,8 @@ com\appian\rpa\snippets\commons\queues\excel\manager\ExcelQueueManager.class
 com\appian\rpa\snippets\commons\queues\generic\manager\GenericQueueManager.class
 com\appian\rpa\snippets\commons\application\ApplicationManager.class
 com\appian\rpa\snippets\commons\browser\BrowserManager$1.class
-com\appian\rpa\snippets\commons\excel\annotations\AExcelFieldKey.class
 com\appian\rpa\snippets\commons\excel\annotations\utils\ColumnAtEndCreator.class
 com\appian\rpa\snippets\commons\excel\annotations\utils\QueueFromExcelCreator.class
-com\appian\rpa\snippets\commons\excel\annotations\AExcelField.class
 com\appian\rpa\snippets\commons\excel\utils\ExcelUtils.class
 com\appian\rpa\snippets\commons\excel\mapper\AbstractItemFieldsMapper.class
 com\appian\rpa\snippets\commons\queues\generic\annotations\AItemField.class
