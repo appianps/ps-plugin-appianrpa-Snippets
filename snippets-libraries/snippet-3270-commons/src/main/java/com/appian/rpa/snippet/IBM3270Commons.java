@@ -112,7 +112,7 @@ public abstract class IBM3270Commons {
 	/**
 	 * Returns the window title regex
 	 * 
-	 * @return
+	 * @return Window title regex
 	 */
 	public abstract String getWindowTitleRegex();
 
@@ -121,7 +121,7 @@ public abstract class IBM3270Commons {
 	 * parameter
 	 * 
 	 * @param text
-	 * @return
+	 * @return TextInScreen object with text position
 	 */
 	public TextInScreen locateText(String... text) {
 
@@ -134,7 +134,7 @@ public abstract class IBM3270Commons {
 	 * 
 	 * @param retries
 	 * @param text
-	 * @return
+	 * @return TextInScreen object with text position
 	 */
 	public TextInScreen locateText(int retries, String... text) {
 
@@ -147,7 +147,7 @@ public abstract class IBM3270Commons {
 	 * 
 	 * @param cachedScreen
 	 * @param text
-	 * @return
+	 * @return TextInScreen object with text position
 	 */
 	public TextInScreen locateText(List<String> cachedScreen, String... text) {
 
@@ -161,9 +161,8 @@ public abstract class IBM3270Commons {
 	 * @param retries
 	 * @param throwExceptionIfnotFound
 	 * @param cachedScreen
-	 * @param pagination
 	 * @param text
-	 * @return
+	 * @return TextInScreen object with text position
 	 */
 	public TextInScreen locateText(int retries, boolean throwExceptionIfnotFound, List<String> cachedScreen,
 			String... text) {
@@ -186,7 +185,7 @@ public abstract class IBM3270Commons {
 		try {
 			waitFor.wait(retries, textForDebug, false, false, () -> {
 
-				// List of lines in screen
+				// List of lines on screen
 				List<String> screen;
 
 				if (cachedScreen == null) {
@@ -251,7 +250,7 @@ public abstract class IBM3270Commons {
 	/**
 	 * Gets all the text on the active screen
 	 * 
-	 * @return
+	 * @return List of lines on screen
 	 */
 	public List<String> scrapScreen() {
 
@@ -290,32 +289,6 @@ public abstract class IBM3270Commons {
 		}
 
 		return res;
-	}
-
-	/**
-	 * Press PF
-	 * 
-	 * @param pf
-	 * @return
-	 */
-	public IClient pressPF(int pf) {
-
-		activateWindow();
-
-		server.debug(String.format("Press PF %d", pf));
-
-		if (pf > 12) {
-
-			client.keyboardSequence().pressShift().typeFunction(pf - 12).releaseShift().apply();
-
-		} else {
-
-			keyboard.function(pf);
-		}
-
-		client.pause();
-
-		return client;
 	}
 
 	/**
@@ -455,6 +428,32 @@ public abstract class IBM3270Commons {
 		keyboard.type(text).pause();
 
 		return this;
+	}
+
+	/**
+	 * Press PF
+	 * 
+	 * @param pf
+	 * @return
+	 */
+	public IClient pressPF(int pf) {
+
+		activateWindow();
+
+		server.debug(String.format("Press PF %d", pf));
+
+		if (pf > 12) {
+
+			client.keyboardSequence().pressShift().typeFunction(pf - 12).releaseShift().apply();
+
+		} else {
+
+			keyboard.function(pf);
+		}
+
+		client.pause();
+
+		return client;
 	}
 
 	/**
