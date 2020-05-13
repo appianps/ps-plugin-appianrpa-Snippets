@@ -1,5 +1,7 @@
 package com.appian.rpa.robot.browser_manager;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.openqa.selenium.By;
 
 import com.appian.rpa.snippets.commons.browser.BrowserManager;
@@ -14,8 +16,8 @@ import com.novayre.jidoka.client.api.multios.IClient;
 
 /**
  * 
- * This robotic process has been created to illustrate how the browser manager
- * snippet should be integrated in your process. AS IS scheme, Further
+ * This robotic process has been created to illustrate how the Browser Manager
+ * Snippet should be integrated in your process. AS IS scheme, Further
  * instructions to configure and execute the process can be found here:
  * https://github.com/appianps/ps-plugin-appianrpa-Snippets
  * 
@@ -32,7 +34,19 @@ public class BrowserManagerRobot implements IRobot {
 	private String searcherURL;
 
 	/**
-	 * Initialize your objects involved in the robotic process.
+	 * Override startup method to initialize some variables involved in our process.
+	 */
+	@Override
+	public boolean startUp() throws Exception {
+
+		server = JidokaFactory.getServer();
+		client = IClient.getInstance(this);
+
+		return true;
+	}
+
+	/**
+	 * Initialize the objects involved in the robotic process.
 	 * 
 	 * @throws Exception
 	 */
@@ -40,14 +54,12 @@ public class BrowserManagerRobot implements IRobot {
 	public void start() throws Exception {
 
 		browserManager = new BrowserManager(this, EBrowsers.CHROME);
-		server = JidokaFactory.getServer();
-		client = IClient.getInstance(this);
 		searcherURL = server.getParameters().get("platformURL");
 		selectors = browserManager.getSelectorsManager();
 	}
 
 	/*
-	 * Use the browserManager to open the previously chosen browser.
+	 * Open a new Chrome web browser.
 	 */
 	public void openBrowser() {
 		browserManager.openBrowser();
@@ -61,13 +73,16 @@ public class BrowserManagerRobot implements IRobot {
 	 */
 	public void navigateToWeb() throws JidokaFatalException {
 		browserManager.navigateTo(searcherURL);
-		// dynamic wait
-		// client.pause(3000);
 		if (!isClassNameElementSuccessfullyLoaded(selectors.getSelector("selector.search-button.classname"))) {
 			throw new JidokaFatalException("page could not be loaded");
 		}
 
 	}
+
+	/**
+	 * If the search result was successfully loaded, print the first result found in
+	 * Console.
+	 */
 
 	public void printWebResultInConsole() {
 		if (!isXPathElementSuccessfullyLoaded(selectors.getSelector("selector.appian-result.xpath"))) {
@@ -117,21 +132,50 @@ public class BrowserManagerRobot implements IRobot {
 	}
 
 	/**
-	 * Override cleanUp method
+	 * This is the last non-hidden action from the robot workflow.
+	 */
+
+	public void end() {
+		server.info("Execution finished");
+	}
+
+	/**
+	 * Any type of error should be managed in this method.
+	 */
+	@Override
+	public String manageException(String action, Exception exception) throws Exception {
+
+		// Get the exception message
+		String errorMessage = ExceptionUtils.getRootCause(exception).getMessage();
+
+		// Send a screenshot to the log so the user can see the screen in the moment
+		// of the error. This is one of the best ways to trace errors clearly.
+		server.sendScreen("Screenshot of the error");
+
+		// Whenever a JidokaFatalException is thrown, the execution should be aborted.
+		if (ExceptionUtils.indexOfThrowable(exception, JidokaFatalException.class) >= 0) {
+
+			server.error(StringUtils.isBlank(errorMessage) ? "Fatal error" : errorMessage);
+			return IRobot.super.manageException(action, exception);
+		}
+
+		server.warn("Unknown exception!");
+
+		// If we have any other exception we must abort the execution, as we do not know
+		// what happened
+
+		return IRobot.super.manageException(action, exception);
+	}
+
+	/**
+	 * Override cleanUp method. Any additional data or processes to be released
+	 * should be placed here.
 	 */
 
 	@Override
 	public String[] cleanUp() throws Exception {
 		return IRobot.super.cleanUp();
 
-	}
-
-	/**
-	 * Any additional data or processes to be released should be placed here.
-	 */
-
-	public void end() {
-		server.info("Execution finished");
 	}
 
 }
