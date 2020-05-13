@@ -77,7 +77,7 @@ public class ApplicationManager {
 			application = automation.launchOrAttach(execPath);
 			application.waitForInputIdle(30);
 
-			// çWait for the window to open
+			// Wait for the application window to be opened
 			waitFor.window(this.windowTittleRegex);
 
 			window = automation.getDesktopWindow(Pattern.compile(windowTittleRegex));
