@@ -9,7 +9,7 @@
 	<packaging>jar</packaging>
 	<version>0.0.3</version>
 
-	<name>browser-manager</name>
+	<name>robot-snippet-browser-manager</name>
 
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>

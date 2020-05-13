@@ -11,12 +11,13 @@ import com.novayre.jidoka.client.api.annotations.Robot;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 
 /**
- * Application Manager Robot provides a complete usage example from all the
- * correspondent snippet methods. It basically opens a blank notepad, maximise the window, 
- * then opens the calculator, and then set the blank notepad as foreground application. 
+ * The Application Manager Robot provides a complete usage example from all the
+ * correspondent snippet methods. First of all, the notepad editor is opened and
+ * maximized. After that, the Windows native calculator application is opened,
+ * and then, the previous opened notepad is set as foreground application.
+ * Finally, both applicationes are closed. An exception will be thrown if
+ * something goes wrong during any of these actions.
  * 
- * After these actions, all the applications are closed if nothing went wrong during
- * the process.
  * 
  */
 @Robot
@@ -24,10 +25,10 @@ public class ApplicationManagerRobot implements IRobot {
 
 	/** Manager for the calculator app */
 	private ApplicationManager calculatorApp;
-	
+
 	/** Manager for the notepad app */
 	private ApplicationManager notepadApp;
-	
+
 	/** Jidoka server */
 	private IJidokaServer<?> server;
 
@@ -36,18 +37,18 @@ public class ApplicationManagerRobot implements IRobot {
 	 */
 	@Override
 	public boolean startUp() throws Exception {
-		
+
 		server = JidokaFactory.getServer();
-		
+
 		return true;
 	}
 
 	/**
-	 * Initialise the calculator and notepad apps.
+	 * Initialize the calculator and notepad applications.
 	 */
 
 	public void start() {
-		
+
 		calculatorApp = new ApplicationManager(this, "calc.exe", "C:\\Windows\\system32\\", ".*Calculator.*");
 		notepadApp = new ApplicationManager(this, "notepad.exe", "C:\\Windows\\system32\\", ".*Notepad.*");
 	}
@@ -61,12 +62,13 @@ public class ApplicationManagerRobot implements IRobot {
 	}
 
 	/**
-	 * Open Notepad application and Maximises its window just to show how to retrieve the Window object for working with the application
+	 * Open the Notepad application and Maximize its window just to show how to
+	 * retrieve the Window object to work with the application
 	 */
 	public void openNotepad() {
 
 		notepadApp.startApplication();
-		
+
 		try {
 			notepadApp.getWindow().maximize();
 		} catch (Exception e) {
@@ -75,15 +77,15 @@ public class ApplicationManagerRobot implements IRobot {
 	}
 
 	/**
-	 * Set the Calculator app window as foreground
+	 * Set the Calculator application window as foreground/active window
 	 */
 	public void setCalculatorAsForegroundApp() {
-		
+
 		calculatorApp.activateWindow();
 	}
-	
+
 	/**
-	 * Close Notepad application
+	 * Close the Notepad application
 	 */
 	public void closeNotepad() {
 
@@ -91,19 +93,19 @@ public class ApplicationManagerRobot implements IRobot {
 	}
 
 	/**
-	 * Close Calculator application
+	 * Close the Calculator application
 	 */
 	public void closeCalculator() {
-		
+
 		calculatorApp.closeApp();
 	}
 
 	/**
-	 * This is the last action from robot workflow.
+	 * This is the last action from the robot workflow.
 	 */
 	public void end() {
-		
-		server.info("Robots ends succesfuly");
+
+		server.info("The robot execution ended succesfuly");
 	}
 
 	/**
@@ -111,7 +113,7 @@ public class ApplicationManagerRobot implements IRobot {
 	 */
 	@Override
 	public String manageException(String action, Exception exception) throws Exception {
-		
+
 		// We get the message of the exception
 		String errorMessage = ExceptionUtils.getRootCause(exception).getMessage();
 
@@ -125,7 +127,7 @@ public class ApplicationManagerRobot implements IRobot {
 			server.error(StringUtils.isBlank(errorMessage) ? "Fatal error" : errorMessage);
 			return IRobot.super.manageException(action, exception);
 		}
-		
+
 		server.warn("Unknown exception!");
 
 		// If we have any other exception we must abort the execution, we don't know
@@ -133,16 +135,16 @@ public class ApplicationManagerRobot implements IRobot {
 
 		return IRobot.super.manageException(action, exception);
 	}
-	
+
 	/**
 	 * Overrides the cleanUp method.
 	 * 
-	 * We ensure that the applications are been closed even if there was an exception through the process. 
-	 * This is considered a good practice
+	 * We ensure that the applications are been closed even if there was an
+	 * exception through the process. This is considered a good practice
 	 */
 	@Override
 	public String[] cleanUp() throws Exception {
-		
+
 		closeNotepad();
 		closeCalculator();
 

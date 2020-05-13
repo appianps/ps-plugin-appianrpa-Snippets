@@ -1,4 +1,4 @@
-package com.appian.rpa.robot.RestAPI;
+package com.appian.rpa.snippets.examples.restapi;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -16,6 +16,14 @@ import com.novayre.jidoka.client.api.annotations.Robot;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.client.api.execution.IUsernamePassword;
 
+/**
+ * The Rest API Robot provides a complete usage example from all the
+ * correspondent snippet methods. Given a queueItem ID, this robotic process
+ * updates the number of attempts to 3. It also set the status as "PENDING". An
+ * error will be thrown if the Item does not exist, or the Status was not
+ * previously marked as "FINISHED_WARN".
+ * 
+ */
 @Robot
 public class RestApiRobot implements IRobot {
 
@@ -63,16 +71,25 @@ public class RestApiRobot implements IRobot {
 	 * API Key
 	 */
 	private String apiKey;
-
+	/**
+	 * Item ID from the queue Item.
+	 */
 	private String itemID;
 
+	/**
+	 * Override startup method to initialise some variables involved in our process.
+	 */
 	@Override
 	public boolean startUp() throws Exception {
-		this.server = (IJidokaServer<?>) JidokaFactory.getServer();
+		this.server = JidokaFactory.getServer();
 		return IRobot.super.startUp();
 	}
 
-	public void init() {
+	/**
+	 * Initialize the rest of the elements to be used during the workflow actions.
+	 */
+
+	public void start() {
 		restApiUtils = RestApiUtils.getInstance();
 
 		this.consoleUrl = server.getEnvironmentVariables().get(EV_CONSOLE_URL);
@@ -88,6 +105,12 @@ public class RestApiRobot implements IRobot {
 
 		this.apiKey = credentials.getPassword();
 	}
+
+	/**
+	 * Set the number of retries to 3 for the desired queueItem.
+	 * 
+	 * @throws IOException
+	 */
 
 	public void resetRetryNumber() throws IOException {
 
@@ -106,8 +129,12 @@ public class RestApiRobot implements IRobot {
 
 	}
 
+	/**
+	 * This is the last action from the robot workflow.
+	 */
 	public void end() {
-		// end robot
+
+		server.info("The robot execution ended succesfuly");
 	}
 
 	/**
