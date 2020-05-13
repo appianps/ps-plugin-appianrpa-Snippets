@@ -19,14 +19,9 @@ import com.novayre.jidoka.windows.api.WindowInfo;
 import com.sun.jna.platform.win32.WinDef.HWND;
 
 /**
- * Class for opening and closing the 3270 App
+ * Class for opening and closing the 3270 Terminal
  */
 public class IBM3270AppManager {
-
-	/**
-	 * The Constant WINDOW_TITLE_REGEX.
-	 */
-	public static final String WINDOW_TITLE_REGEX = ".*3270";
 
 	/**
 	 * Maximum number of attempts to open the APP
@@ -49,7 +44,7 @@ public class IBM3270AppManager {
 	private IWaitFor waitFor;
 
 	/**
-	 * Constructor
+	 * Default Constructor
 	 * 
 	 * @param server
 	 * @param windows
@@ -65,7 +60,7 @@ public class IBM3270AppManager {
 	}
 
 	/**
-	 * Open the application
+	 * Open the 3270 terminal, a symbolic link is used to open it
 	 * 
 	 * @param processName
 	 * @param titleExpected
@@ -112,9 +107,9 @@ public class IBM3270AppManager {
 	}
 
 	/**
-	 * Close crm.
+	 * Close 3270 terminal.
 	 */
-	public void closeIBM3270(String process) {
+	public void closeIBM3270(String process, String windowTitle) {
 
 		try {
 
@@ -128,7 +123,7 @@ public class IBM3270AppManager {
 			;
 		}
 
-		quit();
+		quit(windowTitle);
 
 		windows.pause(1000);
 
@@ -141,10 +136,11 @@ public class IBM3270AppManager {
 
 	/**
 	 * Quit terminal
+	 * @param windowTitle
 	 */
-	public void quit() {
+	public void quit(String windowTitle) {
 
-		windows.activateWindow(WINDOW_TITLE_REGEX);
+		windows.activateWindow(windowTitle);
 
 		windows.pause(1000);
 

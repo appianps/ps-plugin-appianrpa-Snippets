@@ -21,12 +21,12 @@ public class IBM3270Constants {
 	public static final String CONTROLLED_ERROR = "Application error";
 
 	/**
-	 * Application Name wc3270
+	 * Emulator Name wc3270
 	 */
-	public static final String APP_NAME_WC3270 = "FDZ";
+	public static final String APP_NAME_WC3270 = "WC3270";
 
 	/**
-	 * Application Name PCOM
+	 * Emulator Name PCOM
 	 */
 	public static final String APP_NAME_PCOMM = "PCOMM";
 

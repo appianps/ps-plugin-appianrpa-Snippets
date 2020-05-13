@@ -9,7 +9,7 @@ import com.novayre.jidoka.client.api.exceptions.JidokaException;
 import com.novayre.jidoka.client.api.multios.IClient;
 
 /**
- * Class to manage Welcome Page
+ * Class to manage Netview Page
  */
 public class NetViewPage extends RemotePage {
 
@@ -19,6 +19,7 @@ public class NetViewPage extends RemotePage {
 	private IBM3270Commons commons;
 
 	/**
+	 * Clas constructor
 	 * 
 	 * @param client
 	 * @param robot
@@ -28,6 +29,11 @@ public class NetViewPage extends RemotePage {
 		this.commons = commons;
 	}
 
+	/**
+	 * Unique text on each page for recognition
+	 * 
+	 * @return A unique text in this server
+	 */
 	@Override
 	public String getUnivocalRegex() {
 
@@ -72,6 +78,24 @@ public class NetViewPage extends RemotePage {
 		}
 	}
 
+	/**
+	 * Check that the robot is on the correct page (current page)
+	 * 
+	 * @throws JidokaGenericException
+	 */
+	@Override
+	public RemotePage assertIsThisPage() throws JidokaException {
+
+		try {
+			commons.locateText(ConstantsWaits.DEFAULT_NUMBER_OF_RETRIES_LOCATING_TEXT, getUnivocalRegex());
+		} catch (Exception e) {
+			server.debug(e.getMessage());
+			throw new JidokaException(getPageName());
+		}
+
+		return this;
+	}
+
 	@Override
 	public void selectAllText() {
 		commons.selectAllText();
@@ -95,24 +119,6 @@ public class NetViewPage extends RemotePage {
 	@Override
 	public String getWindowTitleRegex() {
 		return commons.getWindowTitleRegex();
-	}
-
-	/**
-	 * Check that the robot is on the correct page (current page)
-	 * 
-	 * @throws JidokaGenericException
-	 */
-	@Override
-	public RemotePage assertIsThisPage() throws JidokaException {
-
-		try {
-			commons.locateText(ConstantsWaits.DEFAULT_NUMBER_OF_RETRIES_LOCATING_TEXT, getUnivocalRegex());
-		} catch (Exception e) {
-			server.debug(e.getMessage());
-			throw new JidokaException(getPageName());
-		}
-
-		return this;
 	}
 
 }

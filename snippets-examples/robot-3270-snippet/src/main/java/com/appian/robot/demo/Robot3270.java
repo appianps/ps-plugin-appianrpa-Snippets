@@ -1,6 +1,5 @@
 package com.appian.robot.demo;
 
-import java.io.IOException;
 import java.io.Serializable;
 
 import com.appian.robot.demo.commons.IBM3270AppManager;
@@ -20,6 +19,9 @@ import com.novayre.jidoka.client.api.exceptions.JidokaException;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.client.api.multios.IClient;
 
+/**
+ * Robot for managing 3270 terminals
+ */
 @Robot
 public class Robot3270 implements IRobot {
 
@@ -76,10 +78,8 @@ public class Robot3270 implements IRobot {
 	/**
 	 * Action 'Init'.
 	 * <p>
-	 * Initializes Jidoka modules.
-	 * 
-	 * @throws JidokaException if the input file couldn't be read
-	 * @throws IOException
+	 * Initializes Jidoka modules. Instances of the emulator type passed as a
+	 * parameter are loaded
 	 */
 	public void init() {
 
@@ -106,12 +106,15 @@ public class Robot3270 implements IRobot {
 	}
 
 	/**
-	 * Action 'Open 3270'.
+	 * Action 'Open 3270' terminal
 	 */
 	public void open3270() {
+
 		server.info("Opening 3270 terminal");
+
 		appManager.openIBM3270(appName, ibm3270Commons.getWindowTitleRegex());
 		client.pause(1000);
+
 		server.sendScreen("Screenshot after opening the terminal");
 	}
 
@@ -119,8 +122,11 @@ public class Robot3270 implements IRobot {
 	 * Action 'Validate page'.
 	 */
 	public void validateMainPage() {
-		server.info("Opening 3270 terminal");
+
+		server.info("Validating Welcome Page");
+
 		TextInScreen textInScreen = ibm3270Commons.locateText(5, ConstantsTexts.WELCOME_UNIVOCAL_TEXT);
+
 		if (textInScreen != null) {
 			server.info(String.format("Text %s found", ConstantsTexts.WELCOME_UNIVOCAL_TEXT));
 		} else {
@@ -129,13 +135,14 @@ public class Robot3270 implements IRobot {
 	}
 
 	/**
-	 * Action 'Change screen'.
+	 * Action 'Go to NetView' page.
 	 * 
 	 * @throws JidokaException
 	 */
 	public void goToNetView() throws JidokaException {
 
 		server.sendScreen("Screenshot before moving to NetView page");
+
 		ibm3270Commons.write("NETVIEW");
 		client.pause(1000);
 		ibm3270Commons.enter();
@@ -161,7 +168,7 @@ public class Robot3270 implements IRobot {
 	 * Action 'Close 3270'.
 	 */
 	public void close3270() {
-		appManager.closeIBM3270(processName);
+		appManager.closeIBM3270(processName, ibm3270Commons.getWindowTitleRegex());
 	}
 
 	/**
@@ -181,7 +188,7 @@ public class Robot3270 implements IRobot {
 	 */
 	@Override
 	public String[] cleanUp() throws Exception {
-		appManager.closeIBM3270(processName);
+		appManager.closeIBM3270(processName, ibm3270Commons.getWindowTitleRegex());
 		return IRobot.super.cleanUp();
 	}
 
