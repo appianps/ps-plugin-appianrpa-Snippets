@@ -1,4 +1,4 @@
-package com.appian.rpa.snippets.commons.excel.annotations;
+package com.appian.rpa.snippets.commons.queues.excel.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

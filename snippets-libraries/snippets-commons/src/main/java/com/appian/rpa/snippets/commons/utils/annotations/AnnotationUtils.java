@@ -11,20 +11,15 @@ import java.util.stream.Collectors;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 
-import com.appian.rpa.snippets.commons.excel.annotations.AExcelFieldKey;
 import com.appian.rpa.snippets.commons.excel.annotations.utils.ReflectionUtil;
 import com.novayre.jidoka.client.api.exceptions.JidokaException;
-import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 
-/**
- * Utility class for annotations.
- */
-public final class AnnotationUtil {
+public class AnnotationUtils {
 
 	/**
 	 * AnnotationUtil private constructor
 	 */
-	private AnnotationUtil() {
+	private AnnotationUtils() {
 
 	}
 
@@ -103,30 +98,6 @@ public final class AnnotationUtil {
 			throw new JidokaException(
 					String.format("Error setting the property %s to the value %s", propertyName, value.toString()), e);
 		}
-	}
-
-	/**
-	 * Gets the value of the key field given
-	 * 
-	 * @param <T> Type of the value returned
-	 * @param currentItem Object where to search the key field
-	 * 
-	 * @return The key field value
-	 */
-	public static <T> String getKeyFieldValue(T currentItem) {
-
-		Field fieldKey = getFirstFieldWithAnnotation(currentItem.getClass(), AExcelFieldKey.class);
-		Object value = null;
-
-		try {
-
-			value = getFieldValue(currentItem, fieldKey);
-
-		} catch (JidokaException e) {
-			throw new JidokaFatalException("Error getting the field key", e);
-		}
-
-		return value == null ? "" : value.toString();
 	}
 
 }

@@ -14,7 +14,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import com.appian.rpa.snippets.commons.queues.manager.QueueFromGenericSource;
+import com.appian.rpa.snippets.commons.queues.generic.manager.GenericQueueManager;
 import com.appian.snippets.examples.params.EEnvironmentVariables;
 import com.appian.snippets.examples.params.EInstructions;
 import com.novayre.jidoka.client.api.IJidokaServer;
@@ -32,8 +32,8 @@ public class FillQueueRobot implements IRobot {
 	/** Server instance */
 	IJidokaServer<?> server;
 
-	/** QueueFromGenericSource instance */
-	private QueueFromGenericSource queueFromGenericSourceManager;
+	/** GenericQueueManager instance */
+	private GenericQueueManager queueFromGenericSourceManager;
 
 	/** Queue name */
 	private String queueName;
@@ -45,7 +45,7 @@ public class FillQueueRobot implements IRobot {
 	public boolean startUp() throws Exception {
 		// Init modules and managers
 		server = JidokaFactory.getServer();
-		queueFromGenericSourceManager = new QueueFromGenericSource(FileModel.class);
+		queueFromGenericSourceManager = new GenericQueueManager(FileModel.class);
 
 		return IRobot.super.startUp();
 	}

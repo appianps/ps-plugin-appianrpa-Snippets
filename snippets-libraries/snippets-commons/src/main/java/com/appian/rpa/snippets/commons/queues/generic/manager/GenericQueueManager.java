@@ -1,4 +1,4 @@
-package com.appian.rpa.snippets.commons.queues.manager;
+package com.appian.rpa.snippets.commons.queues.generic.manager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.appian.rpa.snippets.commons.queues.annotations.QueueAnnotationUtil;
-import com.appian.rpa.snippets.commons.queues.conversion.QueueConversionUtils;
+import com.appian.rpa.snippets.commons.queues.generic.annotations.QueueAnnotationUtil;
+import com.appian.rpa.snippets.commons.queues.generic.conversion.QueueConversionUtils;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.exceptions.JidokaException;
@@ -38,7 +38,7 @@ import com.novayre.jidoka.client.api.queue.ReserveQueueParameters;
  * Class to manage a queue which is going to be updated constantly when new data
  * arrives.
  */
-public class QueueFromGenericSource {
+public class GenericQueueManager {
 
 	/** Server instance */
 	private IJidokaServer<?> server;
@@ -53,9 +53,9 @@ public class QueueFromGenericSource {
 	private Class<?> modelClass;
 
 	/**
-	 * QueueFromGenericSource constructor
+	 * GenericQueueManager constructor
 	 */
-	public QueueFromGenericSource(Class<?> clazz) {
+	public GenericQueueManager(Class<?> clazz) {
 
 		this.server = JidokaFactory.getServer();
 		this.queueManager = server.getQueueManager();

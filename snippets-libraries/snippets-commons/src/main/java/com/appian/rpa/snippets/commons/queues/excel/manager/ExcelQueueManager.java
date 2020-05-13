@@ -1,4 +1,4 @@
-package com.appian.rpa.snippets.commons.queues;
+package com.appian.rpa.snippets.commons.queues.excel.manager;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +15,9 @@ import org.apache.commons.lang3.StringUtils;
 import com.appian.rpa.snippets.commons.excel.annotations.utils.QueueFromExcelCreator;
 import com.appian.rpa.snippets.commons.excel.mapper.AbstractItemFieldsMapper;
 import com.appian.rpa.snippets.commons.excel.utils.ExcelUtils;
-import com.appian.rpa.snippets.commons.utils.conversion.ConversionUtils;
+import com.appian.rpa.snippets.commons.queues.excel.conversion.ExcelConversionUtils;
+import com.appian.rpa.snippets.commons.queues.excel.results.EQueueResultTarget;
+import com.appian.rpa.snippets.commons.queues.excel.results.QueueResults;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.JidokaFactory;
@@ -49,7 +51,7 @@ import jodd.io.FileUtil;
  *
  * @param <T> Generic type of the model
  */
-public class QueueItemsManager<T> {
+public class ExcelQueueManager<T> {
 
 	/** IJidokaServer instance */
 	private IJidokaServer<?> server;
@@ -82,13 +84,13 @@ public class QueueItemsManager<T> {
 	private File queueOutputFile;
 
 	/**
-	 * QueueItemsManager constructor
+	 * ExcelQueueManager constructor
 	 * 
 	 * @param robot  {@link IRobot} instance
 	 * @param mapper Mapper to map the data to an {@link AbstractItemFieldsMapper}
 	 *               object
 	 */
-	public QueueItemsManager(IRobot robot, AbstractItemFieldsMapper<T> mapper) {
+	public ExcelQueueManager(IRobot robot, AbstractItemFieldsMapper<T> mapper) {
 
 		this.mapper = mapper;
 
@@ -159,7 +161,7 @@ public class QueueItemsManager<T> {
 				return null;
 			}
 
-			return (T) ConversionUtils.map2Object(currentQueueItem.functionalData(), mapper.getTClass());
+			return ExcelConversionUtils.map2Object(currentQueueItem.functionalData(), mapper.getTClass());
 
 		} catch (Exception e) {
 			throw new JidokaQueueException("Error getting the next queue item", e);
@@ -209,7 +211,7 @@ public class QueueItemsManager<T> {
 
 		try {
 
-			Map<String, String> functionalData = ConversionUtils.object2Map(currentItem);
+			Map<String, String> functionalData = ExcelConversionUtils.object2Map(currentItem);
 
 			ReleaseItemWithOptionalParameters tiop = new ReleaseItemWithOptionalParameters();
 			tiop.functionalData(functionalData);
@@ -347,7 +349,7 @@ public class QueueItemsManager<T> {
 			ReleaseQueueParameters releaseQueueParameters = new ReleaseQueueParameters();
 			releaseQueueParameters.closed(true);
 			queueManager.releaseQueue(releaseQueueParameters);
-			
+
 			this.queueOutputFile = createQueueOutputFile();
 
 			server.info(String.format("Queue %s closed", queue.queueId()));
@@ -434,7 +436,7 @@ public class QueueItemsManager<T> {
 					continue;
 				}
 
-				T currentItem = (T) ConversionUtils.map2Object(queueItem.functionalData(), mapper.getTClass());
+				T currentItem = ExcelConversionUtils.map2Object(queueItem.functionalData(), mapper.getTClass());
 
 				dpRes.updateItem(currentItem);
 
