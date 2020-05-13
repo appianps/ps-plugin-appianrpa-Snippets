@@ -49,13 +49,13 @@ public class SelectorsManager {
 	/**
 	 * SelectorsManager Constructor
 	 * 
-	 * @param robot The IRobot instance
+	 * @param robot    The IRobot instance
 	 * @param filePath Selectors properties file path
 	 */
 	public SelectorsManager(IRobot robot) {
 
 		Path filePath = Paths.get(JidokaFactory.getServer().getCurrentDir(), "browser", "selectors.properties");
-		
+
 		if (filePath == null || !filePath.toFile().exists()) {
 			JidokaFactory.getServer().info("No selectors file configured");
 			return;
@@ -97,7 +97,7 @@ public class SelectorsManager {
 	 * {@link #CLASSNAME_SUFFIX} or {@link #ID_SUFFIX}. If the key does not end in
 	 * one of these suffixes, it is returned null.
 	 * 
-	 * @param key Selector key on the selectors file
+	 * @param key Selector key from selectors.properties file (String)
 	 * @return The {@link WebElement} object resulting from the selector search.
 	 */
 	public WebElement getElement(String key) {
@@ -116,6 +116,27 @@ public class SelectorsManager {
 	}
 
 	/**
+	 * This function retrieves the corresponding By element from desired selector.
+	 * 
+	 * @param key Selector key from selectors.properties file (String)
+	 * @return The {@link By} element depending on termination
+	 */
+
+	public By getBy(String key) {
+		if (key.endsWith(XPATH_SUFFIX)) {
+			return By.xpath(getSelector(key));
+		} else if (key.endsWith(CSS_SUFFIX)) {
+			return By.cssSelector(getSelector(key));
+		} else if (key.endsWith(CLASSNAME_SUFFIX)) {
+			return By.className(getSelector(key));
+		} else if (key.endsWith(ID_SUFFIX)) {
+			return By.id(getSelector(key));
+		} else {
+			return null;
+		}
+	}
+
+	/**
 	 * Finds all {@link WebElement} objects using the selector saved in the
 	 * selectors file, which is found filtering by the given {@code key}. Searches
 	 * by the given {@code key}. The selector key must end in:
@@ -124,7 +145,8 @@ public class SelectorsManager {
 	 * returned an empty list.
 	 * 
 	 * @param key Selector key on the selectors file
-	 * @return The @{@link List} of {@link WebElement} objects resulting from the selector search.
+	 * @return The @{@link List} of {@link WebElement} objects resulting from the
+	 *         selector search.
 	 */
 	public List<WebElement> getAllElements(String key) {
 
@@ -140,19 +162,17 @@ public class SelectorsManager {
 			return new ArrayList<>();
 		}
 	}
-	
-	
+
 	/**
-	 * Checks if the {@link WebElement} exists in the DOM
-	 * using the selector saved in the selectors file, 
-	 * which is found filtering by the given {@code key}. Searches
-	 * by the given {@code key}. The selector key must end in:
+	 * Checks if the {@link WebElement} exists in the DOM using the selector saved
+	 * in the selectors file, which is found filtering by the given {@code key}.
+	 * Searches by the given {@code key}. The selector key must end in:
 	 * {@link #XPATH_SUFFIX}, {@link #CSS_SUFFIX}, {@link #CLASSNAME_SUFFIX} or
 	 * {@link #ID_SUFFIX}. If the key does not end in one of these suffixes, it is
 	 * returned null.
 	 * 
 	 * @param key Selector key on the selectors file
-	 * @return  true if the  {@link WebElement}  was found; false otherwise 
+	 * @return true if the {@link WebElement} was found; false otherwise
 	 */
 	public Boolean existsElement(String key) {
 

@@ -5,7 +5,6 @@ import org.openqa.selenium.By;
 import com.appian.rpa.snippets.commons.browser.BrowserManager;
 import com.appian.rpa.snippets.commons.browser.SelectorsManager;
 import com.novayre.jidoka.browser.api.EBrowsers;
-import com.novayre.jidoka.browser.api.IWebBrowserSupport;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.JidokaFactory;
@@ -29,7 +28,6 @@ public class BrowserManagerRobot implements IRobot {
 	private BrowserManager browserManager;
 	/** The IClient module. */
 	private IClient client;
-	private IWebBrowserSupport browser;
 	private SelectorsManager selectors;
 	private String searcherURL;
 
@@ -44,7 +42,6 @@ public class BrowserManagerRobot implements IRobot {
 		browserManager = new BrowserManager(this, EBrowsers.CHROME);
 		server = JidokaFactory.getServer();
 		client = IClient.getInstance(this);
-		browser = IWebBrowserSupport.getInstance(this, client);
 		searcherURL = server.getParameters().get("platformURL");
 		selectors = browserManager.getSelectorsManager();
 	}
@@ -76,7 +73,7 @@ public class BrowserManagerRobot implements IRobot {
 		if (!isXPathElementSuccessfullyLoaded(selectors.getSelector("selector.appian-result.xpath"))) {
 			throw new JidokaFatalException("web result not found");
 		}
-		server.info(browser.getText(By.xpath(selectors.getSelector("selector.appian-result.xpath"))));
+		server.info(browserManager.getBrowser().getText(selectors.getBy("selector.appian-result.xpath")));
 	}
 
 	/**
@@ -84,7 +81,9 @@ public class BrowserManagerRobot implements IRobot {
 	 */
 
 	public void searchInformation() {
-		browser.clickSafe(browser.waitElement(By.xpath(selectors.getSelector("selector.searchbar.xpath"))));
+
+		browserManager.getBrowser()
+				.clickSafe(browserManager.getBrowser().waitElement(selectors.getBy(("selector.searchbar.xpath"))));
 		client.pause(1000);
 		client.typeText("Appian");
 		client.keyboard().enter();
@@ -93,12 +92,12 @@ public class BrowserManagerRobot implements IRobot {
 
 	private boolean isClassNameElementSuccessfullyLoaded(String classname) {
 		return client.waitCondition(5, 1000, "Checking if " + classname + " selector appeared successfully", null,
-				(i, c) -> browser.getElement(By.className(classname)) != null);
+				(i, c) -> browserManager.getBrowser().getElement(By.className(classname)) != null);
 	}
 
 	private boolean isXPathElementSuccessfullyLoaded(String xpath) {
 		return client.waitCondition(5, 1000, "Checking if " + xpath + " selector appeared successfully", null,
-				(i, c) -> browser.getElement(By.xpath(xpath)) != null);
+				(i, c) -> browserManager.getBrowser().getElement(By.xpath(xpath)) != null);
 	}
 
 	/**
