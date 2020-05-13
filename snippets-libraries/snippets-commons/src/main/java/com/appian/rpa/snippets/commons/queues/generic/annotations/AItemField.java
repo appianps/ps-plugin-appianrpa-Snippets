@@ -16,10 +16,10 @@ import java.lang.annotation.Target;
 public @interface AItemField {
 
 	/**
-	 * Field name
+	 * Functional data name
 	 * 
-	 * @return Field name
+	 * @return Functional data name
 	 */
 	String fieldName();
-	
+
 }

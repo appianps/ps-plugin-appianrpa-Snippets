@@ -1,4 +1,4 @@
-package com.appian.rpa.snippets.commons.excel.annotations.utils;
+package com.appian.rpa.snippets.commons.utils.reflection;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
