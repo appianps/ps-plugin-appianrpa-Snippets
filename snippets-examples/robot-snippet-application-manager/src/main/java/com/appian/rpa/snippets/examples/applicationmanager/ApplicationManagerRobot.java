@@ -1,9 +1,9 @@
-package com.appian.rpa.snippets.examples.robot.applicationmanager;
+package com.appian.rpa.snippets.examples.applicationmanager;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import com.appian.rpa.snippets.commons.application.ApplicationManager;
+import com.appian.rpa.snippets.applicationmanager.ApplicationManager;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.JidokaFactory;
@@ -22,8 +22,13 @@ import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 @Robot
 public class ApplicationManagerRobot implements IRobot {
 
+	/** Manager for the calculator app */
 	private ApplicationManager calculatorApp;
+	
+	/** Manager for the notepad app */
 	private ApplicationManager notepadApp;
+	
+	/** Jidoka server */
 	private IJidokaServer<?> server;
 
 	/**
