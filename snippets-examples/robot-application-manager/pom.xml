@@ -1,32 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.appian.snippets.commons</groupId>
-	<artifactId>snippets-commons</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<groupId>com.appian.rpa.snippets.examples.robot</groupId>
+	<artifactId>robot-application-manager</artifactId>
 	<packaging>jar</packaging>
+	<version>1.0.0</version>
+
+	<name>robot-application-manager</name>
 
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>
 		<artifactId>jidoka-robot-parent</artifactId>
-		<version>7.0.0</version>
+		<version>7.0.0</version> <!-- VC -->
 	</parent>
 
 	<profiles>
 
 		<profile>
-			<id>rpa-coe-lab</id>
+
+			<id>jidoka</id>
 
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
 
 			<repositories>
+
 				<repository>
 					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
 					<releases>
 						<enabled>true</enabled>
 					</releases>
@@ -44,25 +49,23 @@
 						<enabled>true</enabled>
 					</snapshots>
 				</repository>
+
 			</repositories>
 
 			<pluginRepositories>
 				<pluginRepository>
 					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
 					<releases>
-						<enabled>true</enabled>
 					</releases>
 					<snapshots>
-						<enabled>true</enabled>
 					</snapshots>
 				</pluginRepository>
 			</pluginRepositories>
-
 			<distributionManagement>
 				<repository>
 					<id>rpa-coe-lab</id>
-					<name>appian-lab</name>
+					<name>rpa-coe-lab</name>
 					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
 					<layout>default</layout>
 				</repository>
@@ -74,59 +77,14 @@
 				</snapshotRepository>
 			</distributionManagement>
 		</profile>
+
 	</profiles>
 
 	<dependencies>
-
 		<dependency>
-			<groupId>com.novayre.jidoka.module</groupId>
-			<artifactId>jidoka-data-provider-api</artifactId>
-			<version>${jidoka.version}</version>
+			<groupId>com.appian.snippets.commons</groupId>
+			<artifactId>snippets-commons</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
-
-		<dependency>
-			<groupId>com.novayre.jidoka.module</groupId>
-			<artifactId>jidoka-browser-api</artifactId>
-			<version>${jidoka.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>3.9</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-core</artifactId>
-			<version>2.11.0.rc1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.11.0.rc1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.5.12</version>
-		</dependency>
-
-		<dependency>
-			<groupId>net.sf.json-lib</groupId>
-			<artifactId>json-lib</artifactId>
-			<version>2.4</version>
-			<classifier>jdk15</classifier>
-		</dependency>
-
 	</dependencies>
-
 </project>

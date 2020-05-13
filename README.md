@@ -16,7 +16,7 @@ Retrieve three credentials associated to the same application "TEST_ROBOT".
 
 How to use and run the example: 
 
-1. Upload the zip file located in snippets-examples/credentials/console as is. 
+- Upload the zip file located in snippets-examples/credentials/console as is. 
 It will automatically generate the robotic process with all the requirements needed. 
 
 2. Create three credentials as described: 
@@ -33,3 +33,11 @@ password1, password2, password3 (the values are not relevant to understand how t
 Update a queue Item identified by its ID Number as "PENDING" if the previous Status was "FINISHED_WARN". 
 The robot also gives three new attempts to the item to be finished. An error will be thrown if the Item does not exist
 or simply if the Status is different from "FINISHED_WARN"
+
+3. Browser Manager
+
+Open a new Chrome browser and search entries related to Appian. As output, the console will show the first search result obtained. 
+Finally, the web navigator will be closed. 
+
+4. Application Manager. 
+
