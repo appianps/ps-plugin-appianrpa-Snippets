@@ -9,8 +9,6 @@ import com.appian.rpa.snippets.commons.excel.annotations.AExcelField;
 import com.appian.rpa.snippets.commons.excel.annotations.AnnotationUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -39,7 +37,6 @@ public class ConversionUtils {
 	 * 
 	 * @throws {@link JidokaException}
 	 */
-	@SuppressWarnings("deprecation")
 	public static <T> T map2Object(Map<String, String> map, Class<T> clazz) throws JidokaException {
 
 		T object = null;
@@ -134,14 +131,14 @@ public class ConversionUtils {
 				.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 
 		ObjectReader or = mapper.readerFor(clazz);
-		
+
 		T readValue;
 		try {
 			readValue = or.readValue(jackson);
 		} catch (JsonProcessingException e) {
 			readValue = or.readValue(objectToJackson(jackson));
 		}
-		
+
 		return readValue;
 	}
 }

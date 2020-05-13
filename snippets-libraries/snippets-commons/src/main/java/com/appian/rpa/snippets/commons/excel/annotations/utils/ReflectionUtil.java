@@ -174,7 +174,6 @@ public final class ReflectionUtil {
 	 * @return The bean object instance
 	 * @throws {@link JidokaException}
 	 */
-	@SuppressWarnings("deprecation")
 	private static Object getInstanceBeanObject(Object object, String name, String[] prefixes, Class<?>[] arguments)
 			throws JidokaException {
 
@@ -292,7 +291,6 @@ public final class ReflectionUtil {
 	 * @return Item list
 	 * @throws {@link JidokaException}
 	 */
-	@SuppressWarnings("deprecation")
 	private static Object getItemsListValue(Object bean, String property, int index) throws JidokaException {
 
 		@SuppressWarnings("unchecked")
@@ -327,7 +325,6 @@ public final class ReflectionUtil {
 	 * @return The item object
 	 * @throws {@link JidokaException}
 	 */
-	@SuppressWarnings("deprecation")
 	private static Object getItemsMapValue(Object bean, String property, String key) throws JidokaException {
 
 		@SuppressWarnings("unchecked")
