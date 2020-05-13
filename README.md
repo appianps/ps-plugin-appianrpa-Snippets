@@ -10,7 +10,7 @@ TODO: join iomenac snippet commonts and examples as explained below:
 
 ### Examples
 
-1. Credentials Snippets Example 
+#### 1. Credentials Snippets Example 
 
 Retrieve three credentials associated to the same application "TEST_ROBOT".
 
@@ -28,7 +28,7 @@ user1, user2, user3
 password1, password2, password3 (the values are not relevant to understand how these are retrieved).
 
 
-2. REST API Example 
+#### 2. REST API Example 
 
 The Rest API Robot provides a complete usage example from all the
 correspondent snippet methods. Given a queueItem ID, this robotic process
@@ -37,7 +37,7 @@ error will be thrown if the Item does not exist, or the Status was not
 previously marked as "FINISHED_WARN".
 
 
-3. Browser Manager
+#### 3. Browser Manager
 
 This robotic process has been created to illustrate how the Browser Manager
 Snippet should be integrated in your process. It basically shows how a Chrome 
@@ -46,7 +46,7 @@ first result found in the console. An exception will be thrown if any error
 occurs during the process execution.
 
 
-4. Application Manager. 
+#### 4. Application Manager. 
 
 
 The Application Manager Robot provides a complete usage example from all the
