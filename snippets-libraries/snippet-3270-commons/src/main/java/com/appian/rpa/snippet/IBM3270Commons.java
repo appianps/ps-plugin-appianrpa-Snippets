@@ -119,6 +119,13 @@ public abstract class IBM3270Commons {
 	public abstract String getWindowTitleRegex();
 
 	/**
+	 * Returns the process name
+	 * 
+	 * @return Process name
+	 */
+	public abstract String getProcessName();
+
+	/**
 	 * Returns the first text it finds on the screen among those passed as a
 	 * parameter
 	 * 

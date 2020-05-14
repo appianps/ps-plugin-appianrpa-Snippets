@@ -11,7 +11,12 @@ public class WC3270EmulatorManager extends IBM3270Commons {
 	/**
 	 * The Constant WINDOW_TITLE_REGEX.
 	 */
-	public static final String WINDOW_TITLE_REGEX = ".*3270";
+	private static final String WINDOW_TITLE_REGEX = ".*3270";
+
+	/**
+	 * Process Name wc3270
+	 */
+	public static final String PROCESS_NAME = "wc3270.exe";
 
 	/**
 	 * Default X-coordinate
@@ -85,5 +90,15 @@ public class WC3270EmulatorManager extends IBM3270Commons {
 	@Override
 	public String getWindowTitleRegex() {
 		return WINDOW_TITLE_REGEX;
+	}
+
+	/**
+	 * Returns the process name
+	 * 
+	 * @return
+	 */
+	@Override
+	public String getProcessName() {
+		return PROCESS_NAME;
 	}
 }

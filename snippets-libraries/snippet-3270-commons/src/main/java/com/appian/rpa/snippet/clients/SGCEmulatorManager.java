@@ -12,7 +12,12 @@ public class SGCEmulatorManager extends IBM3270Commons {
 	/**
 	 * The Constant TITLE_REGEX.
 	 */
-	public static final String IBM3270_LOGIN_TITLE_REGEX = "(?i)SGC verde - wc3270";
+	private static final String IBM3270_LOGIN_TITLE_REGEX = "(?i)SGC verde - wc3270";
+
+	/**
+	 * Process Name wc3270
+	 */
+	public static final String PROCESS_NAME = "wc3270.exe";
 
 	/**
 	 * Line separator
@@ -97,5 +102,15 @@ public class SGCEmulatorManager extends IBM3270Commons {
 	@Override
 	public String getWindowTitleRegex() {
 		return IBM3270_LOGIN_TITLE_REGEX;
+	}
+
+	/**
+	 * Returns the process name
+	 * 
+	 * @return
+	 */
+	@Override
+	public String getProcessName() {
+		return PROCESS_NAME;
 	}
 }

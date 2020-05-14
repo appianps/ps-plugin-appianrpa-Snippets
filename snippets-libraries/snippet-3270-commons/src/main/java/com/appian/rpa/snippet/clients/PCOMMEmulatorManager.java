@@ -14,7 +14,12 @@ public class PCOMMEmulatorManager extends IBM3270Commons {
 	/**
 	 * The Constant WINDOW_TITLE_REGEX.
 	 */
-	public static final String WINDOW_TITLE_REGEX = "Session.*";
+	private static final String WINDOW_TITLE_REGEX = "Session.*";
+
+	/**
+	 * Process Name PCOMM
+	 */
+	public static final String PROCESS_NAME = "pcsws.exe";
 
 	/**
 	 * Default X-coordinate
@@ -105,4 +110,13 @@ public class PCOMMEmulatorManager extends IBM3270Commons {
 		return client.clipboardGet();
 	}
 
+	/**
+	 * Returns the process name
+	 * 
+	 * @return
+	 */
+	@Override
+	public String getProcessName() {
+		return PROCESS_NAME;
+	}
 }
