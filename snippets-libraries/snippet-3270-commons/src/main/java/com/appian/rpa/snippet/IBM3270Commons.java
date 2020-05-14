@@ -25,54 +25,34 @@ import com.novayre.jidoka.client.api.multios.IClient;
  */
 public abstract class IBM3270Commons {
 
-	/**
-	 * Space character
-	 */
+	/** Space character */
 	private static final String SPACE = " ";
 
-	/**
-	 * Space in HTML
-	 */
+	/** Space in HTML */
 	private static final String SPACE_HTML = "&#160;";
 
-	/**
-	 * Jidoka Server Instance
-	 */
+	/** Jidoka Server Instance */
 	private IJidokaServer<?> server;
 
-	/**
-	 * IRobot instance
-	 */
+	/** IRobot instance */
 	private IRobot robot;
 
-	/**
-	 * Waitfor instance
-	 */
+	/** Waitfor instance */
 	private IWaitFor waitFor;
 
-	/**
-	 * Trace screenshots?
-	 */
+	/** Trace screenshots? */
 	private Boolean traceScreenshots = true;
 
-	/**
-	 * Max X-coordinate value
-	 */
+	/** Max X-coordinate value */
 	private int maxCoordX = 80;
 
-	/**
-	 * Max Y-coordinate value
-	 */
+	/** Max Y-coordinate value */
 	private int maxCoordY = 24;
 
-	/**
-	 * Client Module Instance
-	 */
+	/** Client Module Instance */
 	protected IClient client;
 
-	/**
-	 * Keyboard module instance
-	 */
+	/** Keyboard module instance */
 	protected IKeyboard keyboard;
 
 	/**
@@ -129,7 +109,7 @@ public abstract class IBM3270Commons {
 	 * Returns the first text it finds on the screen among those passed as a
 	 * parameter
 	 * 
-	 * @param text
+	 * @param text Text to find
 	 * @return TextInScreen object with text position
 	 */
 	public TextInScreen locateText(String... text) {
@@ -142,7 +122,7 @@ public abstract class IBM3270Commons {
 	 * parameter
 	 * 
 	 * @param retries
-	 * @param text
+	 * @param text    Text to find
 	 * @return TextInScreen object with text position
 	 */
 	public TextInScreen locateText(int retries, String... text) {
@@ -155,7 +135,7 @@ public abstract class IBM3270Commons {
 	 * parameter
 	 * 
 	 * @param cachedScreen
-	 * @param text
+	 * @param text         Text to find
 	 * @return TextInScreen object with text position
 	 */
 	public TextInScreen locateText(List<String> cachedScreen, String... text) {
@@ -167,11 +147,12 @@ public abstract class IBM3270Commons {
 	 * Returns the first text it finds on the screen among those passed as a
 	 * parameter
 	 * 
-	 * @param retries
-	 * @param throwExceptionIfnotFound
-	 * @param cachedScreen
-	 * @param text
-	 * @return TextInScreen object with text position
+	 * @param retries                  Number of attempts
+	 * @param throwExceptionIfnotFound Indicates if an exception is thrown if the
+	 *                                 text is not found
+	 * @param cachedScreen             List of lines of text on the screen
+	 * @param text                     Text to find
+	 * @return TextInScreen Object with text position
 	 */
 	public TextInScreen locateText(int retries, boolean throwExceptionIfnotFound, List<String> cachedScreen,
 			String... text) {
@@ -303,7 +284,7 @@ public abstract class IBM3270Commons {
 	/**
 	 * Performs a wait until the text disappears
 	 * 
-	 * @param text
+	 * @param text Text expected to disappear
 	 */
 	public void waitTillTextDisappears(String text) {
 
@@ -314,8 +295,8 @@ public abstract class IBM3270Commons {
 	 * Performs a wait until the text disappears, as many attempts are made as the
 	 * retries parameter indicates
 	 * 
-	 * @param retries
-	 * @param text
+	 * @param retries Number of attempts
+	 * @param text    Text expected to disappear
 	 */
 	public void waitTillTextDisappears(int retries, String text) {
 
@@ -343,9 +324,9 @@ public abstract class IBM3270Commons {
 	 * Moves the cursor to the start of the indicated text, makes a correction using
 	 * the offset parameters
 	 * 
-	 * @param text
-	 * @param offsetX
-	 * @param offsetY
+	 * @param text    Text to which the course should be moved
+	 * @param offsetX X-coordinate adjustment
+	 * @param offsetY Y-coordinate adjustment
 	 */
 	public void moveToCoodinates(String text, int offsetX, int offsetY) {
 
@@ -361,9 +342,9 @@ public abstract class IBM3270Commons {
 	 * Moves the cursor to the start of the indicated text, makes a correction using
 	 * the offset parameters
 	 * 
-	 * @param textInScreen
-	 * @param offsetX
-	 * @param offsetY
+	 * @param textInScreen TestInScreen instance
+	 * @param offsetX      X-coordinate adjustment
+	 * @param offsetY      Y-coordinate adjustment
 	 */
 	public void moveToCoodinates(TextInScreen textInScreen, int offsetX, int offsetY) {
 
@@ -376,23 +357,23 @@ public abstract class IBM3270Commons {
 	}
 
 	/**
-	 * Move the cursor to a point in the screen
+	 * Move the cursor to a point on the screen
 	 * 
-	 * @param pointInScreen
-	 * @param offsetX
-	 * @param offsetY
+	 * @param pointOnScreen Class Point instance
+	 * @param offsetX       X-coordinate adjustment
+	 * @param offsetY       Y-coordinate adjustment
 	 */
-	public void moveToCoodinates(Point pointInScreen, int offsetX, int offsetY) {
+	public void moveToCoodinates(Point pointOnScreen, int offsetX, int offsetY) {
 
 		activateWindow();
 
-		if (pointInScreen == null) {
+		if (pointOnScreen == null) {
 
 			throw new JidokaFatalException("The coordinates to move to are null");
 		}
 
-		int targetXCoodinate = (int) (pointInScreen.getX() + offsetX);
-		int targetYCoodinate = (int) (pointInScreen.getY() + offsetY);
+		int targetXCoodinate = (int) (pointOnScreen.getX() + offsetX);
+		int targetYCoodinate = (int) (pointOnScreen.getY() + offsetY);
 
 		server.debug(String.format("We're moving to the coordinates (%d, %d)", targetYCoodinate, targetXCoodinate));
 
@@ -407,8 +388,8 @@ public abstract class IBM3270Commons {
 	/**
 	 * Write the text on screen
 	 * 
-	 * @param text
-	 * @return
+	 * @param text Text to write
+	 * @return IBM3270Commons instance
 	 */
 	public IBM3270Commons write(String text) {
 
@@ -416,11 +397,11 @@ public abstract class IBM3270Commons {
 	}
 
 	/**
-	 * Write the text on screen
+	 * Write the text on the screen
 	 * 
 	 * @param text Text to write
 	 * @param log  Indicates if the text to be written is shown in the log
-	 * @return
+	 * @return IBM3270Commons instance
 	 */
 	public IBM3270Commons write(String text, Boolean log) {
 
@@ -443,7 +424,7 @@ public abstract class IBM3270Commons {
 	 * Press PF
 	 * 
 	 * @param pf
-	 * @return
+	 * @return IBM3270Commons instance
 	 */
 	public IClient pressPF(int pf) {
 
@@ -468,7 +449,7 @@ public abstract class IBM3270Commons {
 	/**
 	 * Press enter
 	 * 
-	 * @return
+	 * @return IBM3270Commons instance
 	 */
 	public IBM3270Commons enter() {
 
@@ -484,7 +465,7 @@ public abstract class IBM3270Commons {
 	/**
 	 * Press Tab
 	 * 
-	 * @return
+	 * @return IBM3270Commons instance
 	 */
 	public IBM3270Commons tab() {
 
@@ -500,7 +481,7 @@ public abstract class IBM3270Commons {
 	/**
 	 * Press left
 	 * 
-	 * @return
+	 * @return IBM3270Commons instance
 	 */
 	public IBM3270Commons pressLeft() {
 
@@ -510,8 +491,8 @@ public abstract class IBM3270Commons {
 	/**
 	 * Press left
 	 * 
-	 * @param repetition
-	 * @return
+	 * @param repetition Number of times to perform the action
+	 * @return IBM3270Commons instance
 	 */
 	public IBM3270Commons pressLeft(int repetition) {
 
@@ -525,7 +506,7 @@ public abstract class IBM3270Commons {
 	/**
 	 * Press right
 	 * 
-	 * @return
+	 * @return IBM3270Commons instance
 	 */
 	public IBM3270Commons pressRight() {
 
@@ -535,8 +516,8 @@ public abstract class IBM3270Commons {
 	/**
 	 * Press right
 	 * 
-	 * @param repetition
-	 * @return
+	 * @param repetition Number of times to perform the action
+	 * @return IBM3270Commons instance
 	 */
 	public IBM3270Commons pressRight(int repetition) {
 
@@ -550,7 +531,7 @@ public abstract class IBM3270Commons {
 	/**
 	 * Press down
 	 * 
-	 * @return
+	 * @return IBM3270Commons instance
 	 */
 	public IBM3270Commons pressDown() {
 
@@ -560,8 +541,8 @@ public abstract class IBM3270Commons {
 	/**
 	 * Press down
 	 * 
-	 * @param repetition
-	 * @return
+	 * @param repetition Number of times to perform the action
+	 * @return IBM3270Commons instance
 	 */
 	public IBM3270Commons pressDown(int repetition) {
 
@@ -575,7 +556,7 @@ public abstract class IBM3270Commons {
 	/**
 	 * Press up
 	 * 
-	 * @return
+	 * @return IBM3270Commons instance
 	 */
 	public IBM3270Commons pressUp() {
 
@@ -585,8 +566,8 @@ public abstract class IBM3270Commons {
 	/**
 	 * Press Up
 	 * 
-	 * @param repetition
-	 * @return
+	 * @param repetition Number of times to perform the action
+	 * @return IBM3270Commons instance
 	 */
 	public IBM3270Commons pressUp(int repetition) {
 
@@ -628,7 +609,7 @@ public abstract class IBM3270Commons {
 	/**
 	 * Copy the selected text
 	 * 
-	 * @return
+	 * @return String with all copied text
 	 * @throws IOException
 	 * @throws UnsupportedFlavorException
 	 */
@@ -639,8 +620,8 @@ public abstract class IBM3270Commons {
 	/**
 	 * Sends all screen text to the log
 	 * 
-	 * @param screen
-	 * @param warn
+	 * @param screen List of lines on screen
+	 * @param warn   Log level
 	 */
 	private void logScreen(List<String> screen, boolean warn) {
 
@@ -660,9 +641,9 @@ public abstract class IBM3270Commons {
 	}
 
 	/**
-	 * Sends all line text to the log
+	 * Sends all lines of text to the log
 	 * 
-	 * @param line
+	 * @param line Line of text on screen
 	 * @param warn Log level
 	 */
 	private void logLine(String line, boolean warn) {
@@ -674,18 +655,38 @@ public abstract class IBM3270Commons {
 		}
 	}
 
+	/**
+	 * Return a robot instance
+	 * 
+	 * @return robot instance
+	 */
 	public IRobot getRobot() {
 		return robot;
 	}
 
+	/**
+	 * Set a robot instance
+	 * 
+	 * @param robot
+	 */
 	public void setRobot(IRobot robot) {
 		this.robot = robot;
 	}
 
+	/**
+	 * Get traceScreenshot field
+	 * 
+	 * @return
+	 */
 	public Boolean getTraceScreenshots() {
 		return traceScreenshots;
 	}
 
+	/**
+	 * Set traceScreenshot field
+	 * 
+	 * @param traceScreenshots
+	 */
 	public void setTraceScreenshots(Boolean traceScreenshots) {
 		this.traceScreenshots = traceScreenshots;
 	}

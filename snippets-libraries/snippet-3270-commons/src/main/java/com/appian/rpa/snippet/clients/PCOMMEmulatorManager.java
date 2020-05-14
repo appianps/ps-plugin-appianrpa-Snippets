@@ -17,7 +17,7 @@ public class PCOMMEmulatorManager extends IBM3270Commons {
 	private static final String WINDOW_TITLE_REGEX = "Session.*";
 
 	/**
-	 * Process Name PCOMM
+	 * Process Name
 	 */
 	public static final String PROCESS_NAME = "pcsws.exe";
 

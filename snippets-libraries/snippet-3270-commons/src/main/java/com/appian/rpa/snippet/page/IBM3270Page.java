@@ -6,7 +6,7 @@ import com.novayre.jidoka.client.api.exceptions.JidokaException;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 
 /**
- * Class to manage Remote Pages
+ * Class to manage IBM3270 Pages
  */
 public abstract class IBM3270Page {
 
@@ -21,7 +21,7 @@ public abstract class IBM3270Page {
 	 * @param commons
 	 * @throws JidokaException
 	 */
-	public IBM3270Page(IBM3270Commons commons) throws JidokaException {
+	public IBM3270Page(IBM3270Commons commons) throws JidokaFatalException {
 		this.commons = commons;
 		assertIsThisPage();
 	}
