@@ -1,4 +1,4 @@
-package com.appian.robot.demo;
+package com.appian.rpa.snippets.examples;
 
 import java.io.Serializable;
 
@@ -21,7 +21,7 @@ import com.novayre.jidoka.client.api.multios.IClient;
  * Robot for managing 3270 terminals
  */
 @Robot
-public class Robot3270 implements IRobot {
+public class IBM3270ManagerRobot implements IRobot {
 
 	/** Jidoka server instance */
 	private IJidokaServer<Serializable> server;
@@ -71,7 +71,7 @@ public class Robot3270 implements IRobot {
 				commons = new PCOMMEmulatorManager(this);
 			}
 
-			appManager = new IBM3270AppManager(this, emulator);
+			appManager = new IBM3270AppManager(commons);
 
 			server.debug("Robot initialized");
 		} catch (Exception e) {
@@ -88,7 +88,7 @@ public class Robot3270 implements IRobot {
 
 			server.info("Opening 3270 terminal");
 
-			currentPage = appManager.openIBM3270(commons);
+			currentPage = appManager.openIBM3270();
 
 			client.pause(1000);
 
