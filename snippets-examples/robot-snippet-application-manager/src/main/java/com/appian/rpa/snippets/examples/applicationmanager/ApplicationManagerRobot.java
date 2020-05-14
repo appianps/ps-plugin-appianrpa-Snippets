@@ -139,9 +139,11 @@ public class ApplicationManagerRobot implements IRobot {
 	/**
 	 * Overrides the cleanUp method.
 	 * 
-	 * We ensure that the applications are been closed even if there was an
-	 * exception through the process. This is considered a good practice
+	 * We ensure that all the applications involved have been successfully closed,
+	 * even if an exception was thrown during the process. This is a common practice
+	 * to avoid undesired opened tasks in the following executions.
 	 */
+
 	@Override
 	public String[] cleanUp() throws Exception {
 
