@@ -23,8 +23,7 @@ public class WelcomePage extends IBM3270Page {
 	/**
 	 * Class constructor
 	 * 
-	 * @param client
-	 * @param robot
+	 * @param commons
 	 * @throws JidokaException
 	 */
 	public WelcomePage(IBM3270Commons commons) throws JidokaException {
@@ -34,8 +33,9 @@ public class WelcomePage extends IBM3270Page {
 	}
 
 	/**
+	 * Go to the page indicated as parameter
 	 * 
-	 * @param page
+	 * @param page Name of the page in the menu
 	 * @throws JidokaException
 	 */
 	public NetViewPage goToPage(String page) throws JidokaException {

@@ -31,8 +31,7 @@ public class NetViewPage extends IBM3270Page {
 	/**
 	 * Class constructor
 	 * 
-	 * @param client
-	 * @param robot
+	 * @param commons
 	 * @throws JidokaException
 	 */
 	public NetViewPage(IBM3270Commons commons) throws JidokaException {
