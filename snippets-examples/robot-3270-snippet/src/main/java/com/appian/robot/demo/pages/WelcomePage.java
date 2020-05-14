@@ -11,11 +11,6 @@ import com.novayre.jidoka.client.api.multios.IClient;
 public class WelcomePage extends IBM3270Page {
 
 	/**
-	 * IBM3270Commons instance
-	 */
-	private IBM3270Commons commons;
-
-	/**
 	 * Client Module Instance
 	 */
 	protected IClient client;
@@ -28,7 +23,6 @@ public class WelcomePage extends IBM3270Page {
 	 */
 	public WelcomePage(IBM3270Commons commons) throws JidokaException {
 		super(commons);
-		this.commons = commons;
 		client = IClient.getInstance(commons.getRobot());
 	}
 

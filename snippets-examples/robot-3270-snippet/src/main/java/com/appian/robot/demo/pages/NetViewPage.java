@@ -14,11 +14,6 @@ import com.novayre.jidoka.client.api.multios.IClient;
 public class NetViewPage extends IBM3270Page {
 
 	/**
-	 * IBM3270Commons instance
-	 */
-	private IBM3270Commons commons;
-
-	/**
 	 * Jidoka server instance
 	 */
 	private IJidokaServer<?> server;
@@ -36,7 +31,6 @@ public class NetViewPage extends IBM3270Page {
 	 */
 	public NetViewPage(IBM3270Commons commons) throws JidokaException {
 		super(commons);
-		this.commons = commons;
 		client = IClient.getInstance(commons.getRobot());
 		server = JidokaFactory.getServer();
 	}
