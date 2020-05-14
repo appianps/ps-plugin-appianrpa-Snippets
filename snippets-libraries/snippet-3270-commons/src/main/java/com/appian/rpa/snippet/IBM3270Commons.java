@@ -38,27 +38,17 @@ public abstract class IBM3270Commons {
 	/**
 	 * Jidoka Server Instance
 	 */
-	protected IJidokaServer<?> server;
-
-	/**
-	 * Client Module Instance
-	 */
-	protected IClient client;
+	private IJidokaServer<?> server;
 
 	/**
 	 * IRobot instance
 	 */
-	protected IRobot robot;
+	private IRobot robot;
 
 	/**
 	 * Waitfor instance
 	 */
-	protected IWaitFor waitFor;
-
-	/**
-	 * Keyboard module instance
-	 */
-	protected IKeyboard keyboard;
+	private IWaitFor waitFor;
 
 	/**
 	 * Trace screenshots?
@@ -76,7 +66,19 @@ public abstract class IBM3270Commons {
 	private int maxCoordY = 24;
 
 	/**
+	 * Client Module Instance
+	 */
+	protected IClient client;
+
+	/**
+	 * Keyboard module instance
+	 */
+	protected IKeyboard keyboard;
+
+	/**
 	 * Instantiates a new IBM3270Commons
+	 * 
+	 * @param robot IRobot instance (i.e. this)
 	 */
 	public IBM3270Commons(IRobot robot) {
 
