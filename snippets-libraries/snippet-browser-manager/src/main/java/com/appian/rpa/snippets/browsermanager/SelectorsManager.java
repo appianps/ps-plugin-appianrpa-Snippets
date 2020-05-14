@@ -1,4 +1,4 @@
-package com.appian.rpa.snippets.commons.browser;
+package com.appian.rpa.snippets.browsermanager;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,7 +21,13 @@ import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.client.api.multios.IClient;
 
 /**
- * Class to get the web elements selector from the selectors.properties file.
+ * Most of the web elements from a website (checkboxes, text, buttons) are
+ * referred by a selector (you can inspect them by right clicking the target
+ * element on your browser). This selector identifies in an unambiguous way a
+ * web element. Therefore, the robot can interact with a website robustly.
+ * 
+ * The SelectorsManager class retrieves all the selectors involved in the
+ * robotic process from the selectors.properties file.
  */
 public class SelectorsManager {
 
@@ -83,7 +89,6 @@ public class SelectorsManager {
 	 * Gets the selector given by the key {@code key}
 	 * 
 	 * @param key Key to search the selector
-	 * 
 	 * @return The selector
 	 */
 	public String getSelector(String key) {
@@ -116,7 +121,7 @@ public class SelectorsManager {
 	}
 
 	/**
-	 * This function retrieves the corresponding By element from desired selector.
+	 * This function retrieves the corresponding By element given a selector.
 	 * 
 	 * @param key Selector key from selectors.properties file (String)
 	 * @return The {@link By} element depending on termination
@@ -137,12 +142,11 @@ public class SelectorsManager {
 	}
 
 	/**
-	 * Finds all {@link WebElement} objects using the selector saved in the
-	 * selectors file, which is found filtering by the given {@code key}. Searches
-	 * by the given {@code key}. The selector key must end in:
-	 * {@link #XPATH_SUFFIX}, {@link #CSS_SUFFIX}, {@link #CLASSNAME_SUFFIX} or
-	 * {@link #ID_SUFFIX}. If the key does not end in one of these suffixes, it is
-	 * returned an empty list.
+	 * Find all {@link WebElement} objects using the selector saved in the selectors
+	 * file, which can be found searching by the given {@code key}. The selector key
+	 * must ends with {@link #XPATH_SUFFIX}, {@link #CSS_SUFFIX},
+	 * {@link #CLASSNAME_SUFFIX} or {@link #ID_SUFFIX}. If the key does not end with
+	 * one of these suffixes, the function will return an empty list.
 	 * 
 	 * @param key Selector key on the selectors file
 	 * @return The @{@link List} of {@link WebElement} objects resulting from the
@@ -164,12 +168,12 @@ public class SelectorsManager {
 	}
 
 	/**
-	 * Checks if the {@link WebElement} exists in the DOM using the selector saved
-	 * in the selectors file, which is found filtering by the given {@code key}.
-	 * Searches by the given {@code key}. The selector key must end in:
+	 * Check if the {@link WebElement} exists in the DOM using the saved selector in
+	 * selectors file, which can found filtering by the given {@code key}. Searches
+	 * by the given {@code key}. The selector key must ends with
 	 * {@link #XPATH_SUFFIX}, {@link #CSS_SUFFIX}, {@link #CLASSNAME_SUFFIX} or
-	 * {@link #ID_SUFFIX}. If the key does not end in one of these suffixes, it is
-	 * returned null.
+	 * {@link #ID_SUFFIX}. If the key does not end with one of these suffixes, the
+	 * function will return an empty list.
 	 * 
 	 * @param key Selector key on the selectors file
 	 * @return true if the {@link WebElement} was found; false otherwise
