@@ -78,10 +78,10 @@ public abstract class IBM3270Commons {
 	/**
 	 * Instantiates a new IBM3270Commons
 	 */
-	public IBM3270Commons(IClient client, IRobot robot) {
+	public IBM3270Commons(IRobot robot) {
 
 		this.server = JidokaFactory.getServer();
-		this.client = client;
+		this.client = IClient.getInstance(robot);
 		this.robot = robot;
 		waitFor = client.waitFor(robot);
 		keyboard = client.keyboard();
