@@ -3,7 +3,7 @@ package com.appian.rpa.snippets.examples.credentials;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
-import com.appian.rpa.snippets.commons.credentials.CredentialsUtils;
+import com.appian.rpa.snippets.credentials.CredentialsUtils;
 import com.novayre.jidoka.client.api.ECredentialSearch;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;

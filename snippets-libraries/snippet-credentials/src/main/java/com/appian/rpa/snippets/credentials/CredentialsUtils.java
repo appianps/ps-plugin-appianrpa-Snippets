@@ -1,16 +1,26 @@
-package com.appian.rpa.snippets.commons.credentials;
+package com.appian.rpa.snippets.credentials;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import com.novayre.jidoka.client.api.*;
+
+import com.novayre.jidoka.client.api.ECredentialSearch;
+import com.novayre.jidoka.client.api.IJidokaServer;
+import com.novayre.jidoka.client.api.IRobot;
+import com.novayre.jidoka.client.api.IWaitFor;
+import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.client.api.exceptions.JidokaUnsatisfiedConditionException;
 import com.novayre.jidoka.client.api.execution.IUsernamePassword;
 import com.novayre.jidoka.client.api.multios.IClient;
 
+/**
+ * The CredentialsUtils Class provides the actions to retrieve and manage Appian
+ * RPA Console Credentials.
+ *
+ */
 public class CredentialsUtils {
 
 	/** CredentialsUtils instance */
@@ -29,19 +39,19 @@ public class CredentialsUtils {
 	private Map<IUsernamePassword, Boolean> credentialsInUse = new HashMap<>();
 
 	/**
-	 * Private constructor restricted to this class itself
+	 * Private constructor restricted to the class itself
 	 * 
 	 * @param robot {@link IRobot} instance
 	 */
 	private CredentialsUtils(IRobot robot) {
-		this.server = (IJidokaServer<?>) JidokaFactory.getServer();
+		this.server = JidokaFactory.getServer();
 		this.client = IClient.getInstance(robot);
 		this.waitFor = client.getWaitFor(robot);
 	}
 
 	/**
 	 * 
-	 * Static method to create instance of CredentialsUtils class
+	 * Static method to create an instance of the CredentialsUtils class
 	 * 
 	 * @param robot {@link IRobot} instance
 	 * 
@@ -133,9 +143,9 @@ public class CredentialsUtils {
 			if (reserve) {
 
 				// Waits until the credentials are reserved
-				this.waitFor.wait(timeOutSeconds, "Reserving the credentials", true, false, () -> 
-					// Gets the credentials
-					server.reserveCredential(application, credentials.getUsername())
+				this.waitFor.wait(timeOutSeconds, "Reserving the credentials", true, false, () ->
+				// Gets the credentials
+				server.reserveCredential(application, credentials.getUsername())
 
 				);
 
@@ -144,30 +154,31 @@ public class CredentialsUtils {
 			throw new JidokaFatalException("Error reserving the credentials", e);
 		}
 
-		// We put the new credentials in use into the credentialsInUse map
+		// We update the selected credentials as being used with the help of the
+		// credentialsInUse hashmap
 		credentialsInUse.put(credentials, reserve);
 
-		// Return the credentials
 		return credentials;
 	}
 
 	/**
-	 * Releases the specified credentials
+	 * Release the specified credentials
 	 * 
 	 * @param credentialApplication Credentials application
-	 * @param userName              Username of the credentials
+	 * @param userName              Credentials username
 	 */
 	public void releaseCredentials(String credentialApplication, String userName) {
 
-		// Gets the credentials
+		// Get credentials
 		Entry<IUsernamePassword, Boolean> credentials = credentialsInUse.entrySet().stream()
 				.filter(c -> c.getKey().getUsername().equals(userName)).findFirst().orElse(null);
 
-		// If the credentials were reserved, it releases them
+		// If credentials were already retrieved, release credentials
 		if (credentials.getValue()) {
 
 			server.releaseCredential(credentialApplication, userName);
-			// We put the new credentials in use into the credentialsInUse map
+			// We update the new credentials as being used with the help of the
+			// credentialsInUse hashmap
 			credentialsInUse.put(credentials.getKey(), false);
 
 			server.info(String.format("Credentials %s with username: %s released", credentialApplication, userName));
@@ -179,7 +190,7 @@ public class CredentialsUtils {
 	}
 
 	/**
-	 * Release all previously obtained credentials
+	 * Release all retrieved credentials
 	 * 
 	 * @param credentialApplication Credentials application
 	 */
