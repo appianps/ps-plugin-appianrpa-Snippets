@@ -3,10 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.appian.robot.snippets</groupId>
-	<artifactId>robot-3270-snippet</artifactId>
+	<groupId>com.appian.rpa.snippets.examples</groupId>
+	<artifactId>robot-snippet-3270-manager</artifactId>
 	<version>0.0.1</version>
 	<packaging>jar</packaging>
+	
+	<name>robot-snippet-3270-manager</name>
 
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>
@@ -14,16 +16,6 @@
 		<version>7.0.0</version>
 	</parent>
 
-	<properties>
-
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jdk.version>1.8</jdk.version>
-		<targetJdk>${jdk.version}</targetJdk>
-		<jidoka.version>7.0.0</jidoka.version>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-
-	</properties>
 
 	<profiles>
 
@@ -97,16 +89,15 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.novayre.jidoka.module</groupId>
-			<artifactId>jidoka-data-provider-impl</artifactId>
-			<version>${jidoka.version}</version>
-			<scope>test</scope>
+			<groupId>com.appian.rpa.snippets</groupId>
+			<artifactId>snippet-3270-manager</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
-			<groupId>com.appian.snippets.commons</groupId>
-			<artifactId>snippet-3270-commons</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<groupId>com.appian.rpa.snippets</groupId>
+			<artifactId>snippet-application-manager</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 		
 	</dependencies>
