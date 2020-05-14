@@ -9,7 +9,6 @@ import com.appian.robot.demo.pages.WelcomePage;
 import com.appian.rpa.snippet.IBM3270Commons;
 import com.appian.rpa.snippet.page.IBM3270Page;
 import com.novayre.jidoka.client.api.IJidokaServer;
-import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.IWaitFor;
 import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.exceptions.JidokaException;
@@ -31,6 +30,16 @@ public class IBM3270AppManager {
 	public static final int APP_MAX_OPEN_RETRIES = 3;
 
 	/**
+	 * Pause in seconds
+	 */
+	public static final int LONG_WAIT_SECONDS = 60;
+
+	/**
+	 * Default pause in milliseconds
+	 */
+	public static final long WAIT_MENU_MILLISECONDS = 500;
+
+	/**
 	 * Server instance
 	 */
 	private IJidokaServer<Serializable> server;
@@ -45,33 +54,22 @@ public class IBM3270AppManager {
 	 */
 	private IWaitFor waitFor;
 
-	/**
-	 * Process Name
-	 */
-	public String processName;
-
-	/**
-	 * App Name
-	 */
-	public String appName;
+	/** IBM3270Commons snippet instance */
+	private IBM3270Commons commons;
 
 	/**
 	 * Default Constructor
 	 * 
-	 * @param server
-	 * @param windows
 	 * @param robot
 	 * @param emulator
-	 * @param currentCredential
 	 */
 	@SuppressWarnings("unchecked")
-	public IBM3270AppManager(IRobot robot, String emulator) {
+	public IBM3270AppManager(IBM3270Commons commons) {
 
 		this.server = (IJidokaServer<Serializable>) JidokaFactory.getServer();
-		this.windows = IWindows.getInstance(robot);
-		this.waitFor = windows.getWaitFor(robot);
-
-		loadVariables(emulator);
+		this.windows = IWindows.getInstance(commons.getRobot());
+		this.waitFor = windows.getWaitFor(commons.getRobot());
+		this.commons = commons;
 
 	}
 
@@ -82,9 +80,9 @@ public class IBM3270AppManager {
 	 * @param titleExpected
 	 * @throws JidokaException
 	 */
-	public IBM3270Page openIBM3270(IBM3270Commons commons) throws JidokaException {
+	public IBM3270Page openIBM3270() throws JidokaException {
 
-		String app = String.format("%s\\config\\%s.lnk", server.getCurrentDir(), appName);
+		String app = String.format("%s\\config\\%s.lnk", server.getCurrentDir(), getLinkName());
 
 		for (int i = 1; i <= APP_MAX_OPEN_RETRIES; i++) {
 
@@ -101,7 +99,7 @@ public class IBM3270AppManager {
 			AtomicReference<HWND> ieAtomic = new AtomicReference<>();
 
 			try {
-				waitFor.wait(IBM3270Constants.LONG_WAIT_SECONDS, "Waiting for the application to open", false, () -> {
+				waitFor.wait(LONG_WAIT_SECONDS, "Waiting for the application to open", false, () -> {
 					WindowInfo window = windows.getWindow(commons.getWindowTitleRegex());
 					if (window != null) {
 						ieAtomic.set(window.gethWnd());
@@ -138,14 +136,13 @@ public class IBM3270AppManager {
 
 		try {
 
-			List<Process> processes = windows.getProcesses(processName, true);
+			List<Process> processes = windows.getProcesses(commons.getProcessName(), true);
 
 			if (processes.size() == 0) {
 				return;
 			}
 
 		} catch (IOException e1) {
-			;
 		}
 
 		quit(windowTitle);
@@ -154,7 +151,7 @@ public class IBM3270AppManager {
 
 		// Checks that all instances of the application were closed
 		try {
-			windows.killAllProcesses(processName, 1);
+			windows.killAllProcesses(commons.getProcessName(), 1);
 		} catch (IOException e) {
 		}
 	}
@@ -170,23 +167,15 @@ public class IBM3270AppManager {
 
 		windows.pause(1000);
 
-		windows.getKeyboard().alt("n").pause(IBM3270Constants.WAIT_MENU_MILLISECONDS).end()
-				.pause(IBM3270Constants.WAIT_MENU_MILLISECONDS).enter();
+		windows.getKeyboard().alt("n").pause(WAIT_MENU_MILLISECONDS).end().pause(WAIT_MENU_MILLISECONDS).enter();
 	}
 
 	/**
-	 * Loads the variable fields according to the type of emulator
+	 * Extract the name of the link from the name of the process
 	 * 
-	 * @param emulator
+	 * @return
 	 */
-	private void loadVariables(String emulator) {
-		if (emulator.equals("wc3270")) {
-			appName = IBM3270Constants.APP_NAME_WC3270;
-			processName = IBM3270Constants.PROCESS_NAME_WC3270;
-		} else {
-			appName = IBM3270Constants.APP_NAME_PCOMM;
-			processName = IBM3270Constants.PROCESS_NAME_PCOMM;
-		}
+	private String getLinkName() {
+		return commons.getProcessName().replace(".exe", "").toUpperCase();
 	}
-
 }
