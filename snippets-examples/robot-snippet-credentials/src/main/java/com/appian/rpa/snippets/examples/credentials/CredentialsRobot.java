@@ -1,4 +1,4 @@
-package com.appian.rpa.example.credentials;
+package com.appian.rpa.snippets.examples.credentials;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -12,6 +12,15 @@ import com.novayre.jidoka.client.api.annotations.Robot;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.client.api.exceptions.JidokaItemException;
 import com.novayre.jidoka.client.api.execution.IUsernamePassword;
+
+/**
+ * 
+ * The Credentials Robot provides a complete usage example from all the
+ * CredentialsUtils snippet methods. The robot will retrieve three existent
+ * credentials (Username + Password) associated to the application "TEST_ROBOT".
+ * In case that these three credentials were not previously created in the
+ * console side, the application will throw an exception.
+ */
 
 @Robot
 public class CredentialsRobot implements IRobot {
@@ -43,6 +52,9 @@ public class CredentialsRobot implements IRobot {
 	/** Credentials 3 */
 	private IUsernamePassword credentials3;
 
+	/**
+	 * Override startup method to initialise some variables involved in our process.
+	 */
 	@Override
 	public boolean startUp() throws Exception {
 		// Init server module
@@ -57,16 +69,18 @@ public class CredentialsRobot implements IRobot {
 	/**
 	 * Inits modules and global variabless
 	 */
-	public void init() {
+	public void start() {
 		// Init actions
 		server.setNumberOfItems(NUMBER_OF_LOOPS);
 	}
 
 	/**
-	 * Logins to the chosen application using the necessary credentials, either
-	 * reserving it or not
+	 * This method retrieves the three credentials associated to the same TEST_ROBOT
+	 * application, whether the number of usages is limited or not. A
+	 * JidokaFatalException is thrown in case that the number of retrievals was
+	 * already exceeded or simply the desired credential does not exist.
 	 */
-	public void loginApp() {
+	public void retrieveCredentialsFromConsole() {
 
 		try {
 			// First, reserves or gets the credentials needed. In this case, we are going to
@@ -139,7 +153,7 @@ public class CredentialsRobot implements IRobot {
 	}
 
 	/**
-	 * Closes the app and release the used credentials
+	 * Close the app and release the used credentials
 	 */
 	public void closeApp() {
 
@@ -160,6 +174,14 @@ public class CredentialsRobot implements IRobot {
 		// continue the process, here the robot ends its execution
 
 	}
+
+	/**
+	 * Overrides the cleanUp method.
+	 * 
+	 * We ensure that all the applications involved have been successfully closed,
+	 * even if an exception was thrown during the process. This is a common practice
+	 * to avoid undesired opened tasks in the following executions.
+	 */
 
 	@Override
 	public String[] cleanUp() throws Exception {
