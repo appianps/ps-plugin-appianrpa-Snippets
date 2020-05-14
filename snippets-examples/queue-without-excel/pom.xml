@@ -1,19 +1,21 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  
-  <groupId>com.appian.snippets.examples</groupId>
-  <artifactId>DEV-fill-generic-queue</artifactId>
-  <version>0.0.1</version>
-  
-  <name>DEV-fill-generic-queue</name>
-  
-  <parent>
-    <groupId>com.novayre.jidoka.robot</groupId>
-    <artifactId>jidoka-robot-parent</artifactId>
-    <version>7.0.0</version>
-  </parent>
-  
-  <profiles>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.appian.snippets.examples</groupId>
+	<artifactId>DEV-fill-generic-queue</artifactId>
+	<version>0.0.1</version>
+
+	<name>DEV-fill-generic-queue</name>
+
+	<parent>
+		<groupId>com.novayre.jidoka.robot</groupId>
+		<artifactId>jidoka-robot-parent</artifactId>
+		<version>7.0.0</version>
+	</parent>
+
+	<profiles>
 		<profile>
 
 			<id>rpa-coe-lab</id>
@@ -60,11 +62,11 @@
 		</profile>
 	</profiles>
 
-	<dependencies>		
+	<dependencies>
 		<dependency>
-			<groupId>com.appian.snippets.commons</groupId>
-			<artifactId>snippets-commons</artifactId>
-			<version>1.0.1-SNAPSHOT</version>
+			<groupId>com.appian.rpa.snippets</groupId>
+			<artifactId>queue-manager</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 </project>
