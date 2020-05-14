@@ -1,11 +1,11 @@
 package com.appian.rpa.snippets.examples.browsermanager;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.openqa.selenium.By;
 
-import com.appian.rpa.snippets.commons.browser.BrowserManager;
-import com.appian.rpa.snippets.commons.browser.SelectorsManager;
+import com.appian.rpa.snippets.browsermanager.BrowserManager;
+import com.appian.rpa.snippets.browsermanager.SelectorsManager;
 import com.novayre.jidoka.browser.api.EBrowsers;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;

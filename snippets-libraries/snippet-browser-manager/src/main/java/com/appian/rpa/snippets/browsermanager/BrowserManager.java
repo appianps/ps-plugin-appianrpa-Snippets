@@ -1,4 +1,4 @@
-package com.appian.rpa.snippets.commons.browser;
+package com.appian.rpa.snippets.browsermanager;
 
 import java.io.Serializable;
 
@@ -16,8 +16,9 @@ import com.novayre.jidoka.client.api.multios.EClientShowWindowType;
 import com.novayre.jidoka.client.api.multios.IClient;
 
 /**
- * Class to manage a Browser. To use different browsers, use different instances
- * of the class.
+ * This utility let the robot manage a web browser (Chrome, Firefox and
+ * IExplorer are supported). Your process should include an instance for each
+ * browser window involved in the robot actions.
  */
 public class BrowserManager {
 
@@ -61,8 +62,9 @@ public class BrowserManager {
 	}
 
 	/**
-	 * 
 	 * Return the browser object to let the users interact with the same instance.
+	 * This can be useful to retrieve web elements and interact with the
+	 * SelectorsManager class methods too.
 	 */
 
 	public IWebBrowserSupport getBrowser() {
@@ -70,8 +72,8 @@ public class BrowserManager {
 	}
 
 	/**
-	 * Init and opens the browser. Sets the browser type to the given by the
-	 * constructor.
+	 * Initialize and open a new browser window. Set the browser type to constructor
+	 * instance.
 	 */
 	public void openBrowser() {
 
@@ -94,18 +96,18 @@ public class BrowserManager {
 	/**
 	 * Navigates to the given {@code url}. Before it activates the browser window.
 	 * 
-	 * @param url Url to navigate
+	 * @param url as String contains the target website
 	 */
 	@SuppressWarnings("unchecked")
 	public void navigateTo(String url) {
 
 		try {
-			// Focus on the app and activate the window on client module
+			// Focus on app and activate the window on client module
 			client.activateWindow(getBrowserWindowTitle());
 
 			client.showWindow(client.getWindow(getBrowserWindowTitle()).getId(), EClientShowWindowType.MAXIMIZE);
 
-			// Navigate to the URL
+			// Navigate to URL
 			browser.navigate(url);
 
 		} catch (Exception e) {
@@ -115,9 +117,9 @@ public class BrowserManager {
 	}
 
 	/**
-	 * Gets the selected browser window title
+	 * Get the selected browser window title
 	 * 
-	 * @return The browser window title
+	 * @return The browser window tittle
 	 */
 	private String getBrowserWindowTitle() {
 
@@ -135,11 +137,11 @@ public class BrowserManager {
 	}
 
 	/**
-	 * Closes the browser.
+	 * Close the browser window.
 	 */
 	public void browserCleanUp() {
 
-		// If the browser was initialized, close it
+		// Close if initialized
 		if (browser == null) {
 			return;
 		}
@@ -154,7 +156,7 @@ public class BrowserManager {
 	}
 
 	/**
-	 * Gets the {@link SelectorsManager} instance
+	 * Get the {@link SelectorsManager} instance
 	 * 
 	 * @return The {@link SelectorsManager} instance
 	 */
