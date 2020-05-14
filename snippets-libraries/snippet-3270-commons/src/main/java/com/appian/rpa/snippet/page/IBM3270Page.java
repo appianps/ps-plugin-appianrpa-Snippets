@@ -13,7 +13,7 @@ public abstract class IBM3270Page {
 	/**
 	 * IBM3270Commons instance
 	 */
-	private IBM3270Commons commons;
+	protected IBM3270Commons commons;
 
 	/**
 	 * Class constructor
@@ -61,22 +61,6 @@ public abstract class IBM3270Page {
 	 */
 	public String getPageName() {
 		return this.getClass().getSimpleName();
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public IBM3270Commons getCommons() {
-		return commons;
-	}
-
-	/**
-	 * 
-	 * @param commons
-	 */
-	public void setCommons(IBM3270Commons commons) {
-		this.commons = commons;
 	}
 
 }
