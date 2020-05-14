@@ -1,32 +1,45 @@
 package com.appian.robot.demo.pages;
 
-import com.appian.rpa.snippet.ConstantsWaits;
 import com.appian.rpa.snippet.IBM3270Commons;
 import com.appian.rpa.snippet.TextInScreen;
-import com.appian.rpa.snippet.page.RemotePage;
-import com.novayre.jidoka.client.api.IRobot;
+import com.appian.rpa.snippet.page.IBM3270Page;
+import com.novayre.jidoka.client.api.IJidokaServer;
+import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.exceptions.JidokaException;
 import com.novayre.jidoka.client.api.multios.IClient;
 
 /**
  * Class to manage Netview Page
  */
-public class NetViewPage extends RemotePage {
+public class NetViewPage extends IBM3270Page {
 
 	/**
-	 * Specific implementation of the common class
+	 * IBM3270Commons instance
 	 */
 	private IBM3270Commons commons;
 
 	/**
-	 * Clas constructor
+	 * Jidoka server instance
+	 */
+	private IJidokaServer<?> server;
+
+	/**
+	 * Client Module Instance
+	 */
+	protected IClient client;
+
+	/**
+	 * Class constructor
 	 * 
 	 * @param client
 	 * @param robot
+	 * @throws JidokaException
 	 */
-	public NetViewPage(IClient client, IRobot robot, IBM3270Commons commons) {
-		super(client, robot);
+	public NetViewPage(IBM3270Commons commons) throws JidokaException {
+		super(commons);
 		this.commons = commons;
+		client = IClient.getInstance(commons.getRobot());
+		server = JidokaFactory.getServer();
 	}
 
 	/**
@@ -79,46 +92,13 @@ public class NetViewPage extends RemotePage {
 	}
 
 	/**
-	 * Check that the robot is on the correct page (current page)
+	 * Indicates the name of the current page (class)
 	 * 
-	 * @throws JidokaGenericException
+	 * @return
 	 */
 	@Override
-	public RemotePage assertIsThisPage() throws JidokaException {
-
-		try {
-			commons.locateText(ConstantsWaits.DEFAULT_NUMBER_OF_RETRIES_LOCATING_TEXT, getUnivocalRegex());
-		} catch (Exception e) {
-			server.debug(e.getMessage());
-			throw new JidokaException(getPageName());
-		}
-
-		return this;
-	}
-
-	@Override
-	public void selectAllText() {
-		commons.selectAllText();
-	}
-
-	@Override
-	public void activateWindow() {
-		commons.activateWindow();
-	}
-
-	@Override
-	public void moveToBottonRightCorner() {
-		commons.moveToBottonRightCorner();
-	}
-
-	@Override
-	public String[] splitScreenLines(String screen) {
-		return commons.splitScreenLines(screen);
-	}
-
-	@Override
-	public String getWindowTitleRegex() {
-		return commons.getWindowTitleRegex();
+	public String getPageName() {
+		return this.getClass().getSimpleName();
 	}
 
 }

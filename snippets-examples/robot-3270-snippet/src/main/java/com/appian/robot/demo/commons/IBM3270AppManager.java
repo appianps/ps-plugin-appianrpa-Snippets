@@ -5,12 +5,14 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.commons.collections4.CollectionUtils;
-
+import com.appian.robot.demo.pages.WelcomePage;
+import com.appian.rpa.snippet.IBM3270Commons;
+import com.appian.rpa.snippet.page.IBM3270Page;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.IWaitFor;
 import com.novayre.jidoka.client.api.JidokaFactory;
+import com.novayre.jidoka.client.api.exceptions.JidokaException;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.client.api.exceptions.JidokaUnsatisfiedConditionException;
 import com.novayre.jidoka.windows.api.IWindows;
@@ -44,19 +46,33 @@ public class IBM3270AppManager {
 	private IWaitFor waitFor;
 
 	/**
+	 * Process Name
+	 */
+	public String processName;
+
+	/**
+	 * App Name
+	 */
+	public String appName;
+
+	/**
 	 * Default Constructor
 	 * 
 	 * @param server
 	 * @param windows
 	 * @param robot
+	 * @param emulator
 	 * @param currentCredential
 	 */
 	@SuppressWarnings("unchecked")
-	public IBM3270AppManager(IRobot robot) {
+	public IBM3270AppManager(IRobot robot, String emulator) {
 
 		this.server = (IJidokaServer<Serializable>) JidokaFactory.getServer();
 		this.windows = IWindows.getInstance(robot);
 		this.waitFor = windows.getWaitFor(robot);
+
+		loadVariables(emulator);
+
 	}
 
 	/**
@@ -64,15 +80,16 @@ public class IBM3270AppManager {
 	 * 
 	 * @param processName
 	 * @param titleExpected
+	 * @throws JidokaException
 	 */
-	public void openIBM3270(String processName, String titleExpected) {
+	public IBM3270Page openIBM3270(IBM3270Commons commons) throws JidokaException {
 
-		String app = String.format("%s\\config\\%s.lnk", server.getCurrentDir(), processName);
+		String app = String.format("%s\\config\\%s.lnk", server.getCurrentDir(), appName);
 
 		for (int i = 1; i <= APP_MAX_OPEN_RETRIES; i++) {
 
-			server.debug(String.format("Trying open [%s] with title [%s]. %s de %s", app, titleExpected, i,
-					APP_MAX_OPEN_RETRIES));
+			server.debug(String.format("Trying open [%s] with title [%s]. %s de %s", app, commons.getWindowTitleRegex(),
+					i, APP_MAX_OPEN_RETRIES));
 
 			try {
 				Runtime.getRuntime().exec(String.format("rundll32 SHELL32.DLL,ShellExec_RunDLL %s", app));
@@ -85,7 +102,7 @@ public class IBM3270AppManager {
 
 			try {
 				waitFor.wait(IBM3270Constants.LONG_WAIT_SECONDS, "Waiting for the application to open", false, () -> {
-					WindowInfo window = windows.getWindow(titleExpected);
+					WindowInfo window = windows.getWindow(commons.getWindowTitleRegex());
 					if (window != null) {
 						ieAtomic.set(window.gethWnd());
 						return true;
@@ -98,9 +115,17 @@ public class IBM3270AppManager {
 			}
 
 			if (ieAtomic.get() != null) {
-				return;
-			}
+				WelcomePage welcomePage = new WelcomePage(commons);
 
+				try {
+					welcomePage.assertIsThisPage();
+				} catch (JidokaFatalException e) {
+					server.debug(e);
+					continue;
+				}
+
+				return welcomePage;
+			}
 		}
 
 		throw new JidokaFatalException(String.format("The App %s could not be opened ", app));
@@ -109,13 +134,13 @@ public class IBM3270AppManager {
 	/**
 	 * Close 3270 terminal.
 	 */
-	public void closeIBM3270(String process, String windowTitle) {
+	public void closeIBM3270(String windowTitle) {
 
 		try {
 
-			List<Process> processes = windows.getProcesses(process, true);
+			List<Process> processes = windows.getProcesses(processName, true);
 
-			if (CollectionUtils.isEmpty(processes)) {
+			if (processes.size() == 0) {
 				return;
 			}
 
@@ -129,13 +154,14 @@ public class IBM3270AppManager {
 
 		// Checks that all instances of the application were closed
 		try {
-			windows.killAllProcesses(process, 1);
+			windows.killAllProcesses(processName, 1);
 		} catch (IOException e) {
 		}
 	}
 
 	/**
 	 * Quit terminal
+	 * 
 	 * @param windowTitle
 	 */
 	public void quit(String windowTitle) {
@@ -147,4 +173,20 @@ public class IBM3270AppManager {
 		windows.getKeyboard().alt("n").pause(IBM3270Constants.WAIT_MENU_MILLISECONDS).end()
 				.pause(IBM3270Constants.WAIT_MENU_MILLISECONDS).enter();
 	}
+
+	/**
+	 * Loads the variable fields according to the type of emulator
+	 * 
+	 * @param emulator
+	 */
+	private void loadVariables(String emulator) {
+		if (emulator.equals("wc3270")) {
+			appName = IBM3270Constants.APP_NAME_WC3270;
+			processName = IBM3270Constants.PROCESS_NAME_WC3270;
+		} else {
+			appName = IBM3270Constants.APP_NAME_PCOMM;
+			processName = IBM3270Constants.PROCESS_NAME_PCOMM;
+		}
+	}
+
 }

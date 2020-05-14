@@ -3,14 +3,12 @@ package com.appian.robot.demo;
 import java.io.Serializable;
 
 import com.appian.robot.demo.commons.IBM3270AppManager;
-import com.appian.robot.demo.commons.IBM3270Constants;
-import com.appian.robot.demo.pages.ConstantsTexts;
 import com.appian.robot.demo.pages.NetViewPage;
+import com.appian.robot.demo.pages.WelcomePage;
 import com.appian.rpa.snippet.IBM3270Commons;
-import com.appian.rpa.snippet.TextInScreen;
-import com.appian.rpa.snippet.clients.PCOMCommonsExtended;
-import com.appian.rpa.snippet.clients.WC3270CommonsExtended;
-import com.appian.rpa.snippet.page.RemotePage;
+import com.appian.rpa.snippet.clients.PCOMMEmulatorManager;
+import com.appian.rpa.snippet.clients.WC3270EmulatorManager;
+import com.appian.rpa.snippet.page.IBM3270Page;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.JidokaFactory;
@@ -25,40 +23,20 @@ import com.novayre.jidoka.client.api.multios.IClient;
 @Robot
 public class Robot3270 implements IRobot {
 
-	/**
-	 * Jidoka server instance
-	 */
+	/** Jidoka server instance */
 	private IJidokaServer<Serializable> server;
 
-	/**
-	 * Client Module Instance
-	 */
+	/** Client Module instance */
 	protected IClient client;
 
-	/**
-	 * IBM3270Commons snippet instance
-	 */
-	private IBM3270Commons ibm3270Commons;
+	/** IBM3270Commons snippet instance */
+	private IBM3270Commons commons;
 
-	/**
-	 * IBM3270AppManager instance
-	 */
+	/** IBM3270AppManager instance */
 	private IBM3270AppManager appManager;
 
-	/**
-	 * Current screen
-	 */
-	public RemotePage currentPage;
-
-	/**
-	 * App Name
-	 */
-	public String appName;
-
-	/**
-	 * Process Name
-	 */
-	public String processName;
+	/** Current screen */
+	public IBM3270Page currentPage;
 
 	/**
 	 * Startup method. This <code>startUp</code> method is called prior to calling
@@ -88,16 +66,12 @@ public class Robot3270 implements IRobot {
 			String emulator = server.getParameters().get("Emulator");
 
 			if (emulator.equals("wc3270")) {
-				ibm3270Commons = new WC3270CommonsExtended(client, this);
-				appName = IBM3270Constants.APP_NAME_WC3270;
-				processName = IBM3270Constants.PROCESS_NAME_WC3270;
+				commons = new WC3270EmulatorManager(this);
 			} else {
-				ibm3270Commons = new PCOMCommonsExtended(client, this);
-				appName = IBM3270Constants.APP_NAME_PCOMM;
-				processName = IBM3270Constants.PROCESS_NAME_PCOMM;
+				commons = new PCOMMEmulatorManager(this);
 			}
 
-			appManager = new IBM3270AppManager(this);
+			appManager = new IBM3270AppManager(this, emulator);
 
 			server.debug("Robot initialized");
 		} catch (Exception e) {
@@ -110,28 +84,21 @@ public class Robot3270 implements IRobot {
 	 */
 	public void open3270() {
 
-		server.info("Opening 3270 terminal");
+		try {
 
-		appManager.openIBM3270(appName, ibm3270Commons.getWindowTitleRegex());
-		client.pause(1000);
+			server.info("Opening 3270 terminal");
 
-		server.sendScreen("Screenshot after opening the terminal");
-	}
+			currentPage = appManager.openIBM3270(commons);
 
-	/**
-	 * Action 'Validate page'.
-	 */
-	public void validateMainPage() {
+			client.pause(1000);
 
-		server.info("Validating Welcome Page");
+			server.sendScreen("Screenshot after opening the terminal");
 
-		TextInScreen textInScreen = ibm3270Commons.locateText(5, ConstantsTexts.WELCOME_UNIVOCAL_TEXT);
+		} catch (JidokaException e) {
 
-		if (textInScreen != null) {
-			server.info(String.format("Text %s found", ConstantsTexts.WELCOME_UNIVOCAL_TEXT));
-		} else {
-			throw new JidokaFatalException(String.format("Text not %s found", ConstantsTexts.WELCOME_UNIVOCAL_TEXT));
+			throw new JidokaFatalException("Error opening the terminal");
 		}
+
 	}
 
 	/**
@@ -143,11 +110,7 @@ public class Robot3270 implements IRobot {
 
 		server.sendScreen("Screenshot before moving to NetView page");
 
-		ibm3270Commons.write("NETVIEW");
-		client.pause(1000);
-		ibm3270Commons.enter();
-		client.pause(1000);
-		currentPage = new NetViewPage(client, this, ibm3270Commons).assertIsThisPage();
+		currentPage = ((WelcomePage) currentPage).goToPage("NETVIEW");
 
 		server.sendScreen("Moved to NetView page");
 	}
@@ -168,7 +131,7 @@ public class Robot3270 implements IRobot {
 	 * Action 'Close 3270'.
 	 */
 	public void close3270() {
-		appManager.closeIBM3270(processName, ibm3270Commons.getWindowTitleRegex());
+		appManager.closeIBM3270(commons.getWindowTitleRegex());
 	}
 
 	/**
@@ -188,7 +151,7 @@ public class Robot3270 implements IRobot {
 	 */
 	@Override
 	public String[] cleanUp() throws Exception {
-		appManager.closeIBM3270(processName, ibm3270Commons.getWindowTitleRegex());
+		appManager.closeIBM3270(commons.getWindowTitleRegex());
 		return IRobot.super.cleanUp();
 	}
 
