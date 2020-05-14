@@ -3,12 +3,11 @@ package com.appian.rpa.snippet.clients;
 import com.appian.rpa.snippet.ConstantsWaits;
 import com.appian.rpa.snippet.IBM3270Commons;
 import com.novayre.jidoka.client.api.IRobot;
-import com.novayre.jidoka.client.api.multios.IClient;
 
 /**
  * IBM3270Commons extension for SGC client
  */
-public class SGCCommonsExtended extends IBM3270Commons {
+public class SGCEmulatorManager extends IBM3270Commons {
 
 	/**
 	 * The Constant TITLE_REGEX.
@@ -37,9 +36,9 @@ public class SGCCommonsExtended extends IBM3270Commons {
 	 * @param client
 	 * @param robot
 	 */
-	public SGCCommonsExtended(IClient client, IRobot robot) {
+	public SGCEmulatorManager(IRobot robot) {
 
-		super(client, robot);
+		super(robot);
 
 		setMaxCoordX(MAX_COORD_X);
 		setMaxCoordY(MAX_COORD_Y);

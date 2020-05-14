@@ -1,18 +1,20 @@
 package com.appian.rpa.snippet.clients;
 
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
+
 import com.appian.rpa.snippet.IBM3270Commons;
 import com.novayre.jidoka.client.api.IRobot;
-import com.novayre.jidoka.client.api.multios.IClient;
 
 /**
- * IBM3270Commons extension for wc3270
+ * IBM3270Commons extension for PCOMM emulator
  */
-public class WC3270CommonsExtended extends IBM3270Commons {
+public class PCOMMEmulatorManager extends IBM3270Commons {
 
 	/**
 	 * The Constant WINDOW_TITLE_REGEX.
 	 */
-	public static final String WINDOW_TITLE_REGEX = ".*3270";
+	public static final String WINDOW_TITLE_REGEX = "Session.*";
 
 	/**
 	 * Default X-coordinate
@@ -31,9 +33,9 @@ public class WC3270CommonsExtended extends IBM3270Commons {
 	 * @param client
 	 * @param robot
 	 */
-	public WC3270CommonsExtended(IClient client, IRobot robot) {
+	public PCOMMEmulatorManager(IRobot robot) {
 
-		super(client, robot);
+		super(robot);
 
 		setMaxCoordX(MAX_COORD_X);
 		setMaxCoordY(MAX_COORD_Y);
@@ -45,8 +47,9 @@ public class WC3270CommonsExtended extends IBM3270Commons {
 	@Override
 	public void selectAllText() {
 
-		moveToBottonRightCorner();
-		keyboard.control("a").pause();
+		keyboard.alt("e").pause();
+		keyboard.type("a").pause();
+
 	}
 
 	/**
@@ -65,9 +68,7 @@ public class WC3270CommonsExtended extends IBM3270Commons {
 	 */
 	@Override
 	public void moveToBottonRightCorner() {
-
-		keyboard.down().pause();
-		keyboard.control("g").pause().control("g").pause();
+		// Not needed
 	}
 
 	/**
@@ -83,7 +84,25 @@ public class WC3270CommonsExtended extends IBM3270Commons {
 	 * 
 	 * @return
 	 */
+	@Override
 	public String getWindowTitleRegex() {
 		return WINDOW_TITLE_REGEX;
 	}
+
+	/**
+	 * Copy the selected text
+	 * 
+	 * @return
+	 * @throws IOException
+	 * @throws UnsupportedFlavorException
+	 */
+	@Override
+	public String copyText() throws IOException, UnsupportedFlavorException {
+
+		keyboard.alt("e").pause();
+		keyboard.type("c").pause();
+
+		return client.clipboardGet();
+	}
+
 }

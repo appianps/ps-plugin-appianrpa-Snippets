@@ -1,21 +1,17 @@
 package com.appian.rpa.snippet.clients;
 
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
-
 import com.appian.rpa.snippet.IBM3270Commons;
 import com.novayre.jidoka.client.api.IRobot;
-import com.novayre.jidoka.client.api.multios.IClient;
 
 /**
- * IBM3270Commons extension for PCOMM emulator
+ * IBM3270Commons extension for wc3270
  */
-public class PCOMCommonsExtended extends IBM3270Commons {
+public class WC3270EmulatorManager extends IBM3270Commons {
 
 	/**
 	 * The Constant WINDOW_TITLE_REGEX.
 	 */
-	public static final String WINDOW_TITLE_REGEX = "Session.*";
+	public static final String WINDOW_TITLE_REGEX = ".*3270";
 
 	/**
 	 * Default X-coordinate
@@ -34,9 +30,9 @@ public class PCOMCommonsExtended extends IBM3270Commons {
 	 * @param client
 	 * @param robot
 	 */
-	public PCOMCommonsExtended(IClient client, IRobot robot) {
+	public WC3270EmulatorManager(IRobot robot) {
 
-		super(client, robot);
+		super(robot);
 
 		setMaxCoordX(MAX_COORD_X);
 		setMaxCoordY(MAX_COORD_Y);
@@ -48,9 +44,8 @@ public class PCOMCommonsExtended extends IBM3270Commons {
 	@Override
 	public void selectAllText() {
 
-		keyboard.alt("e").pause();
-		keyboard.type("a").pause();
-
+		moveToBottonRightCorner();
+		keyboard.control("a").pause();
 	}
 
 	/**
@@ -69,7 +64,9 @@ public class PCOMCommonsExtended extends IBM3270Commons {
 	 */
 	@Override
 	public void moveToBottonRightCorner() {
-		// Not needed
+
+		keyboard.down().pause();
+		keyboard.control("g").pause().control("g").pause();
 	}
 
 	/**
@@ -89,21 +86,4 @@ public class PCOMCommonsExtended extends IBM3270Commons {
 	public String getWindowTitleRegex() {
 		return WINDOW_TITLE_REGEX;
 	}
-
-	/**
-	 * Copy the selected text
-	 * 
-	 * @return
-	 * @throws IOException
-	 * @throws UnsupportedFlavorException
-	 */
-	@Override
-	public String copyText() throws IOException, UnsupportedFlavorException {
-
-		keyboard.alt("e").pause();
-		keyboard.type("c").pause();
-
-		return client.clipboardGet();
-	}
-
 }
