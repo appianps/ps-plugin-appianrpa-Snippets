@@ -7,7 +7,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
-import com.appian.rpa.snippets.commons.restapi.RestApiUtils;
+import com.appian.rpa.snippets.restapi.RestApiUtils;
 import com.novayre.jidoka.client.api.ECredentialSearch;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
