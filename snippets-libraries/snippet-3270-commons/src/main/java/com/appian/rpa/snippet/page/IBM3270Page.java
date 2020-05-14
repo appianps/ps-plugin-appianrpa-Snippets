@@ -3,6 +3,7 @@ package com.appian.rpa.snippet.page;
 import com.appian.rpa.snippet.ConstantsWaits;
 import com.appian.rpa.snippet.IBM3270Commons;
 import com.novayre.jidoka.client.api.exceptions.JidokaException;
+import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 
 /**
  * Class to manage Remote Pages
@@ -35,9 +36,9 @@ public abstract class IBM3270Page {
 	/**
 	 * Check that the robot is on the correct page (current page)
 	 * 
-	 * @throws JidokaGenericException
+	 * @throws JidokaFatalException
 	 */
-	public Boolean assertIsThisPage() throws JidokaException {
+	public Boolean assertIsThisPage() throws JidokaFatalException {
 
 		String univocalRegex = getUnivocalRegex();
 
@@ -47,7 +48,7 @@ public abstract class IBM3270Page {
 			}
 		} catch (Exception e) {
 
-			throw new JidokaException(getPageName());
+			throw new JidokaFatalException(getPageName());
 		}
 
 		return true;
