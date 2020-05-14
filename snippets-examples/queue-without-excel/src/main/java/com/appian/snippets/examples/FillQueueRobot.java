@@ -14,7 +14,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import com.appian.rpa.snippets.commons.queues.generic.manager.GenericQueueManager;
+import com.appian.rpa.snippets.queuemanager.generic.manager.GenericQueueManager;
 import com.appian.snippets.examples.params.EEnvironmentVariables;
 import com.appian.snippets.examples.params.EInstructions;
 import com.novayre.jidoka.client.api.IJidokaServer;
@@ -111,23 +111,23 @@ public class FillQueueRobot implements IRobot {
 	public String hasNewItemsToAdd() {
 
 		Integer itemsPerRobot = EEnvironmentVariables.ITEMS_PER_ROBOT.getEnvironmentVariable().getAsInteger();
-		
+
 		int addedRobots = 0;
-		
+
 		filesToAdd = new ArrayList<>();
 
 		for (File file : getFilesList()) {
 			if (pendingOfProcess(file)) {
 				filesToAdd.add(file);
 				addedRobots++;
-				if(addedRobots >= itemsPerRobot) {
+				if (addedRobots >= itemsPerRobot) {
 					server.registerEvent("LAUNCH_CONSUMER_ROBOT");
 					addedRobots = 0;
 				}
 			}
 		}
-		
-		if(addedRobots > 0) {
+
+		if (addedRobots > 0) {
 			server.registerEvent("LAUNCH_CONSUMER_ROBOT");
 		}
 
@@ -172,8 +172,7 @@ public class FillQueueRobot implements IRobot {
 	private boolean pendingOfProcess(File file) {
 
 		try {
-			List<FileModel> filesList = genericQueueManager
-					.findItems(FilenameUtils.getBaseName(file.getName()));
+			List<FileModel> filesList = genericQueueManager.findItems(FilenameUtils.getBaseName(file.getName()));
 
 			return filesList.isEmpty();
 

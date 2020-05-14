@@ -7,14 +7,15 @@ import java.nio.file.Files;
 
 import org.apache.commons.io.FilenameUtils;
 
-import com.appian.rpa.snippets.commons.queues.generic.annotations.AItemField;
-import com.appian.rpa.snippets.commons.queues.generic.annotations.AItemKey;
+import com.appian.rpa.snippets.queuemanager.annotations.AItemField;
+import com.appian.rpa.snippets.queuemanager.annotations.AItemKey;
 import com.novayre.jidoka.client.api.exceptions.JidokaItemException;
 
 public class FileModel implements Serializable {
 
-	public FileModel() {}
-	
+	public FileModel() {
+	}
+
 	public FileModel(File file) {
 		this.fileName = FilenameUtils.getBaseName(file.getName());
 		this.fileContent = getContent(file);
@@ -27,7 +28,8 @@ public class FileModel implements Serializable {
 		try {
 			content = new String(Files.readAllBytes(file.toPath()));
 		} catch (IOException e) {
-			throw new JidokaItemException("Error getting the file " + FilenameUtils.getBaseName(file.getName()) + " content");
+			throw new JidokaItemException(
+					"Error getting the file " + FilenameUtils.getBaseName(file.getName()) + " content");
 		}
 		return content;
 
@@ -48,7 +50,7 @@ public class FileModel implements Serializable {
 	/** File content passed as a string */
 	@AItemField(fieldName = "FILE_CONTENT")
 	private String fileContent;
-	
+
 	/** Gets the file name */
 	public String getFileName() {
 		return fileName;
