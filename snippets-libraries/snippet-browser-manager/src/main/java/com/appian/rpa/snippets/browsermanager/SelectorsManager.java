@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -106,18 +105,15 @@ public class SelectorsManager {
 	 * @return The {@link WebElement} object resulting from the selector search.
 	 */
 	public WebElement getElement(String key) {
-
-		if (key.endsWith(XPATH_SUFFIX)) {
-			return browser.getElement(By.xpath(getSelector(key)));
-		} else if (key.endsWith(CSS_SUFFIX)) {
-			return browser.getElement(By.cssSelector(getSelector(key)));
-		} else if (key.endsWith(CLASSNAME_SUFFIX)) {
-			return browser.getElement(By.className(getSelector(key)));
-		} else if (key.endsWith(ID_SUFFIX)) {
-			return browser.getElement(By.id(getSelector(key)));
-		} else {
-			return null;
+		
+		By by = getBy(key);
+		
+		if(by!=null) {
+			
+			return browser.getElement(by);
 		}
+		
+		return null;
 	}
 
 	/**
@@ -126,7 +122,6 @@ public class SelectorsManager {
 	 * @param key Selector key from selectors.properties file (String)
 	 * @return The {@link By} element depending on termination
 	 */
-
 	public By getBy(String key) {
 		if (key.endsWith(XPATH_SUFFIX)) {
 			return By.xpath(getSelector(key));
@@ -154,17 +149,14 @@ public class SelectorsManager {
 	 */
 	public List<WebElement> getAllElements(String key) {
 
-		if (key.endsWith(XPATH_SUFFIX)) {
-			return browser.getElements(By.xpath(getSelector(key)));
-		} else if (key.endsWith(CSS_SUFFIX)) {
-			return browser.getElements(By.cssSelector(getSelector(key)));
-		} else if (key.endsWith(CLASSNAME_SUFFIX)) {
-			return browser.getElements(By.className(getSelector(key)));
-		} else if (key.endsWith(ID_SUFFIX)) {
-			return browser.getElements(By.id(getSelector(key)));
-		} else {
-			return new ArrayList<>();
+		By by = getBy(key);
+		
+		if(by!=null) {
+			
+			return browser.getElements(by);
 		}
+		
+		return null;
 	}
 
 	/**
@@ -180,16 +172,13 @@ public class SelectorsManager {
 	 */
 	public Boolean existsElement(String key) {
 
-		if (key.endsWith(XPATH_SUFFIX)) {
-			return browser.getElement(By.xpath(getSelector(key))) != null;
-		} else if (key.endsWith(CSS_SUFFIX)) {
-			return browser.getElement(By.cssSelector(getSelector(key))) != null;
-		} else if (key.endsWith(CLASSNAME_SUFFIX)) {
-			return browser.getElement(By.className(getSelector(key))) != null;
-		} else if (key.endsWith(ID_SUFFIX)) {
-			return browser.getElement(By.id(getSelector(key))) != null;
-		} else {
-			return null;
+		By by = getBy(key);
+		
+		if(by!=null) {
+			
+			return (browser.getElement(by) != null);
 		}
+		
+		return false;
 	}
 }
