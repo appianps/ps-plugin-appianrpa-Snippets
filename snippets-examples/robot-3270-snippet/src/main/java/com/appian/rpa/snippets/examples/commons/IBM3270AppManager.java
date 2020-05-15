@@ -24,34 +24,22 @@ import com.sun.jna.platform.win32.WinDef.HWND;
  */
 public class IBM3270AppManager {
 
-	/**
-	 * Maximum number of attempts to open the APP
-	 */
+	/** Maximum number of attempts to open the APP */
 	public static final int APP_MAX_OPEN_RETRIES = 3;
 
-	/**
-	 * Pause in seconds
-	 */
+	/** Pause in seconds */
 	public static final int LONG_WAIT_SECONDS = 60;
 
-	/**
-	 * Default pause in milliseconds
-	 */
+	/** Default pause in milliseconds */
 	public static final long WAIT_MENU_MILLISECONDS = 500;
 
-	/**
-	 * Server instance
-	 */
+	/** Server instance */
 	private IJidokaServer<Serializable> server;
 
-	/**
-	 * Windows module instance
-	 */
+	/** Windows module instance */
 	private IWindows windows;
 
-	/**
-	 * Waitfor module instance
-	 */
+	/** Waitfor module instance */
 	private IWaitFor waitFor;
 
 	/** IBM3270Commons snippet instance */

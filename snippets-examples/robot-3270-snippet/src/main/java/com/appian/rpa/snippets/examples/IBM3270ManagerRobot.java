@@ -22,7 +22,12 @@ import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.client.api.multios.IClient;
 
 /**
- * Robot for managing 3270 terminals
+ * IBM3270 Manager Robot provides a complete usage example from all the
+ * correspondent snippet methods. It opens a IBM3270 terminal using the emulator
+ * indicated as the robot's parameter, goes to a menu page and tries to change
+ * the user's password.
+ * 
+ * Finally the robot closes the emulator.
  */
 @Robot
 public class IBM3270ManagerRobot implements IRobot {
