@@ -21,7 +21,7 @@ import com.novayre.jidoka.client.api.exceptions.JidokaUnsatisfiedConditionExcept
 import com.novayre.jidoka.client.api.multios.IClient;
 
 /**
- * Class for operating an IBM 3270 client
+ * Class for operating an IBM 3270 terminal
  */
 public abstract class IBM3270Commons {
 
