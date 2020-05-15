@@ -183,6 +183,11 @@ public class BrowserManagerRobot implements IRobot {
 
 	@Override
 	public String[] cleanUp() throws Exception {
+
+		if (browserManager != null) {
+			browserManager.browserCleanUp();
+		}
+
 		return IRobot.super.cleanUp();
 
 	}

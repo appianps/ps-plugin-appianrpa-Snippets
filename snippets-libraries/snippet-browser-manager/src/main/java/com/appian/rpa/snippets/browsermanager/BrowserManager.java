@@ -1,5 +1,6 @@
 package com.appian.rpa.snippets.browsermanager;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 import org.openqa.selenium.NoSuchSessionException;
@@ -45,12 +46,11 @@ public class BrowserManager {
 	 */
 	public BrowserManager(IRobot robot, EBrowsers selectedBrowser) {
 
-		this.client = IClient.getInstance(robot);
-		this.waitFor = client.waitFor(robot);
+		client = IClient.getInstance(robot);
+		waitFor = client.waitFor(robot);
 
-		this.browser = IWebBrowserSupport.getInstance(robot, client);
-		this.browser.setTimeoutSeconds(120);
-
+		browser = IWebBrowserSupport.getInstance(robot, client);
+		browser.setTimeoutSeconds(120);
 		selectorsManager = new SelectorsManager(robot);
 
 		if (selectedBrowser == null) {
@@ -72,8 +72,8 @@ public class BrowserManager {
 	}
 
 	/**
-	 * Initialize and open a new browser window. Set the browser type to constructor
-	 * instance.
+	 * Initialize and open a new browser window. Set the browser type as the one
+	 * passed by the constructor instance.
 	 */
 	public void openBrowser() {
 
@@ -94,7 +94,8 @@ public class BrowserManager {
 	}
 
 	/**
-	 * Navigates to the given {@code url}. Before it activates the browser window.
+	 * Navigates to the given {@code url} . After that, the browser window is
+	 * activated.
 	 * 
 	 * @param url as String contains the target website
 	 */
@@ -148,10 +149,34 @@ public class BrowserManager {
 		try {
 
 			browser.close();
+			if (browser.getDriver() == null) {
+				forceBrowserProcessKill();
+			}
 			browser = null;
 
-		} catch (NoSuchSessionException e) {
+		} catch (NoSuchSessionException | IOException e) {
 			// Ignore exception
+		}
+	}
+
+	/**
+	 * If the browser passed to the cleanUp function was previously null, we ensure
+	 * that the snippet does not leave any opened window.
+	 * 
+	 * @throws IOException
+	 */
+
+	private void forceBrowserProcessKill() throws IOException {
+		JidokaFactory.getServer().info("Killing webdriver process from windows module");
+		switch (selectedBrowser) {
+		case CHROME:
+			client.killAllProcesses("chromedriver.exe", 1000);
+		case INTERNET_EXPLORER:
+			client.killAllProcesses("IEDriverServer.exe", 1000);
+		case FIREFOX:
+			client.killAllProcesses("geckodriver.exe", 1000);
+		default:
+			break;
 		}
 	}
 
