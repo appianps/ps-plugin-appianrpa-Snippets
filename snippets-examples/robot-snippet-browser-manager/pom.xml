@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.appian.rpa.snippets.examples</groupId>
+	<artifactId>robot-snippet-browser-manager</artifactId>
+	<packaging>jar</packaging>
+	<version>0.0.3</version>
+
+	<name>robot-snippet-browser-manager</name>
+
+	<parent>
+		<groupId>com.novayre.jidoka.robot</groupId>
+		<artifactId>jidoka-robot-parent</artifactId>
+		<version>7.0.0</version> <!-- VC -->
+	</parent>
+
+	<profiles>
+
+		<profile>
+
+			<id>jidoka</id>
+
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+
+			<repositories>
+				<repository>
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</repository>
+				<repository>
+					<id>rpa-coe-lab-snapshots</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka-snapshots</url>
+					<releases>
+						<enabled>false</enabled>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</repository>
+			</repositories>
+
+			<pluginRepositories>
+				<pluginRepository>
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
+					<releases>
+					</releases>
+					<snapshots>
+					</snapshots>
+				</pluginRepository>
+			</pluginRepositories>
+			<distributionManagement>
+				<repository>
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
+					<layout>default</layout>
+				</repository>
+			</distributionManagement>
+		</profile>
+
+	</profiles>
+
+	<dependencies>
+	    <dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.9</version>
+		</dependency>
+		<dependency>
+			<groupId>com.appian.rpa.snippets</groupId>
+			<artifactId>snippet-browser-manager</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+	</dependencies>
+</project>
