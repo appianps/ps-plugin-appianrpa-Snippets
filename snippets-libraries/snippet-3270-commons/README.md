@@ -28,7 +28,7 @@ Snippet IBM3270 Manager is distributed using Maven:
 ### Development
 You can find an example of how to use this snippet in a robotic process in the folder snippets-examples:
 
-https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-3270-manager
+https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/PS-430-3270/snippets-examples/robot-3270-snippet
 
 
 
