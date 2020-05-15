@@ -2,8 +2,6 @@
 
 ## RPA Snippets: An Appian RPA utility, including examples, in order to integrate some robot actions over your process in an easier way. 
 
-TODO: join iomenac snippet commonts and examples as explained below:
-
 ### * snippets-libraries, with all the source code.
 ### * snippets-examples, containing a robot example for each snippet.
 
