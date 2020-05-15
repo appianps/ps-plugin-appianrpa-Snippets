@@ -9,7 +9,7 @@ import com.novayre.jidoka.client.api.exceptions.JidokaException;
 import com.novayre.jidoka.client.api.multios.IClient;
 
 /**
- * Class to manage Netview Page
+ * Class to manage Change Password Page
  */
 public class ChangePwdPage extends IBM3270Page {
 
