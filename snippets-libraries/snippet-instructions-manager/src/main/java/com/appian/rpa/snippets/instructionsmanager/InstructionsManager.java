@@ -145,7 +145,12 @@ public class InstructionsManager {
 		return Paths.get(server.getCurrentDir(), parameter).toFile();
 	}
 
-	private void checkRequired() {
+	/**
+	 * This method ensures that a required parameter is not empty. In an affirmative
+	 * case, @throws a JidokaFatalException
+	 */
+
+	private void checkRequired() throws JidokaFatalException {
 
 		if (StringUtils.isBlank(parameter) && required) {
 			throw new JidokaFatalException(String.format("The param %s is mandatory", name));
