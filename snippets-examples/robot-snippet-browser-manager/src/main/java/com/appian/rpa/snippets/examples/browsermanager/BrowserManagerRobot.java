@@ -2,7 +2,6 @@ package com.appian.rpa.snippets.examples.browsermanager;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.openqa.selenium.By;
 
 import com.appian.rpa.snippets.browsermanager.BrowserManager;
 import com.appian.rpa.snippets.browsermanager.SelectorsManager;
@@ -36,7 +35,7 @@ public class BrowserManagerRobot implements IRobot {
 	/** The IClient module. */
 	private IClient client;
 	/** Browser Manager to apply selector utilities */
-	private SelectorsManager selectors;
+	private SelectorsManager selectorsManager;
 	/**
 	 * This parameter provides the website where the search term will be placed in
 	 **/
@@ -64,7 +63,7 @@ public class BrowserManagerRobot implements IRobot {
 
 		browserManager = new BrowserManager(this, EBrowsers.CHROME);
 		searcherURL = server.getParameters().get("platformURL");
-		selectors = browserManager.getSelectorsManager();
+		selectorsManager = browserManager.getSelectorsManager();
 	}
 
 	/*
@@ -78,56 +77,52 @@ public class BrowserManagerRobot implements IRobot {
 	 * Navigate to searcherURL. An exception is thrown if the search button selector
 	 * was not found.
 	 * 
-	 * @throws Exception
+	 * @throws JidokaFatalException
 	 */
 	public void navigateToWeb() throws JidokaFatalException {
+		
 		browserManager.navigateTo(searcherURL);
-		if (!isClassNameElementSuccessfullyLoaded(selectors.getSelector("selector.search-button.classname"))) {
-			throw new JidokaFatalException("page could not be loaded");
-		}
-
+		
+		waitForElementToBeLoaded("selector.search-button.classname") ;
 	}
 
 	/**
 	 * If the search result was successfully loaded, print the first result found in
-	 * Console.
+	 * Console 
+	 * 
+	 * @throws JidokaFatalException
 	 */
-
-	public void printWebResultInConsole() {
-		if (!isXPathElementSuccessfullyLoaded(selectors.getSelector("selector.appian-result.xpath"))) {
-			throw new JidokaFatalException("web result not found");
-		}
-		server.info(browserManager.getBrowser().getText(selectors.getBy("selector.appian-result.xpath")));
+	public void printWebResultInConsole() throws JidokaFatalException {
+		
+		waitForElementToBeLoaded("selector.appian-result.xpath");
+		
+		server.info(browserManager.getBrowser().getText(selectorsManager.getBy("selector.appian-result.xpath")));
 	}
 
 	/**
 	 * Search results for "Appian" String
 	 */
-
 	public void searchInformation() {
 
 		browserManager.getBrowser()
-				.clickSafe(browserManager.getBrowser().waitElement(selectors.getBy(("selector.searchbar.xpath"))));
+				.clickSafe(browserManager.getBrowser().waitElement(selectorsManager.getBy(("selector.searchbar.xpath"))));
 		client.pause(1000);
-		client.typeText("Appian");
+		browserManager.getBrowser().textFieldSet(selectorsManager.getBy("selector.searchbar.xpath"), "Appian", true);
 		client.keyboard().enter();
-		client.pause(3000);
 	}
 
-	private boolean isClassNameElementSuccessfullyLoaded(String classname) {
-		return client.waitCondition(5, 1000, "Checking if " + classname + " selector appeared successfully", null,
-				(i, c) -> browserManager.getBrowser().getElement(By.className(classname)) != null);
-	}
-
-	private boolean isXPathElementSuccessfullyLoaded(String xpath) {
-		return client.waitCondition(5, 1000, "Checking if " + xpath + " selector appeared successfully", null,
-				(i, c) -> browserManager.getBrowser().getElement(By.xpath(xpath)) != null);
+	private void waitForElementToBeLoaded(String selectorName) throws JidokaFatalException {
+		
+		if(!client.waitCondition(5, 1000, "Checking if selector "+ selectorName +" appeared successfully", null,
+				(i, c) -> selectorsManager.existsElement(selectorName))) {
+			
+			throw new JidokaFatalException(selectorName + " has not been loaded");
+		}
 	}
 
 	/**
 	 * close Chrome Browser
 	 */
-
 	private void closeBrowser() {
 		browserManager.browserCleanUp();
 
@@ -143,7 +138,6 @@ public class BrowserManagerRobot implements IRobot {
 	/**
 	 * This is the last non-hidden action from the robot workflow.
 	 */
-
 	public void end() {
 		server.info("Execution finished");
 	}
@@ -180,7 +174,6 @@ public class BrowserManagerRobot implements IRobot {
 	 * Override cleanUp method. Any additional data or processes to be released
 	 * should be placed here.
 	 */
-
 	@Override
 	public String[] cleanUp() throws Exception {
 		return IRobot.super.cleanUp();
