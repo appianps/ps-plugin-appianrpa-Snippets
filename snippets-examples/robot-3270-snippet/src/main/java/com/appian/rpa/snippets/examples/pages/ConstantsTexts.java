@@ -1,4 +1,4 @@
-package com.appian.robot.demo.pages;
+package com.appian.rpa.snippets.examples.pages;
 
 
 /**

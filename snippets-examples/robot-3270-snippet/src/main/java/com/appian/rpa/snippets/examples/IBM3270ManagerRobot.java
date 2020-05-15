@@ -2,13 +2,17 @@ package com.appian.rpa.snippets.examples;
 
 import java.io.Serializable;
 
-import com.appian.robot.demo.commons.IBM3270AppManager;
-import com.appian.robot.demo.pages.NetViewPage;
-import com.appian.robot.demo.pages.WelcomePage;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
 import com.appian.rpa.snippet.IBM3270Commons;
 import com.appian.rpa.snippet.clients.PCOMMEmulatorManager;
 import com.appian.rpa.snippet.clients.WC3270EmulatorManager;
 import com.appian.rpa.snippet.page.IBM3270Page;
+import com.appian.rpa.snippets.examples.commons.IBM3270AppManager;
+import com.appian.rpa.snippets.examples.pages.ChangePwdPage;
+import com.appian.rpa.snippets.examples.pages.NetViewPage;
+import com.appian.rpa.snippets.examples.pages.WelcomePage;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.JidokaFactory;
@@ -124,13 +128,18 @@ public class IBM3270ManagerRobot implements IRobot {
 
 		server.info("Change NetView Password");
 
-		((NetViewPage) currentPage).changeOperatorPassword();
+		ChangePwdPage changePwd = ((NetViewPage) currentPage).goToChangePasswordPage();
+
+		currentPage = changePwd.changeOperatorPassword();
 	}
 
 	/**
 	 * Action 'Close 3270'.
 	 */
 	public void close3270() {
+
+		server.info("Closing IBM3270 terminal");
+
 		appManager.closeIBM3270(commons.getWindowTitleRegex());
 	}
 
@@ -158,13 +167,32 @@ public class IBM3270ManagerRobot implements IRobot {
 	/**
 	 * Manage exception.
 	 *
-	 * @param action    the action
-	 * @param exception the exception
-	 * @return the string
+	 * @param action    action where the original exception was thrown
+	 * @param exception original exception
+	 * @return the action where the robot will continue its execution
 	 * @throws Exception the exception
 	 */
 	@Override
 	public String manageException(String action, Exception exception) throws Exception {
+
+		// We get the message of the exception
+		String errorMessage = ExceptionUtils.getRootCause(exception).getMessage();
+
+		// Send a screenshot to the log so the user can see the screen in the moment
+		// of the error. This is a very useful thing to do
+		server.sendScreen("Screenshot of the error");
+
+		// If we have a FatalException we should abort the execution.
+		if (ExceptionUtils.indexOfThrowable(exception, JidokaFatalException.class) >= 0) {
+
+			server.error(StringUtils.isBlank(errorMessage) ? "Fatal error" : errorMessage);
+			return IRobot.super.manageException(action, exception);
+		}
+
+		server.warn("Unknown exception!");
+
+		// If we have any other exception we must abort the execution, we don't know
+		// what has happened
 
 		return IRobot.super.manageException(action, exception);
 	}

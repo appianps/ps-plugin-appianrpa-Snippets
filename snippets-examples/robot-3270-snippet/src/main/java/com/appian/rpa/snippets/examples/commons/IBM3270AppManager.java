@@ -1,13 +1,13 @@
-package com.appian.robot.demo.commons;
+package com.appian.rpa.snippets.examples.commons;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.appian.robot.demo.pages.WelcomePage;
 import com.appian.rpa.snippet.IBM3270Commons;
 import com.appian.rpa.snippet.page.IBM3270Page;
+import com.appian.rpa.snippets.examples.pages.WelcomePage;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IWaitFor;
 import com.novayre.jidoka.client.api.JidokaFactory;

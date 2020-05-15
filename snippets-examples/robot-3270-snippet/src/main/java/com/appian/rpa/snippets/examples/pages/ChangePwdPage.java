@@ -1,4 +1,4 @@
-package com.appian.robot.demo.pages;
+package com.appian.rpa.snippets.examples.pages;
 
 import com.appian.rpa.snippet.IBM3270Commons;
 import com.appian.rpa.snippet.TextInScreen;
@@ -11,7 +11,7 @@ import com.novayre.jidoka.client.api.multios.IClient;
 /**
  * Class to manage Netview Page
  */
-public class NetViewPage extends IBM3270Page {
+public class ChangePwdPage extends IBM3270Page {
 
 	/**
 	 * Jidoka server instance
@@ -29,7 +29,7 @@ public class NetViewPage extends IBM3270Page {
 	 * @param commons
 	 * @throws JidokaException
 	 */
-	public NetViewPage(IBM3270Commons commons) throws JidokaException {
+	public ChangePwdPage(IBM3270Commons commons) throws JidokaException {
 		super(commons);
 		client = IClient.getInstance(commons.getRobot());
 		server = JidokaFactory.getServer();
@@ -43,23 +43,15 @@ public class NetViewPage extends IBM3270Page {
 	@Override
 	public String getUnivocalRegex() {
 
-		return ConstantsTexts.NETVIEW_UNIVOCAL_TEXT;
+		return ConstantsTexts.PWD_UNIVOCAL_TEXT;
 	}
 
 	/**
 	 * Changes the password of an operator
+	 * 
+	 * @throws JidokaException
 	 */
-	public void changeOperatorPassword() {
-
-		TextInScreen textInScreen = commons.locateText(2, "ID ==>");
-		commons.moveToCoodinates(textInScreen, 8, 0);
-		commons.write(ConstantsTexts.TEST_ID_OPERATOR);
-		commons.enter();
-		client.pause(2000);
-
-		// Change Password Page
-		server.sendScreen("Change password page");
-		commons.waitTillTextDisappears(ConstantsTexts.NETVIEW_UNIVOCAL_TEXT);
+	public NetViewPage changeOperatorPassword() throws JidokaException {
 
 		commons.write(ConstantsTexts.TEST_PWD_OPERATOR, false);
 		commons.pressDown(2);
@@ -73,7 +65,9 @@ public class NetViewPage extends IBM3270Page {
 		commons.enter();
 		client.pause(1000);
 
-		commons.waitTillTextDisappears(2, ConstantsTexts.PWD_UNIVOCAL_TEXT);
+		commons.waitTillTextDisappears(3, ConstantsTexts.PWD_UNIVOCAL_TEXT);
+
+		NetViewPage netViewPage = new NetViewPage(commons);
 
 		TextInScreen textInScreenPwd = commons.locateText(ConstantsTexts.INVALID_USER_UNIVOCAL_TEXT);
 
@@ -82,6 +76,9 @@ public class NetViewPage extends IBM3270Page {
 		} else {
 			server.sendScreen("Password changed");
 		}
+
+		return netViewPage;
+
 	}
 
 	/**

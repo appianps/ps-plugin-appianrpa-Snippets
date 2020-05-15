@@ -1,4 +1,4 @@
-package com.appian.robot.demo.pages;
+package com.appian.rpa.snippets.examples.pages;
 
 import com.appian.rpa.snippet.IBM3270Commons;
 import com.appian.rpa.snippet.page.IBM3270Page;
