@@ -23,9 +23,9 @@ import com.novayre.jidoka.client.api.multios.IClient;
 
 /**
  * IBM3270 Manager Robot provides a complete usage example from all the
- * correspondent snippet methods. It opens a IBM3270 terminal using the emulator
- * indicated as the robot's parameter, goes to a menu page and tries to change
- * the user's password.
+ * correspondent snippet methods. It opens an IBM3270 terminal using the
+ * emulator indicated as the robot's parameter, goes to a menu page and tries to
+ * change the user's password.
  * 
  * Finally the robot closes the emulator.
  */
