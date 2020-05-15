@@ -1,4 +1,4 @@
-package com.appian.rpa.snippets.instructionsmanager;
+package com.appian.rpa.snippets.instruction;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -17,7 +17,7 @@ import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
  * Therefore, each single instance would represent a different instruction from
  * your Appian RPA Robotic Process.
  */
-public class InstructionsManager {
+public class Instruction {
 
 	/**
 	 * JidokaServer instance.
@@ -44,7 +44,7 @@ public class InstructionsManager {
 	 * 
 	 * @param name of the instruction
 	 */
-	public InstructionsManager(String name) {
+	public Instruction(String name) {
 
 		this(name, false);
 	}
@@ -56,7 +56,7 @@ public class InstructionsManager {
 	 * @param required <code>true</code> if the instruction is required (mandatory)
 	 *                 for the robot
 	 */
-	public InstructionsManager(String name, Boolean required) {
+	public Instruction(String name, Boolean required) {
 
 		this.server = JidokaFactory.getServer();
 		this.name = name;
