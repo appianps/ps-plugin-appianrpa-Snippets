@@ -12,6 +12,9 @@ TODO: join iomenac snippet commonts and examples as explained below:
 
 #### 1. Credentials Snippet
 
+The CredentialsUtils Class provides the actions to retrieve and manage 
+Appian RPA Console Credentials.
+
 #### 2. REST API Snippet
 
 Class to manage the actions referred to a REST API utility
