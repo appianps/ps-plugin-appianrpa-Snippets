@@ -17,7 +17,7 @@ You can also:
 ### Installation
 
 Snippet IBM3270 Manager is distributed using Maven:
-```
+```xml
 <dependency>
 	<groupId>com.appian.rpa.snippets</groupId>
 	<artifactId>snippet-3270-manager</artifactId>
