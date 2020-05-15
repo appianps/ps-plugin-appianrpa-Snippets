@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.appian.rpa.snippets.examples</groupId>
+	<artifactId>robot-snippet-credentials</artifactId>
+	<packaging>jar</packaging>
+	<version>0.0.3</version>
+
+	<name>robot-snippet-credentials</name>
+
+	<parent>
+		<groupId>com.novayre.jidoka.robot</groupId>
+		<artifactId>jidoka-robot-parent</artifactId>
+		<version>7.0.0</version> <!-- VC -->
+	</parent>
+
+	<properties>
+		<jidoka.serverId>rpa-coe-lab</jidoka.serverId>
+		<junit.jupyter.version>5.4.0</junit.jupyter.version>
+	</properties>
+
+
+
+
+	<profiles>
+
+		<profile>
+
+			<id>jidoka</id>
+
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+
+
+			<repositories>
+				<repository>
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
+					<releases>
+					</releases>
+					<snapshots>
+					</snapshots>
+				</repository>
+			</repositories>
+
+			<pluginRepositories>
+				<pluginRepository>
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
+					<releases>
+					</releases>
+					<snapshots>
+					</snapshots>
+				</pluginRepository>
+			</pluginRepositories>
+			<distributionManagement>
+				<repository>
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
+					<layout>default</layout>
+				</repository>
+			</distributionManagement>
+		</profile>
+
+	</profiles>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.appian.rpa.snippets</groupId>
+			<artifactId>snippet-credentials</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.9</version>
+		</dependency>
+		<dependency>
+			<groupId>com.novayre.jidoka.module</groupId>
+			<artifactId>jidoka-browser-api</artifactId>
+			<version>${jidoka.version}</version>
+		</dependency>
+	</dependencies>
+</project>
