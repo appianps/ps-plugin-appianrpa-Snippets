@@ -19,7 +19,7 @@ import net.sf.json.JSONObject;
 
 /**
  * 
- * /** Class to manage the actions referred to a REST API utility
+ * Class to manage the actions referred to a REST API utility
  *
  */
 

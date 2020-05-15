@@ -22,7 +22,7 @@ import com.novayre.jidoka.client.api.multios.IClient;
  * Further instructions to configure and execute the process can be found here:
  * https://github.com/appianps/ps-plugin-appianrpa-Snippets
  * 
- * @author javier.advani
+ * 
  */
 
 @Robot
@@ -80,22 +80,22 @@ public class BrowserManagerRobot implements IRobot {
 	 * @throws JidokaFatalException
 	 */
 	public void navigateToWeb() throws JidokaFatalException {
-		
+
 		browserManager.navigateTo(searcherURL);
-		
-		waitForElementToBeLoaded("selector.search-button.classname") ;
+
+		waitForElementToBeLoaded("selector.search-button.classname");
 	}
 
 	/**
 	 * If the search result was successfully loaded, print the first result found in
-	 * Console 
+	 * Console
 	 * 
 	 * @throws JidokaFatalException
 	 */
 	public void printWebResultInConsole() throws JidokaFatalException {
-		
+
 		waitForElementToBeLoaded("selector.appian-result.xpath");
-		
+
 		server.info(browserManager.getBrowser().getText(selectorsManager.getBy("selector.appian-result.xpath")));
 	}
 
@@ -104,18 +104,18 @@ public class BrowserManagerRobot implements IRobot {
 	 */
 	public void searchInformation() {
 
-		browserManager.getBrowser()
-				.clickSafe(browserManager.getBrowser().waitElement(selectorsManager.getBy(("selector.searchbar.xpath"))));
+		browserManager.getBrowser().clickSafe(
+				browserManager.getBrowser().waitElement(selectorsManager.getBy(("selector.searchbar.xpath"))));
 		client.pause(1000);
 		browserManager.getBrowser().textFieldSet(selectorsManager.getBy("selector.searchbar.xpath"), "Appian", true);
 		client.keyboard().enter();
 	}
 
 	private void waitForElementToBeLoaded(String selectorName) throws JidokaFatalException {
-		
-		if(!client.waitCondition(5, 1000, "Checking if selector "+ selectorName +" appeared successfully", null,
+
+		if (!client.waitCondition(5, 1000, "Checking if selector " + selectorName + " appeared successfully", null,
 				(i, c) -> selectorsManager.existsElement(selectorName))) {
-			
+
 			throw new JidokaFatalException(selectorName + " has not been loaded");
 		}
 	}
