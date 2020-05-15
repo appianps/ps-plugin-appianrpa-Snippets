@@ -40,7 +40,6 @@ public class FileModel implements Serializable {
 
 	/** File name */
 	@AItemKey
-	@AItemField(fieldName = "FILE_NAME")
 	private String fileName;
 
 	/** File number of words */

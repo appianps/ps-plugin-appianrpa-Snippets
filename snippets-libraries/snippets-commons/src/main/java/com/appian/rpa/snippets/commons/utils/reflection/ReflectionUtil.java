@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
+
 import com.novayre.jidoka.client.api.exceptions.JidokaException;
+import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 
 /**
  * ReflectionUtil class.
@@ -45,7 +47,7 @@ public final class ReflectionUtil {
 	 * @throws JidokaException
 	 */
 	public static Object invokeBeanMethod(Object object, String name, boolean throwExceptions, String[] prefixes,
-			Class<?>[] argumentsType, Object[] arguments) throws JidokaException {
+			Class<?>[] argumentsType, Object[] arguments) {
 
 		Method m = getBeanMethod(object, name, prefixes, argumentsType);
 
@@ -58,7 +60,7 @@ public final class ReflectionUtil {
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
 
 			if (throwExceptions) {
-				throw new JidokaException("Error invoking the bean method", e);
+				throw new JidokaFatalException("Error invoking the bean method", e);
 			}
 
 			return null;
