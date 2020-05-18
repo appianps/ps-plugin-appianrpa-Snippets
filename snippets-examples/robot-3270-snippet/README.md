@@ -50,7 +50,7 @@ http://x3270.bgp.nu/download.html
 
 - None of the default options need to be changed.
 
-  Create a public domain session file and create a desktop icon for quick access to the session, as shown in the picture.
+  Create a public session file (WC3270.wc3270) and create a desktop icon for quick access to the session, as shown in the picture.
 
 ![Session Wizard - Options ><](./console/img/session_wizard_options.png)
 
@@ -58,16 +58,18 @@ http://x3270.bgp.nu/download.html
 
 ![Session Wizard - Completed ><](./console/img/session_wizard_completed.png)
 
-- To enable the robot to open the emulator with the session created, it is necessary to move the file **WS3270.ws3270** in the folder where the executable is located (usually C:\Program Files\wc3270).
+- To enable the robot to open the emulator with the session created, it is necessary to move 3 files to the folder where the executable is located (usually C:\Program Files\wc3270). This files are:
 
-- The **WS3270 link** created on the desktop will also be copied to wc3270 folder. 
 
-- The file **wc3270.keymap.jidoka**, that is included as a support file in the robot, must be in the folder wc3270 too. 
+    - The public session file **WC3270.wc3270**.
+    
+    - The **WC3270 link** created on the desktop.
+    
+    - The file **wc3270.keymap.jidoka**, that is included as a support file in the robot.
 
 <p align="center">
   <img src="./console/img/wc3270_folder.png" alt="wc3270 Folder"/>
 </p>
-
 
 
 
