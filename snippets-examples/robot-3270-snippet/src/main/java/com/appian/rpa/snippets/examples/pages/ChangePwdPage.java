@@ -6,7 +6,6 @@ import com.appian.rpa.snippet.page.IBM3270Page;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.exceptions.JidokaException;
-import com.novayre.jidoka.client.api.multios.IClient;
 
 /**
  * Class to manage Change Password Page
@@ -19,11 +18,6 @@ public class ChangePwdPage extends IBM3270Page {
 	private IJidokaServer<?> server;
 
 	/**
-	 * Client Module Instance
-	 */
-	protected IClient client;
-
-	/**
 	 * Class constructor
 	 * 
 	 * @param commons
@@ -31,7 +25,6 @@ public class ChangePwdPage extends IBM3270Page {
 	 */
 	public ChangePwdPage(IBM3270Commons commons) throws JidokaException {
 		super(commons);
-		client = IClient.getInstance(commons.getRobot());
 		server = JidokaFactory.getServer();
 	}
 
@@ -63,7 +56,6 @@ public class ChangePwdPage extends IBM3270Page {
 
 		commons.write(ConstantsTexts.TEST_NEW_PWD_OPERATOR, false);
 		commons.enter();
-		client.pause(1000);
 
 		commons.waitTillTextDisappears(3, ConstantsTexts.PWD_UNIVOCAL_TEXT);
 
