@@ -61,7 +61,7 @@ http://x3270.bgp.nu/download.html
 - To enable the robot to open the emulator with the session created, it is necessary to move 3 files to the folder where the executable is located (usually C:\Program Files\wc3270). This files are:
 
 
-    - The public session file **WC3270.wc3270**.
+    - The session file **WC3270.wc3270**.
     
     - The **WC3270 link** created on the desktop.
     
@@ -70,6 +70,10 @@ http://x3270.bgp.nu/download.html
 <p align="center">
   <img src="./console/img/wc3270_folder.png" alt="wc3270 Folder"/>
 </p>
+
+- Finally, we must modify the **WC3270 link** to include the keymap, to do so, we edit the link:
+
+	"C:Program Files\wc3270\wc3270.exe" -keymap "C:Program Files\wc3270\wc3270.keymap.jidoka" +S "C:Program Files\wc3270\WC3270.wc3270"
 
 
 
