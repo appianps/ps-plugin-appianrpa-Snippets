@@ -31,3 +31,16 @@ snippets-libraries/snippet-3270-commons/target/maven-status/maven-compiler-plugi
 snippets-libraries/snippet-3270-commons/target/snippet-3270-commons-0.0.1-SNAPSHOT-sources.jar
 snippets-libraries/snippet-3270-commons/target/snippet-3270-commons-0.0.1-SNAPSHOT.jar
 snippets-libraries/snippet-3270-commons/.settings/org.eclipse.m2e.core.prefs
+snippets-examples/robot-snippet-instructions/.classpath
+snippets-examples/robot-snippet-instructions/.project
+snippets-examples/robot-snippet-instructions/.settings/org.eclipse.core.resources.prefs
+snippets-examples/robot-snippet-instructions/.settings/org.eclipse.jdt.core.prefs
+snippets-examples/robot-snippet-instructions/.settings/org.eclipse.m2e.core.prefs
+snippets-examples/robot-snippet-instructions/target/robot-snippet-instruction-0.0.1.jar
+snippets-examples/robot-snippet-instructions/target/robot-snippet-instruction-0.0.1-sources.jar
+snippets-examples/robot-snippet-instructions/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+snippets-examples/robot-snippet-instructions/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+snippets-examples/robot-snippet-instructions/target/maven-archiver/pom.properties
+snippets-examples/robot-snippet-instructions/target/classes/META-INF/InstructionsRobot.json
+snippets-examples/robot-snippet-instructions/target/classes/com/appian/rpa/snippets/examples/instruction/InstructionsRobot.class
+snippets-examples/robot-snippet-instructions/target/classes/com/appian/rpa/snippets/examples/instruction/EInstructions.class
