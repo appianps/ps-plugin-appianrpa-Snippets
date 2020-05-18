@@ -3,11 +3,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.appian.snippets.examples</groupId>
-	<artifactId>DEV-robot-count-words</artifactId>
+	<groupId>com.appian.rpa.snippets.examples</groupId>
+	<artifactId>robot-snippet-generic-queue-manager-consumer</artifactId>
 	<version>0.0.1</version>
 
-	<name>DEV-robot-count-words</name>
+	<name>robot-snippet-generic-queue-manager-consumer</name>
 
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>

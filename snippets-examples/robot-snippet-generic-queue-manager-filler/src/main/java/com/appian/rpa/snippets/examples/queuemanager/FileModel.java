@@ -1,4 +1,4 @@
-package com.appian.snippets.examples;
+package com.appian.rpa.snippets.examples.queuemanager;
 
 import java.io.File;
 import java.io.IOException;

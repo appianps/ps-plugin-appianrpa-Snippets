@@ -1,4 +1,4 @@
-package com.appian.snippets.examples.params;
+package com.appian.rpa.snippets.examples.queuemanager.params;
 
 import com.appian.rpa.snippets.commons.instructions.EnvironmentVariable;
 
