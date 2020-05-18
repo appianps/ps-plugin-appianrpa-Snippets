@@ -67,9 +67,6 @@ public abstract class IBM3270Commons {
 		this.robot = robot;
 		waitFor = client.waitFor(robot);
 		keyboard = client.keyboard();
-
-		// TODO: Incrementar pausas de escritura
-
 	}
 
 	/**
