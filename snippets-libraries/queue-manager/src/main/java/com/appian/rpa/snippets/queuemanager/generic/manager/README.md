@@ -5,8 +5,10 @@ Snippet Generic Queue Manager is a simple project to facilitate the management o
 # Initialization
 There are two ways of instantiate the class:
 
-  * Creating a new queue using ```java createAndAssingNewQueue ```.
-  * Assigning an existing queue using ```java assignExistingQueue ```.
+  * Creating a new queue using ```createAndAssingNewQueue```.
+  * Assigning an existing queue using ```assignExistingQueue```.
+  
+Both methods return an instance of the GenericQueueManager class
   
 # Main functions
 For queues:
