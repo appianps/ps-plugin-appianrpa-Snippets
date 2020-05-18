@@ -6,7 +6,6 @@ import com.appian.rpa.snippet.page.IBM3270Page;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.exceptions.JidokaException;
-import com.novayre.jidoka.client.api.multios.IClient;
 
 /**
  * Class to manage Netview Page
@@ -19,11 +18,6 @@ public class NetViewPage extends IBM3270Page {
 	private IJidokaServer<?> server;
 
 	/**
-	 * Client Module Instance
-	 */
-	protected IClient client;
-
-	/**
 	 * Class constructor
 	 * 
 	 * @param commons
@@ -31,7 +25,6 @@ public class NetViewPage extends IBM3270Page {
 	 */
 	public NetViewPage(IBM3270Commons commons) throws JidokaException {
 		super(commons);
-		client = IClient.getInstance(commons.getRobot());
 		server = JidokaFactory.getServer();
 	}
 
@@ -57,7 +50,6 @@ public class NetViewPage extends IBM3270Page {
 		commons.moveToCoodinates(textInScreen, 8, 0);
 		commons.write(ConstantsTexts.TEST_ID_OPERATOR);
 		commons.enter();
-		client.pause(2000);
 
 		// Change Password Page
 		server.sendScreen("Change password page");

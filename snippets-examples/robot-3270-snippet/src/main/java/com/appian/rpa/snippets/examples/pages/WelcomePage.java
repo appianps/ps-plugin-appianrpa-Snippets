@@ -3,17 +3,11 @@ package com.appian.rpa.snippets.examples.pages;
 import com.appian.rpa.snippet.IBM3270Commons;
 import com.appian.rpa.snippet.page.IBM3270Page;
 import com.novayre.jidoka.client.api.exceptions.JidokaException;
-import com.novayre.jidoka.client.api.multios.IClient;
 
 /**
  * Class to manage Netview Page
  */
 public class WelcomePage extends IBM3270Page {
-
-	/**
-	 * Client Module Instance
-	 */
-	protected IClient client;
 
 	/**
 	 * Class constructor
@@ -23,7 +17,6 @@ public class WelcomePage extends IBM3270Page {
 	 */
 	public WelcomePage(IBM3270Commons commons) throws JidokaException {
 		super(commons);
-		client = IClient.getInstance(commons.getRobot());
 	}
 
 	/**
@@ -34,9 +27,7 @@ public class WelcomePage extends IBM3270Page {
 	 */
 	public NetViewPage goToPage(String page) throws JidokaException {
 		commons.write(page);
-		client.pause(1000);
 		commons.enter();
-		client.pause(1000);
 		return new NetViewPage(commons);
 	}
 
