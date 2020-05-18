@@ -1,4 +1,4 @@
-package com.appian.snippets.examples;
+package com.appian.rpa.snippets.examples.queuemanager;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -14,17 +14,25 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
+import com.appian.rpa.snippets.examples.queuemanager.params.EEnvironmentVariables;
+import com.appian.rpa.snippets.examples.queuemanager.params.EInstructions;
 import com.appian.rpa.snippets.queuemanager.generic.manager.GenericQueueManager;
-import com.appian.snippets.examples.params.EEnvironmentVariables;
-import com.appian.snippets.examples.params.EInstructions;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.annotations.Robot;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.client.api.exceptions.JidokaItemException;
-import com.novayre.jidoka.client.api.exceptions.JidokaQueueException;
 
+/**
+ * Robot that searches the files in the folder given by parameters and maps them
+ * to elements in the queue, setting the key and empty functional data. First,
+ * the robot checks if there is a queue with today's date. If the queue exists,
+ * the robot assigns it to itself. If not, the robot creates it and assigns it
+ * to itself. Then, it checks if a file was previously added to the queue, and
+ * if it was not added, the robot adds it. Finally, the robot finishes, leaving
+ * the queue in a pending state.
+ */
 @Robot
 public class FillQueueRobot implements IRobot {
 
@@ -90,15 +98,10 @@ public class FillQueueRobot implements IRobot {
 	 * @return A list with the pending files
 	 */
 	public void checkIfQueueExists() {
-		try {
-			genericQueueManager = GenericQueueManager.assignExistingQueue(FileModel.class, this.queueName);
+		genericQueueManager = GenericQueueManager.assignExistingQueue(FileModel.class, this.queueName);
 
-			if (genericQueueManager == null) {
-				genericQueueManager = GenericQueueManager.createAndAssingNewQueue(FileModel.class, this.queueName);
-			}
-
-		} catch (JidokaQueueException e) {
-			throw new JidokaFatalException("Error creating/getting the queue", e);
+		if (genericQueueManager == null) {
+			genericQueueManager = GenericQueueManager.createAndAssingNewQueue(FileModel.class, this.queueName);
 		}
 	}
 
@@ -171,17 +174,9 @@ public class FillQueueRobot implements IRobot {
 	 */
 	private boolean pendingOfProcess(File file) {
 
-		try {
-			List<FileModel> filesList = genericQueueManager.findItems(FilenameUtils.getBaseName(file.getName()));
+		List<FileModel> filesList = genericQueueManager.findItems(FilenameUtils.getBaseName(file.getName()));
 
-			return filesList.isEmpty();
-
-		} catch (JidokaQueueException e) {
-			server.info(e.getStackTrace());
-			throw new JidokaItemException(
-					"Error checking if file " + FilenameUtils.getBaseName(file.getName()) + " is pending of process");
-
-		}
+		return filesList.isEmpty();
 	}
 
 	/**
@@ -190,11 +185,7 @@ public class FillQueueRobot implements IRobot {
 	public void addNewItems() {
 
 		for (File file : filesToAdd) {
-			try {
-				genericQueueManager.addItem(new FileModel(file));
-			} catch (JidokaQueueException e) {
-				throw new JidokaItemException("Error adding the file " + FilenameUtils.getBaseName(file.getName()));
-			}
+			genericQueueManager.addItem(new FileModel(file));
 		}
 	}
 

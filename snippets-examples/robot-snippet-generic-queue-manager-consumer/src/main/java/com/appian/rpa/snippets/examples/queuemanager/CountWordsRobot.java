@@ -1,4 +1,4 @@
-package com.appian.snippets.examples;
+package com.appian.rpa.snippets.examples.queuemanager;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -13,12 +13,16 @@ import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.annotations.Robot;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.client.api.exceptions.JidokaItemException;
-import com.novayre.jidoka.client.api.exceptions.JidokaQueueException;
 
 /**
- * Robot that gets a queue item and counts the words of the item content
- * functional data. Then it updates the queue item functional data.
- *
+ * Robot that retrieves an element from the queue and counts the words in the
+ * functional data of the element's content. First, the robot assigns today's
+ * date to the queue, if it exists. If not, the robot makes an exception. Then,
+ * it looks for the pending items in the queue and processes them, assigning one
+ * of them to itself and obtaining the field with the file contents. The robot
+ * then counts the words in the file contents and updates the functional data
+ * field of the queue item that holds the number of words. Finally, the robot
+ * finishes if there are no more elements to process.
  */
 @Robot
 public class CountWordsRobot implements IRobot {
@@ -142,12 +146,8 @@ public class CountWordsRobot implements IRobot {
 	 * Updates the current item functional data
 	 */
 	public void updateQueueItem() {
-		try {
-			server.setCurrentItemResultToOK("Num of words: " + currentFile.getNumOfWords());
-			genericQueueManager.updateItem(currentFile);
-		} catch (JidokaQueueException e) {
-			throw new JidokaItemException("Error updating the item " + currentFile.getFileName());
-		}
+		server.setCurrentItemResultToOK("Num of words: " + currentFile.getNumOfWords());
+		genericQueueManager.updateItem(currentFile);
 	}
 
 	/**
