@@ -13,7 +13,7 @@
 		<version>7.0.0</version> <!-- VC -->
 	</parent>
 
-	<name>robot-snippet-instructions-manager</name>
+	<name>robot-snippet-instruction</name>
 
 	<properties>
 		<jidoka.serverId>jidoka</jidoka.serverId>
