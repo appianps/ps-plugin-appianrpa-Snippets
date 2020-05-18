@@ -14,7 +14,7 @@ The Snippet 3270 Manager Robot is distributed using Maven:
 	<version>0.0.1</version>
 </dependency>
 ```
-##### Emulators Installation
+#### Emulators Installation
 
 This robot allows its execution in two different clients:
 - IBM Personal Communications
@@ -22,11 +22,10 @@ This robot allows its execution in two different clients:
 
 The following describes how to perform the installation of the emulators and the configuration of a session.
 
-##### wc3270
+#### wc3270
 
 - Download the emulator from the following url:
 http://x3270.bgp.nu/download.html
-
 *(select the stable version from Windows Setup .EXEs)*
 
 - After downloading, run the wc3270 setup wizard.
@@ -49,7 +48,7 @@ http://x3270.bgp.nu/download.html
 
 ![Session Wizard - Host ><](./console/img/session_wizard_host.png)
 
-- None of the default settings will be changed.
+- None of the default options need to be changed.
 
   Create a public domain session file and create a desktop icon for quick access to the session, as shown in the picture.
 
@@ -58,6 +57,27 @@ http://x3270.bgp.nu/download.html
 - Finally, a screen is displayed informing you that the session and its shortcut have been successfully created.
 
 ![Session Wizard - Completed ><](./console/img/session_wizard_completed.png)
+
+- To enable the robot to open the emulator with the session created, it is necessary to move the file **WS3270.ws3270** in the folder where the executable is located (usually C:\Program Files\wc3270).
+
+- The **WS3270 link** created on the desktop will also be copied to wc3270 folder. 
+
+- The file **wc3270.keymap.jidoka**, that is included as a support file in the robot, must be in the folder wc3270 too. 
+
+<p align="center">
+  <img src="./console/img/wc3270_folder.png" alt="wc3270 Folder"/>
+</p>
+
+
+
+
+#### IBM Personal Communications
+
+- Download the free 90-day trial version from the following url:
+
+https://www.ibm.com/us-en/marketplace/personal-communications
+(An IBM account is required)
+
 
 
 
