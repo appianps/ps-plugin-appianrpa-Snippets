@@ -30,9 +30,15 @@ Snippet Generic Queue Manager is distributed using Maven:
 ```
 
 ### Development
-You can find an example of how to use this snippet in a robotic process in the folder snippets-examples:
+You can find two examples of how to use this snippet in a robotic process in the folder snippets-examples:
 
-URL robot
+Robot that creates and fill the queue:
+
+[robot-snippet-generic-queue-manager-filler](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/PS-460-queueWithoutExcel/snippets-examples/robot-snippet-generic-queue-manager-filler)
+
+Robot that process the queue and updates the items:
+
+[robot-snippet-generic-queue-manager-consumer](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/PS-460-queueWithoutExcel/snippets-examples/robot-snippet-generic-queue-manager-consumer)
 
 
 
