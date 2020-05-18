@@ -26,6 +26,7 @@ The following describes how to perform the installation of the emulators and the
 
 - Download the emulator from the following url:
 http://x3270.bgp.nu/download.html
+
 *(select the stable version from Windows Setup .EXEs)*
 
 - After downloading, run the wc3270 setup wizard.
@@ -36,13 +37,27 @@ http://x3270.bgp.nu/download.html
 
 ![Completed Setup ><](./console/img/wizard_complete.png)
 
-- On the 'wc3270 Session Wizard' terminal select option 1 to create a new session.
+- On the 'wc3270 Session Wizard' terminal select option **1** to create a new session.
 
 ![Session Wizard ><](./console/img/session_wizard.png)
 
 - Enter the session name, for this robot the session name is **WC3270**.
 
 ![Session Wizard - Name ><](./console/img/session_wizard_name.png)
+
+- Enter the host name, this robot uses the free server **fandezhi.com**.
+
+![Session Wizard - Host ><](./console/img/session_wizard_host.png)
+
+- None of the default settings will be changed.
+
+  Create a public domain session file and create a desktop icon for quick access to the session, as shown in the picture.
+
+![Session Wizard - Options ><](./console/img/session_wizard_options.png)
+
+- Finally, a screen is displayed informing you that the session and its shortcut have been successfully created.
+
+![Session Wizard - Completed ><](./console/img/session_wizard_completed.png)
 
 
 
