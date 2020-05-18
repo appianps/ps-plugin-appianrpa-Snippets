@@ -3,11 +3,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.appian.snippets.examples</groupId>
-	<artifactId>DEV-fill-generic-queue</artifactId>
+	<groupId>com.appian.rpa.snippets.examples</groupId>
+	<artifactId>robot-snippet-generic-queue-manager-filler</artifactId>
 	<version>0.0.1</version>
 
-	<name>DEV-fill-generic-queue</name>
+	<name>robot-snippet-generic-queue-manager-filler</name>
 
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>
