@@ -26,6 +26,7 @@ public class WelcomePage extends IBM3270Page {
 	 * @throws JidokaException
 	 */
 	public NetViewPage goToPage(String page) throws JidokaException {
+		commons.moveToCoodinates("==>", 4, 0);
 		commons.write(page);
 		commons.enter();
 		return new NetViewPage(commons);
