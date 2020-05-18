@@ -27,14 +27,16 @@ The following describes how to perform the installation of the emulators and the
 - Download the emulator from the following url:
 http://x3270.bgp.nu/download.html
 *(select the stable version from Windows Setup .EXEs)*
+
 - After downloading, run the wc3270 setup wizard.
-![Setup Wizard](./console/img/wizard.png)
+![Setup Wizard ><](./console/img/wizard.png)
 - Execute a default installation, leave the options suggested by the wizard. In the last screen, select 'Launch Session Wizard' and finish the installation.
-![Completed Setup](./console/img/wizard_complete.png)
-- On the wc3270 Session Wizard terminal select option 1 to create a new session.
-![Session Wizard](./console/img/session_wizard.png)
+![Completed Setup ><](./console/img/wizard_complete.png)
+- On the 'wc3270 Session Wizard' terminal select option 1 to create a new session.
+![Session Wizard ><](./console/img/session_wizard.png)
 - Enter the session name, for this robot the session name is **WC3270**.
-![Session Wizard - Name](./console/img/session_wizard_name.png)
+![Session Wizard - Name ><](./console/img/session_wizard_name.png)
+
 
 
 
