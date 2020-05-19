@@ -7,6 +7,7 @@ There are two ways of instantiate the class:
 
   * Creating a new queue using ```createAndAssingNewQueue```.
   * Assigning an existing queue using ```assignExistingQueue```.
+  * Assigning the preselected queue using ```assignPreselectedQueue```.
   
 Both methods return an instance of the GenericQueueManager class
   
@@ -14,6 +15,7 @@ Both methods return an instance of the GenericQueueManager class
 For queues:
   - Create and assign new queue.
   - Assign an existing queue if exists.
+  - Assign the preselected queue.
   - Close queue.
    
 For queue items:
@@ -37,7 +39,7 @@ Snippet Generic Queue Manager is distributed using Maven:
 </dependency>
 ```
 
-### Development
+### Examples
 You can find two examples of how to use this snippet in a robotic process in the folder snippets-examples:
 
 Robot that creates and fill the queue:

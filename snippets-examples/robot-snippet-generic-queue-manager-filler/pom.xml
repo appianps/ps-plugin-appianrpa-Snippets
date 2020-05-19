@@ -68,5 +68,11 @@
 			<artifactId>queue-manager</artifactId>
 			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
+		
+		<dependency>
+		 	<groupId>com.appian.rpa.snippets</groupId>
+		  	<artifactId>snippet-instruction</artifactId>
+		  	<version>1.0.0</version> 
+		</dependency>
 	</dependencies>
 </project>
