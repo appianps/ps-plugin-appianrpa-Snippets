@@ -147,7 +147,8 @@ http://x3270.bgp.nu/download.html
 
 - To avoid the print dialogue appearing when the session is opened, let's edit the **PCSWS.ws** file and include the following text: 
 
-```[LT]
+```
+	[LT]
 	IgnoreWCCStartPrint=Y
 ```
 
