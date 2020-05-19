@@ -28,35 +28,50 @@ The following describes how to perform the installation of the emulators and the
 http://x3270.bgp.nu/download.html
 *(select the stable version from Windows Setup .EXEs)*
 
+
 - After downloading, run the wc3270 setup wizard.
 
-![Setup Wizard ><](./console/img/wizard.png)
+<p align="center">
+  <img src="./console/img/wizard.png" alt="Setup Wizard"/>
+</p>
 
 - Execute a default installation, leave the options suggested by the wizard. In the last screen, select 'Launch Session Wizard' and finish the installation.
 
-![Completed Setup ><](./console/img/wizard_complete.png)
+<p align="center">
+  <img src="./console/img/wizard_complete.png" alt="Completed Setup"/>
+</p>
 
 - On the 'wc3270 Session Wizard' terminal select option **1** to create a new session.
 
-![Session Wizard ><](./console/img/session_wizard.png)
+<p align="center">
+  <img src="./console/img/session_wizard.png" alt="Session Wizard"/>
+</p>
 
 - Enter the session name, for this robot the session name is **WC3270**.
 
-![Session Wizard - Name ><](./console/img/session_wizard_name.png)
+<p align="center">
+  <img src="./console/img/session_wizard_name.png" alt="Session Wizard - Name"/>
+</p>
 
 - Enter the host name, this robot uses the free server **fandezhi.com**.
 
-![Session Wizard - Host ><](./console/img/session_wizard_host.png)
+<p align="center">
+  <img src="./console/img/session_wizard_host.png" alt="Session Wizard - Host"/>
+</p>
 
 - None of the default options need to be changed.
 
   Create a public session file (WC3270.wc3270) and create a desktop icon for quick access to the session, as shown in the picture.
 
-![Session Wizard - Options ><](./console/img/session_wizard_options.png)
+<p align="center">
+  <img src="./console/img/session_wizard_options.png" alt="Session Wizard - Options"/>
+</p>
 
 - Finally, a screen is displayed informing you that the session and its shortcut have been successfully created.
 
-![Session Wizard - Completed ><](./console/img/session_wizard_completed.png)
+<p align="center">
+  <img src="./console/img/session_wizard_completed.png" alt="Session Wizard - Completed"/>
+</p>
 
 - To enable the robot to open the emulator with the session created, it is necessary to move 3 files to the folder where the executable is located (usually C:\Program Files\wc3270). This files are:
 
@@ -84,10 +99,7 @@ http://x3270.bgp.nu/download.html
 	*(An IBM account is required)*
 
 
-- Unzip the file PCOMM_V14.0_FOR_Win_EVL.zip
-
-
-- Unzip mtri0507.zip
+- Unzip the file PCOMM_V14.0_FOR_Win_EVL.zip and the mtri0507.zip inside it.
 
 
 - Execute setup.exe and and follow the wizard using the default values to complete the installation.
@@ -126,13 +138,17 @@ http://x3270.bgp.nu/download.html
   <img src="./console/img/pcomm_save.png" alt="Save session"/>
 </p>
 
-- Exits the terminal, in the Session Managers you can see the new session.
+- Exits the terminal, in the Session Managers we can see the new session.
 
 <p align="center">
   <img src="./console/img/pcomm_session_saved.png" alt="Session saved"/>
 </p>
 
 
+- To avoid the print dialogue appearing when the session is opened, let's edit the **PCSWS.ws** file and include the following text: 
+
+	[LT]
+	IgnoreWCCStartPrint=Y
 
 
 
