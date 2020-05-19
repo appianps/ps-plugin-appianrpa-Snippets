@@ -253,6 +253,8 @@ public abstract class IBM3270Commons {
 
 			server.debug("Getting all the text on the active screen");
 
+			client.characterPause(500);
+
 			selectAllText();
 
 			client.pause(1000);
@@ -276,6 +278,8 @@ public abstract class IBM3270Commons {
 
 		} catch (Exception e) {
 			throw new JidokaFatalException(e.getMessage(), e);
+		} finally {
+			client.characterPause(0);
 		}
 
 		return res;
