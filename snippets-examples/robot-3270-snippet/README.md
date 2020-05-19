@@ -80,9 +80,57 @@ http://x3270.bgp.nu/download.html
 #### IBM Personal Communications
 
 - Download the free 90-day trial version from the following url:
+	https://www.ibm.com/us-en/marketplace/personal-communications
+	*(An IBM account is required)*
 
-https://www.ibm.com/us-en/marketplace/personal-communications
-(An IBM account is required)
+
+- Unzip the file PCOMM_V14.0_FOR_Win_EVL.zip
+
+
+- Unzip mtri0507.zip
+
+
+- Execute setup.exe and and follow the wizard using the default values to complete the installation.
+
+
+- From the Windows menu select: IBM Personal Communications -> Start or Configure Sessions.
+
+
+- In the Session Manager press 'New Session' button.
+
+<p align="center">
+  <img src="./console/img/pcomm_session_manager.png" alt="Session Manager"/>
+</p>
+
+- Press Link Parameters
+
+<p align="center">
+  <img src="./console/img/pcomm_customize_com.png" alt="Link Parameters"/>
+</p>
+
+- In Telnet 3270 windows enter the host, this robot uses the server **fandezhi.com**, and press OK.
+
+<p align="center">
+  <img src="./console/img/pcomm_telnet.png" alt="Telnet 3270"/>
+</p>
+
+- A print dialog appears, press Cancel Print
+
+<p align="center">
+  <img src="./console/img/pcomm_print.png" alt="Cancel print"/>
+</p>
+
+- Go to Files -> Save as, and enter the name session **PCSWS.ws**
+
+<p align="center">
+  <img src="./console/img/pcomm_save.png" alt="Save session"/>
+</p>
+
+- Exits the terminal, in the Session Managers you can see the new session.
+
+<p align="center">
+  <img src="./console/img/pcomm_session_saved.png" alt="Session saved"/>
+</p>
 
 
 
