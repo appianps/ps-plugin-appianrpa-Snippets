@@ -7,8 +7,6 @@ The Browser Manager Snippet Example provides a complete usage example from all t
 
 This robotic process has been created to illustrate how the Browser Manager Snippet should be integrated in your process. It basically searches the word "Appian" in Google
 and shows up the first result found in the console. An exception will be thrown if any error occurs during the process execution.
- * Further instructions to configure and execute the process can be found here:
- * https://github.com/appianps/ps-plugin-appianrpa-Snippets 
 
 Please, follow the [setup instructions](https://docs.appian.com/suite/help/20.1/rpa/develop/deploying-code.html) to set your enviroment and run this example.
 
