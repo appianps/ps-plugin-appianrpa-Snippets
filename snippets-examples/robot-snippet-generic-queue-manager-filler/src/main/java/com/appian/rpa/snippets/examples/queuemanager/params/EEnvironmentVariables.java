@@ -8,17 +8,17 @@ import com.appian.rpa.snippets.commons.instructions.EnvironmentVariable;
  *
  */
 public enum EEnvironmentVariables {
-	
-	ITEMS_PER_ROBOT ("items_per_robot");
-	
+
+	ITEMS_PER_ROBOT("items_per_robot");
+
 	private EnvironmentVariable environmentVariable;
-	
-	EEnvironmentVariables(String environmentVariableName){
+
+	EEnvironmentVariables(String environmentVariableName) {
 		environmentVariable = new EnvironmentVariable(environmentVariableName);
 	}
-	
-	public EnvironmentVariable getEnvironmentVariable(){
-		
+
+	public EnvironmentVariable getEnvironmentVariable() {
+
 		return environmentVariable;
 	}
 }

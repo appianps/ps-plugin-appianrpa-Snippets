@@ -1,6 +1,6 @@
 package com.appian.rpa.snippets.examples.queuemanager.params;
 
-import com.appian.rpa.snippets.commons.instructions.Instruction;
+import com.appian.rpa.snippets.instruction.Instruction;
 
 /**
  * 
@@ -8,17 +8,17 @@ import com.appian.rpa.snippets.commons.instructions.Instruction;
  *
  */
 public enum EInstructions {
-	
-	FOLDER ("folder", true);
-	
+
+	FOLDER("folder", true);
+
 	private Instruction instruction;
-	
-	EInstructions(String instructionName, Boolean instructionRequred){
+
+	EInstructions(String instructionName, Boolean instructionRequred) {
 		instruction = new Instruction(instructionName, instructionRequred);
 	}
-	
+
 	public Instruction getInstruction() {
-		
+
 		return instruction;
 	}
 }

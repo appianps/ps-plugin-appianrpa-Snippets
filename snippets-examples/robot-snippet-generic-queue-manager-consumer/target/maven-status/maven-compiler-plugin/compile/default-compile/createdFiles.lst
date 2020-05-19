@@ -1,2 +1,2 @@
-com\appian\snippets\examples\FileModel.class
-com\appian\snippets\examples\CountWordsRobot.class
+com\appian\rpa\snippets\examples\queuemanager\CountWordsRobot.class
+com\appian\rpa\snippets\examples\queuemanager\FileModel.class
