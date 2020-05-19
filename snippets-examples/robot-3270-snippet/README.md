@@ -157,6 +157,10 @@ http://x3270.bgp.nu/download.html
 
 ![Robot workflow](./console/workflow.png)
 
+#### Robot Configuration
+
+https://github.com/appianps/ps-plugin-appianrpa-Snippets/blob/PS-430-3270/snippets-examples/robot-3270-snippet/console/robot-snippet-3270-manager-configuration.zip
+
 ### Development
 You can find the snippet 3270 Manager in the folder snippets-libraries:
 
