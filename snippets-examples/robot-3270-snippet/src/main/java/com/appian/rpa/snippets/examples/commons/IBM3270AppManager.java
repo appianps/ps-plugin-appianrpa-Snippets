@@ -1,5 +1,6 @@
 package com.appian.rpa.snippets.examples.commons;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
@@ -28,10 +29,10 @@ public class IBM3270AppManager {
 	public static final int APP_MAX_OPEN_RETRIES = 3;
 
 	/** Pause in seconds */
-	public static final int LONG_WAIT_SECONDS = 60;
+	public static final int LONG_WAIT_SECONDS = 30;
 
 	/** Default pause in milliseconds */
-	public static final long WAIT_MENU_MILLISECONDS = 500;
+	public static final long WAIT_MILLISECONDS = 500;
 
 	/** Server instance */
 	private IJidokaServer<Serializable> server;
@@ -70,7 +71,12 @@ public class IBM3270AppManager {
 	 */
 	public IBM3270Page openIBM3270() throws JidokaException {
 
-		String app = String.format("%s\\config\\%s.lnk", server.getCurrentDir(), getLinkName());
+		File configFolder = new File("config-3270");
+		if (!configFolder.exists()) {
+			configFolder.mkdir();
+		}
+
+		String app = String.format("%s\\%s.lnk", configFolder.getAbsolutePath(), getLinkName());
 
 		for (int i = 1; i <= APP_MAX_OPEN_RETRIES; i++) {
 
@@ -91,6 +97,7 @@ public class IBM3270AppManager {
 					WindowInfo window = windows.getWindow(commons.getWindowTitleRegex());
 					if (window != null) {
 						ieAtomic.set(window.gethWnd());
+						windows.pause(WAIT_MILLISECONDS);
 						return true;
 					}
 
@@ -155,7 +162,7 @@ public class IBM3270AppManager {
 
 		windows.pause(1000);
 
-		windows.getKeyboard().alt("n").pause(WAIT_MENU_MILLISECONDS).end().pause(WAIT_MENU_MILLISECONDS).enter();
+		windows.getKeyboard().alt("n").pause(WAIT_MILLISECONDS).end().pause(WAIT_MILLISECONDS).enter();
 	}
 
 	/**
