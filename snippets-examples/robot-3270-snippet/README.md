@@ -86,10 +86,11 @@ http://x3270.bgp.nu/download.html
   <img src="./console/img/wc3270_folder.png" alt="wc3270 Folder"/>
 </p>
 
-- Finally, we must modify the **WC3270 link** to include the keymap, to do so, we edit the link:
+- Modify the **WC3270 link** to include the keymap, to do so, we edit the link:
 
 	"C:Program Files\wc3270\wc3270.exe" -keymap "C:Program Files\wc3270\wc3270.keymap.jidoka" +S "C:Program Files\wc3270\WC3270.wc3270"
 
+- Finally include the link in a folder named **config-3270** located in the same folder as the AppianRPAAgent.exe.
 
 
 #### IBM Personal Communications
@@ -152,6 +153,26 @@ http://x3270.bgp.nu/download.html
 	IgnoreWCCStartPrint=Y
 ```
 
+- The emulator keyboard configuration does not have the Enter key properly configured. We can use the keyboard configuration file found in the support folder or we can modify it from the emulator, in the menu Settings -> Keyboard.
+
+<p align="center">
+  <img src="./console/img/pcomm_keyboard.png" alt="Keyboard"/>
+</p>
+
+- Click the Enter key and type [enter] in the Base field.
+
+<p align="center">
+  <img src="./console/img/pcomm_custom_keyboard.png" alt="Customize Keyboard" width="900"/>
+</p>
+
+
+- Finally include a link to **PCSWS.ws** in a folder named **config-3270** located in the same folder as the AppianRPAAgent.exe.
+
+<p align="center">
+  <img src="./console/img/config-3270.png" alt="Final configuration"/>
+</p>
+
+
 
 ### Workflow
 
@@ -161,7 +182,7 @@ http://x3270.bgp.nu/download.html
 
 https://github.com/appianps/ps-plugin-appianrpa-Snippets/blob/PS-430-3270/snippets-examples/robot-3270-snippet/console/robot-snippet-3270-manager-configuration.zip
 
-### Development
+### Snippet
 You can find the snippet 3270 Manager in the folder snippets-libraries:
 
 https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/PS-430-3270/snippets-libraries/snippet-3270-commons
