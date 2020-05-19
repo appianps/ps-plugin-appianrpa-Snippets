@@ -1,5 +1,5 @@
 
-## Robot Snippet Credentials
+## Robot Credentials (A snippet usage example)
 
 
 The Credentials Snippet Example provides a complete usage example from all the
