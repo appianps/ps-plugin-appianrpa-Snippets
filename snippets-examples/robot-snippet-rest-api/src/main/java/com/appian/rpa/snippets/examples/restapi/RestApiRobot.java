@@ -92,9 +92,9 @@ public class RestApiRobot implements IRobot {
 	public void start() {
 		restApiUtils = RestApiUtils.getInstance();
 
-		this.consoleUrl = server.getEnvironmentVariables().get(EV_CONSOLE_URL);
-		this.endpoint = server.getEnvironmentVariables().get(EV_ENDPOINT);
-		this.itemID = server.getEnvironmentVariables().get(ITEM_ID);
+		consoleUrl = server.getEnvironmentVariables().get(EV_CONSOLE_URL);
+		endpoint = server.getEnvironmentVariables().get(EV_ENDPOINT);
+		itemID = server.getEnvironmentVariables().get(ITEM_ID);
 		// Gets the credentials
 		IUsernamePassword credentials = server.getCredential(CREDENTIAL_API_KEY, false, ECredentialSearch.FIRST_LISTED);
 
