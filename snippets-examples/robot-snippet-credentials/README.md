@@ -8,7 +8,7 @@ credentials (Username + Password) associated to the application "TEST_ROBOT".
 In case that these three credentials were not previously created in the
 console side, the application will throw an exception.
 
-Please, follow the [setup instructions](https://docs.appian.com/suite/help/20.1/rpa/develop/deploying-code.html) to run this example.
+Please, follow the [setup instructions](https://docs.appian.com/suite/help/20.1/rpa/develop/deploying-code.html) to set your enviroment and run this example.
 
 ![AppianRPA](img/workflow.jpg)
 
