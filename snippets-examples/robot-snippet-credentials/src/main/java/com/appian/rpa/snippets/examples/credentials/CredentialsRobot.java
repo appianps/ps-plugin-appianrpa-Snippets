@@ -53,24 +53,22 @@ public class CredentialsRobot implements IRobot {
 	private IUsernamePassword credentials3;
 
 	/**
-	 * Override startup method to initialise some variables involved in our process.
+	 * Overrides the startup method to initialize some variables involved in our
+	 * process.
 	 */
 	@Override
 	public boolean startUp() throws Exception {
 		// Init server module
-		this.server = JidokaFactory.getServer();
-
-		// CredentialsUtils init
-		this.credentialsUtils = CredentialsUtils.getInstance(this);
+		server = JidokaFactory.getServer();
+		credentialsUtils = CredentialsUtils.getInstance(this);
 
 		return true;
 	}
 
 	/**
-	 * Inits modules and global variabless
+	 * The start method initializes modules and global variables
 	 */
 	public void start() {
-		// Init actions
 		server.setNumberOfItems(NUMBER_OF_LOOPS);
 	}
 
@@ -116,7 +114,8 @@ public class CredentialsRobot implements IRobot {
 	}
 
 	/**
-	 * Main loop where the required actions on the app are made
+	 * This method let the process confirm if each credential was successfully
+	 * retrieved or not.
 	 */
 	public void doActions() {
 
@@ -167,7 +166,7 @@ public class CredentialsRobot implements IRobot {
 	}
 
 	/**
-	 * Action 'End'.
+	 * Any further actions to close the robot process can be performed here.
 	 */
 	public void end() {
 
