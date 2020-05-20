@@ -1,10 +1,8 @@
 *.prefs
 *.lst
 *.classpath
+*.pmd
 *.project
-**/target/
+target/
 .settings/
-<<<<<<< HEAD
-=======
 .metadata/
->>>>>>> PS-460-queueWithoutExcel
