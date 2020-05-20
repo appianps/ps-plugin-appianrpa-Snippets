@@ -99,8 +99,6 @@ public class IBM3270ManagerRobot implements IRobot {
 
 			currentPage = appManager.openIBM3270();
 
-			client.pause(1000);
-
 			server.sendScreen("Screenshot after opening the terminal");
 
 		} catch (JidokaException e) {
