@@ -32,8 +32,6 @@ import com.novayre.jidoka.client.api.multios.IClient;
  * and the time required to search. Finally, it closes the queue, updates the
  * Excel file and returns it.
  * 
- * @author isidro.omenac
- *
  */
 @Robot
 public class SearchRobot implements IRobot {
