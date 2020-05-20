@@ -86,9 +86,14 @@ http://x3270.bgp.nu/download.html
   <img src="./console/img/wc3270_folder.png" alt="wc3270 Folder"/>
 </p>
 
-- Modify the **WC3270 link** to include the keymap, to do so, we edit the link:
+- Modify the **WC3270 link** to include the keymap, to do so, we edit the field Target:
 
 	"C:Program Files\wc3270\wc3270.exe" -keymap "C:Program Files\wc3270\wc3270.keymap.jidoka" +S "C:Program Files\wc3270\WC3270.wc3270"
+
+
+<p align="center">
+  <img src="./console/img/change_target.png" alt="Edit shortcut"/>
+</p>
 
 - Finally include the link in a folder named **config-3270** located in the same folder as the AppianRPAAgent.exe.
 
