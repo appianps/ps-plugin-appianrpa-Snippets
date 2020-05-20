@@ -2,7 +2,9 @@
 
 Snippet Excel Queue Manager is a simple project to facilitate the management of queues created from an Excel file. If there is a preselected queue, the robot executes it.
 
-It is important to note that to run several robots with the same in-process queue, it is necessary to create an optional parameter in the robot's configuration called 'numberOfExecutions' with a default value of 1.
+Important. The anotations used on the object model must match the Excel column title.
+
+It is also important to note that to run several robots with the same in-process queue, it is necessary to create an optional parameter in the robot's configuration called 'numberOfExecutions' with a default value of 1.
 
 # Initialization
 To instantiate the class use the constructor provided by the class.
@@ -39,7 +41,7 @@ You can find an example of how to use this snippet in a robotic process in the f
 
 Robot Snippet Excel Queue Manager:
 
-[robot-snippet-generic-queue-manager-filler](URL)
+[robot-snippet-excel-queue-manager](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/PS-460-queueWithoutExcel/snippets-examples/robot-snippet-excel-queue-manager)
 
 
 
