@@ -5,7 +5,11 @@
 
 	<groupId>com.appian.snippets.commons</groupId>
 	<artifactId>snippets-commons</artifactId>
+<<<<<<< HEAD
 	<version>1.0.0-SNAPSHOT</version>
+=======
+	<version>1.0.1-SNAPSHOT</version>
+>>>>>>> PS-460-queueWithoutExcel
 	<packaging>jar</packaging>
 
 	<parent>
@@ -14,6 +18,20 @@
 		<version>7.0.0</version>
 	</parent>
 
+<<<<<<< HEAD
+=======
+	<properties>
+
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<jdk.version>1.8</jdk.version>
+		<targetJdk>${jdk.version}</targetJdk>
+		<jidoka.version>7.0.0</jidoka.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+
+	</properties>
+
+>>>>>>> PS-460-queueWithoutExcel
 	<profiles>
 
 		<profile>
@@ -103,6 +121,15 @@
 		</dependency>
 
 		<dependency>
+<<<<<<< HEAD
+=======
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.9.4</version>
+		</dependency>
+
+		<dependency>
+>>>>>>> PS-460-queueWithoutExcel
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
 			<version>2.11.0.rc1</version>
@@ -115,6 +142,21 @@
 		</dependency>
 
 		<dependency>
+<<<<<<< HEAD
+=======
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>4.1.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>4.1.2</version>
+		</dependency>
+
+		<dependency>
+>>>>>>> PS-460-queueWithoutExcel
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>4.5.12</version>

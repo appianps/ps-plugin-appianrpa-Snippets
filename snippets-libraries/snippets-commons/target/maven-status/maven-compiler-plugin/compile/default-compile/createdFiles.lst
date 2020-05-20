@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 com/appian/rpa/snippets/commons/browser/SelectorsManager.class
 com/appian/rpa/snippets/commons/excel/annotations/utils/ReflectionUtil.class
 com/appian/rpa/snippets/commons/excel/annotations/AExcelFieldKey.class
@@ -17,3 +18,14 @@ com/appian/rpa/snippets/commons/credentials/CredentialsUtils.class
 com/appian/rpa/snippets/commons/excel/mapper/AbstractItemFieldsMapper.class
 com/appian/rpa/snippets/commons/application/ApplicationManager.class
 com/appian/rpa/snippets/commons/restapi/RestApiUtils.class
+=======
+com\appian\rpa\snippets\commons\instructions\Instruction.class
+com\appian\rpa\snippets\commons\utils\reflection\ReflectionUtil.class
+com\appian\rpa\snippets\commons\application\ApplicationManager.class
+com\appian\rpa\snippets\commons\restapi\RestApiUtils.class
+com\appian\rpa\snippets\commons\browser\BrowserManager$1.class
+com\appian\rpa\snippets\commons\instructions\EnvironmentVariable.class
+com\appian\rpa\snippets\commons\browser\SelectorsManager.class
+com\appian\rpa\snippets\commons\browser\BrowserManager.class
+com\appian\rpa\snippets\commons\credentials\CredentialsUtils.class
+>>>>>>> PS-460-queueWithoutExcel

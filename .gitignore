@@ -4,3 +4,7 @@
 *.project
 **/target/
 .settings/
+<<<<<<< HEAD
+=======
+.metadata/
+>>>>>>> PS-460-queueWithoutExcel

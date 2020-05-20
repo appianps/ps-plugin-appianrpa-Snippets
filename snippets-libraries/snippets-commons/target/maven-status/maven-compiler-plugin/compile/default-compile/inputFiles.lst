@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /Users/victor.diaz/Documents/GitHub/ps-plugin-appianrpa-Snippets/snippets-libraries/snippets-commons/src/main/java/com/appian/rpa/snippets/commons/browser/SelectorsManager.java
 /Users/victor.diaz/Documents/GitHub/ps-plugin-appianrpa-Snippets/snippets-libraries/snippets-commons/src/main/java/com/appian/rpa/snippets/commons/queues/EQueueResultTarget.java
 /Users/victor.diaz/Documents/GitHub/ps-plugin-appianrpa-Snippets/snippets-libraries/snippets-commons/src/main/java/com/appian/rpa/snippets/commons/excel/annotations/utils/ReflectionUtil.java
@@ -16,3 +17,13 @@
 /Users/victor.diaz/Documents/GitHub/ps-plugin-appianrpa-Snippets/snippets-libraries/snippets-commons/src/main/java/com/appian/rpa/snippets/commons/queues/QueueResults.java
 /Users/victor.diaz/Documents/GitHub/ps-plugin-appianrpa-Snippets/snippets-libraries/snippets-commons/src/main/java/com/appian/rpa/snippets/commons/excel/annotations/utils/ColumnAtEndCreator.java
 /Users/victor.diaz/Documents/GitHub/ps-plugin-appianrpa-Snippets/snippets-libraries/snippets-commons/src/main/java/com/appian/rpa/snippets/commons/instructions/Instruction.java
+=======
+C:\Users\isidro.omenac\AppianRPA\GIT\ps-plugin-appianrpa-Snippets\snippets-libraries\snippets-commons\src\main\java\com\appian\rpa\snippets\commons\utils\reflection\ReflectionUtil.java
+C:\Users\isidro.omenac\AppianRPA\GIT\ps-plugin-appianrpa-Snippets\snippets-libraries\snippets-commons\src\main\java\com\appian\rpa\snippets\commons\application\ApplicationManager.java
+C:\Users\isidro.omenac\AppianRPA\GIT\ps-plugin-appianrpa-Snippets\snippets-libraries\snippets-commons\src\main\java\com\appian\rpa\snippets\commons\restapi\RestApiUtils.java
+C:\Users\isidro.omenac\AppianRPA\GIT\ps-plugin-appianrpa-Snippets\snippets-libraries\snippets-commons\src\main\java\com\appian\rpa\snippets\commons\browser\SelectorsManager.java
+C:\Users\isidro.omenac\AppianRPA\GIT\ps-plugin-appianrpa-Snippets\snippets-libraries\snippets-commons\src\main\java\com\appian\rpa\snippets\commons\instructions\EnvironmentVariable.java
+C:\Users\isidro.omenac\AppianRPA\GIT\ps-plugin-appianrpa-Snippets\snippets-libraries\snippets-commons\src\main\java\com\appian\rpa\snippets\commons\credentials\CredentialsUtils.java
+C:\Users\isidro.omenac\AppianRPA\GIT\ps-plugin-appianrpa-Snippets\snippets-libraries\snippets-commons\src\main\java\com\appian\rpa\snippets\commons\browser\BrowserManager.java
+C:\Users\isidro.omenac\AppianRPA\GIT\ps-plugin-appianrpa-Snippets\snippets-libraries\snippets-commons\src\main\java\com\appian\rpa\snippets\commons\instructions\Instruction.java
+>>>>>>> PS-460-queueWithoutExcel
