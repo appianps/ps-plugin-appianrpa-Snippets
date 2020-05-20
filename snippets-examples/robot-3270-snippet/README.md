@@ -86,9 +86,9 @@ http://x3270.bgp.nu/download.html
   <img src="./console/img/wc3270_folder.png" alt="wc3270 Folder"/>
 </p>
 
-- Modify the **WC3270 link** to include the keymap, to do so, we edit the field Target:
+- Modify the **WC3270 link** to include the keymap, to do so, we edit the target field of the shortcut like this:
 
-	"C:Program Files\wc3270\wc3270.exe" -keymap "C:Program Files\wc3270\wc3270.keymap.jidoka" +S "C:Program Files\wc3270\WC3270.wc3270"
+	"C:\Program Files\wc3270\wc3270.exe" -keymap "C:\Program Files\wc3270\wc3270.keymap.jidoka" +S "C:\Program Files\wc3270\WC3270.wc3270"
 
 
 <p align="center">
