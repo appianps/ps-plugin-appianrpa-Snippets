@@ -2,7 +2,7 @@
 
 ## RPA Snippets: An Appian RPA utility, including examples, in order to integrate some robot actions over your process in an easier way. 
 
-
+<<<<<<< HEAD
 ### * snippets-libraries, with all the source code.
 ### * snippets-examples, containing a robot example for each snippet.
 
@@ -67,6 +67,7 @@ maximized. After that, the Windows native calculator application is opened,
 and then, the previous opened notepad is set as foreground application.
 Finally, both applicationes are closed. An exception will be thrown if
 something goes wrong during any of these actions.
+=======
 TODO: join iomenac snippet commonts and examples as explained below:
 
 ### * examples, containing some robots using these snippets.
@@ -91,3 +92,4 @@ TEST_ROBOT
 user1, user2, user3 
 
 password1, password2, password3 (the values are not relevant to understand how these are retrieved).
+>>>>>>> PS-460-queueWithoutExcel
