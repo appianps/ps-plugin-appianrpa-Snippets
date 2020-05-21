@@ -11,7 +11,7 @@ The Snippet 3270 Manager Robot is distributed using Maven:
 <dependency>
 	<groupId>com.appian.rpa.snippets.examples</groupId>
 	<artifactId>robot-snippet-3270-manager</artifactId>
-	<version>0.0.1</version>
+	<version>1.0.0</version>
 </dependency>
 ```
 #### Emulators Installation
