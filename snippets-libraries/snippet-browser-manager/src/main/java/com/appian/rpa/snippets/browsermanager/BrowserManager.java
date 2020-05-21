@@ -44,14 +44,16 @@ public class BrowserManager {
 	 * @param robot           IRobot instance
 	 * @param selectedBrowser Browser to initialize
 	 */
-	public BrowserManager(IRobot robot, EBrowsers selectedBrowser) {
+	public BrowserManager(EBrowsers selectedBrowser) {
+
+		IRobot robot = IRobot.getDummyInstance();
 
 		client = IClient.getInstance(robot);
 		waitFor = client.waitFor(robot);
 
 		browser = IWebBrowserSupport.getInstance(robot, client);
 		browser.setTimeoutSeconds(120);
-		selectorsManager = new SelectorsManager(robot);
+		selectorsManager = new SelectorsManager();
 
 		if (selectedBrowser == null) {
 			throw new JidokaFatalException("You must select the browser to open");
