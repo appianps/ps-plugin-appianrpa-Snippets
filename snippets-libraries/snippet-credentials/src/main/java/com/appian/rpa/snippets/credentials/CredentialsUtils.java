@@ -1,10 +1,9 @@
 package com.appian.rpa.snippets.credentials;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import com.novayre.jidoka.client.api.ECredentialSearch;
 import com.novayre.jidoka.client.api.IJidokaServer;
@@ -18,13 +17,10 @@ import com.novayre.jidoka.client.api.multios.IClient;
 
 /**
  * The CredentialsUtils Class provides the actions to retrieve and manage Appian
- * RPA Console Credentials.
+ * RPA Console credentials.
  *
  */
 public class CredentialsUtils {
-
-	/** CredentialsUtils instance */
-	private static CredentialsUtils credentialsUtilsInstance;
 
 	/** Server module */
 	private IJidokaServer<?> server;
@@ -36,33 +32,18 @@ public class CredentialsUtils {
 	private IWaitFor waitFor;
 
 	/** Credentials in use */
-	private Map<IUsernamePassword, Boolean> credentialsInUse = new HashMap<>();
+	private List<Credential> credentialsInUse = new ArrayList<>();
 
 	/**
 	 * Private constructor restricted to the class itself
 	 * 
 	 * @param robot {@link IRobot} instance
 	 */
-	private CredentialsUtils(IRobot robot) {
+	public CredentialsUtils() {
+		IRobot robot = IRobot.getDummyInstance();
 		this.server = JidokaFactory.getServer();
 		this.client = IClient.getInstance(robot);
 		this.waitFor = client.getWaitFor(robot);
-	}
-
-	/**
-	 * 
-	 * Static method to create an instance of the CredentialsUtils class
-	 * 
-	 * @param robot {@link IRobot} instance
-	 * 
-	 * @return CredentialsUtils instance
-	 */
-	public static CredentialsUtils getInstance(IRobot robot) {
-		if (credentialsUtilsInstance == null) {
-			credentialsUtilsInstance = new CredentialsUtils(robot);
-		}
-
-		return credentialsUtilsInstance;
 	}
 
 	/**
@@ -70,54 +51,53 @@ public class CredentialsUtils {
 	 * the credential until the given {@code timeout} is over.
 	 * 
 	 * @param application    Credential application
-	 * @param reserve        True if you want to reserve the credentials
+	 * @param reserve        True if you want to reserve the credential
 	 * @param search         Algorithm to search the credential
 	 * @param timeOutSeconds Maximum waiting time for the credential
 	 * 
 	 * @return The {@link IUsernamePassword} object of the credential
 	 */
-	public IUsernamePassword getCredentials(String application, Boolean reserve, ECredentialSearch search,
+	public IUsernamePassword getCredential(String application, Boolean reserve, ECredentialSearch search,
 			Integer timeOutSeconds) {
 		try {
 
 			// This is used to avoid the java error "Local Variable
 			// Defined in an Enclosing Scope Must be Final or Effectively Final"
-			IUsernamePassword[] credentials = new IUsernamePassword[1];
+			AtomicReference<IUsernamePassword> credential = new AtomicReference<>();
 
-			// Wait until the credentials are free or the timeout is over
+			// Waits until the credential is free or the timeout is over
 			this.waitFor.wait(timeOutSeconds, "Waiting for the credentials", true, false, () -> {
-				// Gets the credentials
-				credentials[0] = server.getCredential(application, reserve, search);
+				// Gets the credential
+				credential.set(server.getCredential(application, reserve, search));
 
-				// Check if the credentials are returned
-				return credentials[0] != null;
+				// Checks if the credential is returned
+				return credential.get() != null;
 			});
 
-			// We put the new credentials in use into the credentialsInUse map
-			credentialsInUse.put(credentials[0], reserve);
+			// We add the new credential in use to the credentialsInUse list
+			credentialsInUse.add(new Credential(application, reserve, credential.get()));
 
-			// Return the credentials
-			return credentials[0];
+			// Return the credential
+			return credential.get();
 
 		} catch (JidokaUnsatisfiedConditionException e) {
-			throw new JidokaFatalException("Credentials not available");
+			throw new JidokaFatalException("Credential not available");
 		}
 	}
 
 	/**
-	 * Gets the given credentials {@code currentCredentialApplication} with the
-	 * given {@code userName}. It waits for the credential until the given
-	 * {@code timeout} is over.
+	 * Gets the given credential {@code currentCredentialApplication} with the given
+	 * {@code userName}. It waits for the credential until the given {@code timeout}
+	 * is over.
 	 * 
-	 * @param application    Credentials application
+	 * @param application    Credential application
 	 * @param userName       Username to filter by
-	 * @param reserve        True if you want to reserve the credentials
-	 * @param search         Algorithm to search the credential
+	 * @param reserve        True if you want to reserve the credential
 	 * @param timeOutSeconds Maximum waiting time for the credential
 	 * 
 	 * @return The {@link IUsernamePassword} object of the credential
 	 */
-	public IUsernamePassword getCredentialsByUser(String application, String userName, Boolean reserve,
+	public IUsernamePassword getCredentialByUser(String application, String userName, Boolean reserve,
 			Integer timeOutSeconds) {
 
 		List<IUsernamePassword> credentialsList = new ArrayList<>();
@@ -135,69 +115,84 @@ public class CredentialsUtils {
 		}
 
 		// Filter the credential by username
-		IUsernamePassword credentials = credentialsList.stream().filter(c -> c.getUsername().equals(userName))
+		IUsernamePassword credential = credentialsList.stream().filter(c -> c.getUsername().equals(userName))
 				.findFirst().orElse(null);
 
 		try {
-			// If reserve is true, it reserves the credentials
+			// If reserve is true, it reserves the credential
 			if (reserve) {
 
-				// Waits until the credentials are reserved
+				// Waits until the credential is reserved
 				this.waitFor.wait(timeOutSeconds, "Reserving the credentials", true, false, () ->
-				// Gets the credentials
-				server.reserveCredential(application, credentials.getUsername())
+				// Gets the credential
+				server.reserveCredential(application, credential.getUsername())
 
 				);
 
 			}
 		} catch (Exception e) {
-			throw new JidokaFatalException("Error reserving the credentials", e);
+			throw new JidokaFatalException("Error reserving the credential", e);
 		}
 
-		// We update the selected credentials as being used with the help of the
-		// credentialsInUse hashmap
-		credentialsInUse.put(credentials, reserve);
+		// We update the selected credential as being used with the help of the
+		// credentialsInUse list
+		credentialsInUse.add(new Credential(application, reserve, credential));
 
-		return credentials;
+		return credential;
 	}
 
 	/**
-	 * Release the specified credentials
+	 * Release the specified credential
 	 * 
-	 * @param credentialApplication Credentials application
-	 * @param userName              Credentials username
+	 * @param credentialApplication Credential application
+	 * @param userName              Credential username
 	 */
-	public void releaseCredentials(String credentialApplication, String userName) {
+	public void releaseCredential(String credentialApplication, String userName) {
 
-		// Get credentials
-		Entry<IUsernamePassword, Boolean> credentials = credentialsInUse.entrySet().stream()
-				.filter(c -> c.getKey().getUsername().equals(userName)).findFirst().orElse(null);
+		// Get credential
+		Credential credential = credentialsInUse.stream()
+				.filter(c -> c.getUsernamePassword().getUsername().equals(userName)).findFirst().orElse(null);
 
-		// If credentials were already retrieved, release credentials
-		if (credentials.getValue()) {
+		// If credential was already retrieved, releases it
+		if (credential.getReserved()) {
 
 			server.releaseCredential(credentialApplication, userName);
-			// We update the new credentials as being used with the help of the
-			// credentialsInUse hashmap
-			credentialsInUse.put(credentials.getKey(), false);
+			// Deletes the released credential from the credentials in use list
+			credentialsInUse.remove(credential);
 
-			server.info(String.format("Credentials %s with username: %s released", credentialApplication, userName));
+			server.info(String.format("Credential %s with username: %s released", credentialApplication, userName));
 		} else {
-			server.info(String.format("Credentials %s with username: %s weren't reserved or were already released",
+			server.info(String.format("Credential %s with username: %s wasn't reserved or was already released",
 					credentialApplication, userName));
 		}
 
 	}
 
 	/**
-	 * Release all retrieved credentials
+	 * Release all retrieved credentials of the given application
 	 * 
-	 * @param credentialApplication Credentials application
+	 * @param credentialApplication Credential application
 	 */
 	public void releaseAllCredentials(String credentialApplication) {
 
-		for (Entry<IUsernamePassword, Boolean> credential : credentialsInUse.entrySet()) {
-			releaseCredentials(credentialApplication, credential.getKey().getUsername());
+		List<Credential> filteredCredentials = credentialsInUse.stream()
+				.filter(c -> c.getApplication().equals(credentialApplication)).collect(Collectors.toList());
+
+		for (Credential credential : filteredCredentials) {
+			releaseCredential(credentialApplication, credential.getUsernamePassword().getUsername());
+		}
+	}
+
+	/**
+	 * Release all retrieved credentials
+	 */
+	public void releaseAllCredentials() {
+
+		List<Credential> credentialsCopy = new ArrayList<>();
+		credentialsCopy.addAll(credentialsInUse);
+
+		for (Credential credential : credentialsCopy) {
+			releaseCredential(credential.getApplication(), credential.getUsernamePassword().getUsername());
 		}
 	}
 }

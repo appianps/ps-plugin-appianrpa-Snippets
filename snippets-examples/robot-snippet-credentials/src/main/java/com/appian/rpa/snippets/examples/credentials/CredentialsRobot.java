@@ -40,8 +40,11 @@ public class CredentialsRobot implements IRobot {
 	/** Default timeout seconds to wait for the crdentials */
 	private static final int DEFAULT_TIMEOUT = 25;
 
-	/** Credentials application name */
-	private static final String APPLICATION_NAME = "TEST_ROBOT";
+	/** Credentials application name 1 */
+	private static final String APPLICATION_NAME1 = "TEST_ROBOT1";
+
+	/** Credentials application name 2 */
+	private static final String APPLICATION_NAME2 = "TEST_ROBOT2";
 
 	/** Credentials 1 */
 	private IUsernamePassword credentials1;
@@ -60,9 +63,9 @@ public class CredentialsRobot implements IRobot {
 	public boolean startUp() throws Exception {
 		// Init server module
 		server = JidokaFactory.getServer();
-		credentialsUtils = CredentialsUtils.getInstance(this);
+		credentialsUtils = new CredentialsUtils();
 
-		return true;
+		return IRobot.super.startUp();
 	}
 
 	/**
@@ -84,18 +87,18 @@ public class CredentialsRobot implements IRobot {
 			// First, reserves or gets the credentials needed. In this case, we are going to
 			// get/reserve 3 credentials.
 			// Gets the first credentials and reserve it, getting the first listed one
-			credentials1 = credentialsUtils.getCredentials(APPLICATION_NAME, true, ECredentialSearch.FIRST_LISTED,
+			credentials1 = credentialsUtils.getCredential(APPLICATION_NAME1, true, ECredentialSearch.FIRST_LISTED,
 					DEFAULT_TIMEOUT);
 
 			// Then it gets the second credentials, searching them by user without reserving
 			// it
-			credentials2 = credentialsUtils.getCredentialsByUser(APPLICATION_NAME, "test2", false, DEFAULT_TIMEOUT);
+			credentials2 = credentialsUtils.getCredentialByUser(APPLICATION_NAME2, "test2", false, DEFAULT_TIMEOUT);
 
 			// Finally it gets the third credentials, searching them by user and reserving
 			// it
 			// Then it gets the second credentials, searching them by user without reserving
 			// it
-			credentials3 = credentialsUtils.getCredentialsByUser(APPLICATION_NAME, "test3", true, DEFAULT_TIMEOUT);
+			credentials3 = credentialsUtils.getCredentialByUser(APPLICATION_NAME2, "test3", true, DEFAULT_TIMEOUT);
 
 			// Here we should do the required login actions on the app
 			// As this is a blank robot, we are going to show the credentials in the log.
@@ -159,7 +162,7 @@ public class CredentialsRobot implements IRobot {
 		try {
 			// It closes the app and releases the credentials if were reserved. We are going
 			// to release the credentials1 and then release the others on the cleanUp
-			credentialsUtils.releaseCredentials(APPLICATION_NAME, credentials1.getUsername());
+			credentialsUtils.releaseCredential(APPLICATION_NAME1, credentials1.getUsername());
 		} catch (Exception e) {
 			throw new JidokaFatalException("Error closing the app", e);
 		}
@@ -185,7 +188,7 @@ public class CredentialsRobot implements IRobot {
 	@Override
 	public String[] cleanUp() throws Exception {
 
-		credentialsUtils.releaseAllCredentials(APPLICATION_NAME);
+		credentialsUtils.releaseAllCredentials();
 
 		return IRobot.super.cleanUp();
 	}
