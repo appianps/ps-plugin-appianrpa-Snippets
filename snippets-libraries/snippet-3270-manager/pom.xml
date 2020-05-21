@@ -3,8 +3,22 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+<<<<<<< HEAD
 	<groupId>com.appian.rpa.snippets</groupId>
 	<artifactId>snippet-3270-manager</artifactId>
+=======
+<<<<<<<< HEAD:snippets-libraries/snippet-3270-manager/pom.xml
+	<groupId>com.appian.rpa.snippets</groupId>
+<<<<<<< HEAD:snippets-libraries/snippet-application-manager/pom.xml
+	<artifactId>snippet-application-manager</artifactId>
+=======
+	<artifactId>snippet-3270-manager</artifactId>
+>>>>>>> PS-430-3270:snippets-libraries/snippet-3270/pom.xml
+========
+	<groupId>com.appian.rpa.snippets.examples</groupId>
+	<artifactId>robot-snippet-3270-manager</artifactId>
+>>>>>>>> cdb77b0cd080bb84e2eeeb3787489da3fe8e804b:snippets-examples/robot-3270-snippet/pom.xml
+>>>>>>> cdb77b0cd080bb84e2eeeb3787489da3fe8e804b
 	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
@@ -62,13 +76,21 @@
 			<distributionManagement>
 				<repository>
 					<id>rpa-coe-lab</id>
+<<<<<<< HEAD
 					<name>appian-lab</name>
+=======
+					<name>rpa-coe-lab</name>
+>>>>>>> cdb77b0cd080bb84e2eeeb3787489da3fe8e804b
 					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
 					<layout>default</layout>
 				</repository>
 				<snapshotRepository>
 					<id>rpa-coe-lab-snapshots</id>
+<<<<<<< HEAD
 					<name>rpa-coe-lab</name>
+=======
+					<name>rpa-coe-lab-snapshots</name>
+>>>>>>> cdb77b0cd080bb84e2eeeb3787489da3fe8e804b
 					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka-snapshots</url>
 					<layout>default</layout>
 				</snapshotRepository>
@@ -77,6 +99,7 @@
 	</profiles>
 
 	<dependencies>
+<<<<<<< HEAD
 		
 		<dependency>
 			<groupId>com.novayre.jidoka.module</groupId>
@@ -91,6 +114,24 @@
 			<version>1.3</version>
 		</dependency>
 		
+=======
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.9</version>
+		</dependency>
+
+<<<<<<<< HEAD:snippets-libraries/snippet-3270-manager/pom.xml
+========
+		<dependency>
+			<groupId>com.appian.rpa.snippets</groupId>
+			<artifactId>snippet-3270-manager</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		
+>>>>>>>> cdb77b0cd080bb84e2eeeb3787489da3fe8e804b:snippets-examples/robot-3270-snippet/pom.xml
+>>>>>>> cdb77b0cd080bb84e2eeeb3787489da3fe8e804b
 	</dependencies>
 
 </project>
