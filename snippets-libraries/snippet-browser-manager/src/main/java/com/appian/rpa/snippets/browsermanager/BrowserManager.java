@@ -143,11 +143,12 @@ public class BrowserManager {
 	 * Waits for the given {@code selectorKey} element to load.
 	 * 
 	 * @param selectorKey Selector key on the selectors.properties file
+	 * @return True if the element has been loaded
 	 */
-	public void waitForElement(String selectorKey) {
+	public boolean waitForElement(String selectorKey) {
 
 		try {
-			waitFor.wait(10, "Waiting for the web element to load", false, () -> {
+			return waitFor.wait(10, "Waiting for the web element to load", false, () -> {
 				try {
 
 					return selectorsManager.getElement(selectorKey) != null;
