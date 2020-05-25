@@ -13,6 +13,7 @@ import com.novayre.jidoka.client.api.IWaitFor;
 import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.client.api.exceptions.JidokaItemException;
+import com.novayre.jidoka.client.api.exceptions.JidokaUnsatisfiedConditionException;
 import com.novayre.jidoka.client.api.multios.EClientShowWindowType;
 import com.novayre.jidoka.client.api.multios.IClient;
 
@@ -96,7 +97,7 @@ public class BrowserManager {
 	}
 
 	/**
-	 * Navigates to the given {@code url} . After that, the browser window is
+	 * Navigates to the given {@code url} . Before that, the browser window is
 	 * activated.
 	 * 
 	 * @param url as String contains the target website
@@ -120,9 +121,49 @@ public class BrowserManager {
 	}
 
 	/**
+	 * Navigates to the given {@code url} and waits until the given
+	 * {@code selectorKey} element is loaded. Before that, the browser window is
+	 * activated.
+	 * 
+	 * To use this method, the robot must use a selectors.properties file with
+	 * selectors key/value pairs.
+	 * 
+	 * @param url         as String contains the target website
+	 * @param selectorKey Selector key on the selectors.properties file
+	 * 
+	 */
+	public void navigateTo(String url, String selectorKey) {
+
+		navigateTo(url);
+
+		waitForElement(selectorKey);
+	}
+
+	/**
+	 * Waits for the given {@code selectorKey} element to load.
+	 * 
+	 * @param selectorKey Selector key on the selectors.properties file
+	 */
+	public void waitForElement(String selectorKey) {
+
+		try {
+			waitFor.wait(10, "Waiting for the web element to load", false, () -> {
+				try {
+
+					return selectorsManager.getElement(selectorKey) != null;
+				} catch (Exception e) {
+					return false;
+				}
+			});
+		} catch (JidokaUnsatisfiedConditionException e) {
+			throw new JidokaFatalException("Error waiting for the given web element to load", e);
+		}
+	}
+
+	/**
 	 * Get the selected browser window title
 	 * 
-	 * @return The browser window tittle
+	 * @return The browser window title
 	 */
 	private String getBrowserWindowTitle() {
 
