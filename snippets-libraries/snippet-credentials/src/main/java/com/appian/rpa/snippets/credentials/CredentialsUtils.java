@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.novayre.jidoka.client.api.ECredentialSearch;
 import com.novayre.jidoka.client.api.IJidokaServer;
@@ -43,10 +44,10 @@ public class CredentialsUtils {
 	 * 
 	 * @param robot {@link IRobot} instance
 	 */
-	private CredentialsUtils(IRobot robot) {
+	private CredentialsUtils() {
 		this.server = JidokaFactory.getServer();
-		this.client = IClient.getInstance(robot);
-		this.waitFor = client.getWaitFor(robot);
+		this.client = IClient.getInstance(IRobot.getDummyInstance());
+		this.waitFor = client.getWaitFor(IRobot.getDummyInstance());
 	}
 
 	/**
@@ -57,9 +58,9 @@ public class CredentialsUtils {
 	 * 
 	 * @return CredentialsUtils instance
 	 */
-	public static CredentialsUtils getInstance(IRobot robot) {
+	public static CredentialsUtils getInstance() {
 		if (credentialsUtilsInstance == null) {
-			credentialsUtilsInstance = new CredentialsUtils(robot);
+			credentialsUtilsInstance = new CredentialsUtils();
 		}
 
 		return credentialsUtilsInstance;
@@ -80,24 +81,22 @@ public class CredentialsUtils {
 			Integer timeOutSeconds) {
 		try {
 
-			// This is used to avoid the java error "Local Variable
-			// Defined in an Enclosing Scope Must be Final or Effectively Final"
-			IUsernamePassword[] credentials = new IUsernamePassword[1];
+			AtomicReference<IUsernamePassword> credential = new AtomicReference<IUsernamePassword>();
 
 			// Wait until the credentials are free or the timeout is over
 			this.waitFor.wait(timeOutSeconds, "Waiting for the credentials", true, false, () -> {
 				// Gets the credentials
-				credentials[0] = server.getCredential(application, reserve, search);
+				credential.set(server.getCredential(application, reserve, search));
 
 				// Check if the credentials are returned
-				return credentials[0] != null;
+				return credential.get() != null;
 			});
 
 			// We put the new credentials in use into the credentialsInUse map
-			credentialsInUse.put(credentials[0], reserve);
+			credentialsInUse.put(credential.get(), reserve);
 
 			// Return the credentials
-			return credentials[0];
+			return credential.get();
 
 		} catch (JidokaUnsatisfiedConditionException e) {
 			throw new JidokaFatalException("Credentials not available");
