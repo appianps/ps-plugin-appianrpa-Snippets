@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import com.novayre.jidoka.browser.api.EBrowsers;
 import com.novayre.jidoka.browser.api.IWebBrowserSupport;
@@ -82,13 +83,22 @@ public class BrowserManager {
 
 		try {
 
-			// Pick the as default browser
+			// Sets the browser type
 			browser.setBrowserType(this.selectedBrowser);
 
-			// init browser
+			if (selectedBrowser.equals(EBrowsers.CHROME)) {
+				ChromeOptions options = new ChromeOptions();
+
+				options.addArguments("--disable-dev-shm-usage"); // overcome limited resource problems
+				options.addArguments("--no-sandbox"); // Bypass OS security model
+
+				browser.setCapabilities(options);
+			}
+
+			// Inits browser
 			browser.initBrowser();
 
-			// wait browser complete
+			// Waits for the browser to open
 			waitFor.window(getBrowserWindowTitle());
 
 		} catch (Exception e) {
