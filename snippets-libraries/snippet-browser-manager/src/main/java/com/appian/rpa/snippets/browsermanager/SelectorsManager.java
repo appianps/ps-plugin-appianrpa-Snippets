@@ -57,7 +57,9 @@ public class SelectorsManager {
 	 * @param robot    The IRobot instance
 	 * @param filePath Selectors properties file path
 	 */
-	public SelectorsManager(IRobot robot) {
+	public SelectorsManager() {
+
+		IRobot robot = IRobot.getDummyInstance();
 
 		Path filePath = Paths.get(JidokaFactory.getServer().getCurrentDir(), "browser", "selectors.properties");
 
@@ -105,14 +107,14 @@ public class SelectorsManager {
 	 * @return The {@link WebElement} object resulting from the selector search.
 	 */
 	public WebElement getElement(String key) {
-		
+
 		By by = getBy(key);
-		
-		if(by!=null) {
-			
+
+		if (by != null) {
+
 			return browser.getElement(by);
 		}
-		
+
 		return null;
 	}
 
@@ -150,12 +152,12 @@ public class SelectorsManager {
 	public List<WebElement> getAllElements(String key) {
 
 		By by = getBy(key);
-		
-		if(by!=null) {
-			
+
+		if (by != null) {
+
 			return browser.getElements(by);
 		}
-		
+
 		return null;
 	}
 
@@ -173,12 +175,12 @@ public class SelectorsManager {
 	public Boolean existsElement(String key) {
 
 		By by = getBy(key);
-		
-		if(by!=null) {
-			
+
+		if (by != null) {
+
 			return (browser.getElement(by) != null);
 		}
-		
+
 		return false;
 	}
 }
