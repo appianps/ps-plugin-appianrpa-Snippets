@@ -5,7 +5,7 @@
 
 	<groupId>com.appian.rpa.snippets.examples</groupId>
 	<artifactId>robot-snippet-excel-queue-manager</artifactId>
-	<version>0.0.1</version>
+	<version>1.0.1</version>
 
 	<name>robot-snippet-excel-queue-manager</name>
 
