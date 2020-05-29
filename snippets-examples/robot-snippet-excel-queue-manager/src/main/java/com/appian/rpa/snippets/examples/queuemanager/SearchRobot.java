@@ -67,8 +67,8 @@ public class SearchRobot implements IRobot {
 		server = JidokaFactory.getServer();
 		client = IClient.getInstance(this);
 
-		excelQueueManager = new ExcelQueueManager<>(this, new SearchMapper());
-		browserManager = new BrowserManager(this, EBrowsers.CHROME);
+		excelQueueManager = new ExcelQueueManager<>(new SearchMapper());
+		browserManager = new BrowserManager(EBrowsers.CHROME);
 		selectorsManager = browserManager.getSelectorsManager();
 
 		return IRobot.super.startUp();
