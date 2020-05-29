@@ -52,7 +52,9 @@ public class ApplicationManager {
 	 * @param windowTittleRegex App window title regex (i.e. ".*Calculator.*")
 	 * 
 	 */
-	public ApplicationManager(IRobot robot, String appLauncher, String appDir, String windowTittleRegex) {
+	public ApplicationManager(String appLauncher, String appDir, String windowTittleRegex) {
+
+		IRobot robot = IRobot.getDummyInstance();
 
 		this.client = IWindows.getInstance(robot);
 		this.waitFor = client.waitFor(robot);
@@ -67,7 +69,7 @@ public class ApplicationManager {
 	/**
 	 * Starts the application and wait until the window opens.
 	 */
-	public void startApplication() throws JidokaFatalException {
+	public void startApplication() {
 
 		try {
 			// Get the App executable path
@@ -91,29 +93,27 @@ public class ApplicationManager {
 	/**
 	 * Close the application with a backup way in case the first one doesn't work
 	 */
-	public void closeApp() throws JidokaFatalException {
+	public void closeApp() {
 
 		try {
 			if (window != null) {
 				window.close();
 				window = null;
 				boolean closed = client.waitCondition(15, 1000, "Closing window " + windowTittleRegex, null, false,
-						false, (i, T) -> {
-							return client.getWindow(windowTittleRegex) == null;
-						});
+						false, (i, t) -> client.getWindow(windowTittleRegex) == null);
 				if (!closed && application != null) {
 					application.close(Pattern.compile(windowTittleRegex));
 
 					closed = client.waitCondition(15, 1000, "Closing window " + windowTittleRegex, null, false, false,
-							(i, T) -> {
-								return client.getWindow(windowTittleRegex) == null;
-							});
+							(i, t) -> client.getWindow(windowTittleRegex) == null);
 					if (!closed) {
 						throw new JidokaFatalException("Can't close the window " + windowTittleRegex);
 					}
 				}
 			}
-		} catch (Exception e) {
+		} catch (
+
+		Exception e) {
 			throw new JidokaFatalException("Error while closing the application", e);
 		}
 	}
@@ -121,7 +121,7 @@ public class ApplicationManager {
 	/**
 	 * Activate the window and shows it. Waits until the window is active.
 	 */
-	public void activateWindow() throws JidokaFatalException {
+	public void activateWindow() {
 		try {
 			// Activate the Application
 			window.focus();
