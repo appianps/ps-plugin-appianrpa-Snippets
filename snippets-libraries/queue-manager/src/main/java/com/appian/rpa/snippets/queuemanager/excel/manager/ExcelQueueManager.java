@@ -97,7 +97,7 @@ public class ExcelQueueManager<T> {
 	 * @param mapper Mapper to map the data to an {@link AbstractItemFieldsMapper}
 	 *               object
 	 */
-	public ExcelQueueManager(IRobot robot, AbstractItemFieldsMapper<T> mapper) {
+	public ExcelQueueManager(AbstractItemFieldsMapper<T> mapper) {
 
 		this.mapper = mapper;
 
@@ -109,7 +109,7 @@ public class ExcelQueueManager<T> {
 
 		this.reserveItemsParameters.setUseOnlyCurrentQueue(true);
 
-		this.robot = robot;
+		this.robot = IRobot.getDummyInstance();
 
 		String executionsNum = server.getParameters().get(PARAM_NUMBER_OF_EXECUTIONS);
 
