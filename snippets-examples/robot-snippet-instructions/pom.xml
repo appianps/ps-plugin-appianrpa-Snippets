@@ -5,7 +5,7 @@
 	<groupId>com.appian.rpa.snippets.examples</groupId>
 	<artifactId>robot-snippet-instruction</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.1</version>
+	<version>1.0.0</version>
 
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>
@@ -87,7 +87,7 @@
 		<dependency>
 		 	<groupId>com.appian.rpa.snippets</groupId>
 		  	<artifactId>snippet-instruction</artifactId>
-		  	<version>1.0.0</version> 
+		  	<version>1.1.0</version> 
 		</dependency>
 				
 	</dependencies>
