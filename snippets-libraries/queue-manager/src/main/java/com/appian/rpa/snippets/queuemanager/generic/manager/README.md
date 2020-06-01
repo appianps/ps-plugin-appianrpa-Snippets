@@ -44,11 +44,11 @@ You can find two examples of how to use this snippet in a robotic process in the
 
 Robot that creates and fill the queue:
 
-  - [robot-snippet-generic-queue-manager-filler](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/PS-460-queueWithoutExcel/snippets-examples/robot-snippet-generic-queue-manager-filler)
+  - [robot-snippet-generic-queue-manager-filler](https://github.com/appianps/ps-plugin-appianrpa-Snippets/blob/master/snippets-examples/robot-snippet-generic-queue-manager-filler/)
 
 Robot that process the queue and updates the items:
 
-  - [robot-snippet-generic-queue-manager-consumer](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/PS-460-queueWithoutExcel/snippets-examples/robot-snippet-generic-queue-manager-consumer)
+  - [robot-snippet-generic-queue-manager-consumer](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-generic-queue-manager-consumer)
 
 
 
