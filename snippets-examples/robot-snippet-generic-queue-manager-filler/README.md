@@ -25,4 +25,4 @@ Robot console configuration:
 ### Development
 You can find the snippet Generic Queue Manager in the folder snippets-libraries:
 
-[Queue Manager](../../snippets/snippets-libraries/queue-manager)
+[Queue Manager](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/queue-manager)
