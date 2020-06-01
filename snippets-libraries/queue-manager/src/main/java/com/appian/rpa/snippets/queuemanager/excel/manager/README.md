@@ -32,7 +32,7 @@ Snippet Excel Queue Manager is distributed using Maven:
 <dependency>
 	<groupId>com.appian.rpa.snippets</groupId>
 	<artifactId>queue-manager</artifactId>
-	<version>1.1.0</version>
+	<version>1.2.0</version>
 </dependency>
 ```
 
@@ -41,7 +41,7 @@ You can find an example of how to use this snippet in a robotic process in the f
 
 Robot Snippet Excel Queue Manager:
 
-[robot-snippet-excel-queue-manager](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/PS-460-queueWithoutExcel/snippets-examples/robot-snippet-excel-queue-manager)
+[robot-snippet-excel-queue-manager](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-excel-queue-manager)
 
 
 
