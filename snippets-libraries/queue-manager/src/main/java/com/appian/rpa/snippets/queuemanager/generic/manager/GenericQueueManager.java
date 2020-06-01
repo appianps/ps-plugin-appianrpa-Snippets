@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -346,7 +347,9 @@ public class GenericQueueManager {
 			DownloadQueueParameters dqp = new DownloadQueueParameters().queueId(currentQueueId.trim());
 			IDownloadedQueue downloadedQueue = queueManager.downloadQueue(dqp);
 
-			List<IQueueItem> filteredItems = downloadedQueue.items().stream().filter(i -> i.key().matches(keyRegex))
+			String escapedKey = Pattern.quote(keyRegex);
+
+			List<IQueueItem> filteredItems = downloadedQueue.items().stream().filter(i -> i.key().matches(escapedKey))
 					.collect(Collectors.toList());
 
 			if (!states.isEmpty()) {
