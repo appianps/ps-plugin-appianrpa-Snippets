@@ -11,7 +11,7 @@ The Snippet Generic Queue Manager Filler Robot is distributed using Maven:
 <dependency>
 	<groupId>com.appian.rpa.snippets.examples</groupId>
 	<artifactId>robot-snippet-generic-queue-manager-filler</artifactId>
-	<version>0.0.1</version>
+	<version>1.0.0</version>
 </dependency>
 ```
 
