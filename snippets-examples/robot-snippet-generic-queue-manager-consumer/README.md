@@ -11,7 +11,7 @@ The Snippet Generic Queue Manager Consumer Robot is distributed using Maven:
 <dependency>
 	<groupId>com.appian.rpa.snippets.examples</groupId>
 	<artifactId>robot-snippet-generic-queue-manager-consumer</artifactId>
-	<version>0.0.1</version>
+	<version>1.0.0</version>
 </dependency>
 ```
 
@@ -25,4 +25,4 @@ Robot console configuration:
 ### Development
 You can find the snippet Generic Queue Manager in the folder snippets-libraries:
 
-[Queue Manager](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/PS-460-queueWithoutExcel/snippets-libraries/queue-manager)
+[Queue Manager](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/queue-manager)
