@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -48,12 +49,24 @@ public class FillQueueRobot implements IRobot {
 	/** List of new files to add to the queue */
 	private List<File> filesToAdd;
 
+	/** Boolean to control if items were added to the queue */
+	private boolean itemsAdded = false;
+
 	@Override
 	public boolean startUp() throws Exception {
+
+		return IRobot.super.startUp();
+	}
+
+	@Override
+	public boolean beforeGetSupportFiles() throws Exception {
 		// Init modules and managers
 		server = JidokaFactory.getServer();
 
-		return IRobot.super.startUp();
+		// Clean old files
+		FileUtils.cleanDirectory(Paths.get(server.getCurrentDir()).toFile());
+
+		return IRobot.super.beforeGetSupportFiles();
 	}
 
 	/**
@@ -63,6 +76,7 @@ public class FillQueueRobot implements IRobot {
 
 		// Inits the queue name
 		this.queueName = getQueueName();
+
 	}
 
 	/**
@@ -123,6 +137,7 @@ public class FillQueueRobot implements IRobot {
 			if (pendingOfProcess(file)) {
 				filesToAdd.add(file);
 				addedRobots++;
+				itemsAdded = true;
 				if (addedRobots >= itemsPerRobot) {
 					server.registerEvent("LAUNCH_CONSUMER_ROBOT");
 					addedRobots = 0;
@@ -134,8 +149,12 @@ public class FillQueueRobot implements IRobot {
 			server.registerEvent("LAUNCH_CONSUMER_ROBOT");
 		}
 
+		if (!itemsAdded && filesToAdd.isEmpty()) {
+			server.executionNeedless("No new files to add to the queue");
+		}
+
 		if (filesToAdd.isEmpty()) {
-			server.info("No new files to add to the queue");
+			server.info("No more files to add to the queue");
 			return "no";
 		} else {
 			server.info(filesToAdd.size() + " new files to add to the queue");
