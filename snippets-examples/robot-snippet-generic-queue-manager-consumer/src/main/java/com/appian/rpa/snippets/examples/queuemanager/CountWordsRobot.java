@@ -13,6 +13,7 @@ import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.annotations.Robot;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.client.api.exceptions.JidokaItemException;
+import com.novayre.jidoka.client.api.multios.IClient;
 
 /**
  * Robot that retrieves an element from the queue and counts the words in the
@@ -63,6 +64,10 @@ public class CountWordsRobot implements IRobot {
 				throw new JidokaFatalException("Queue " + getQueueName() + " not found");
 			}
 
+			if (genericQueueManager.getQueue().pendingItems() == 0) {
+				server.executionNeedless("No items to process");
+			}
+
 		} catch (Exception e) {
 			throw new JidokaFatalException(e.getMessage(), e);
 		}
@@ -85,7 +90,7 @@ public class CountWordsRobot implements IRobot {
 	 * @param dateFormat The format to apply
 	 * @return The formatted date
 	 */
-	public static String getDateFormated(Date date, String dateFormat) {
+	private static String getDateFormated(Date date, String dateFormat) {
 
 		if (date == null) {
 			return "";
@@ -136,6 +141,8 @@ public class CountWordsRobot implements IRobot {
 			}
 			String[] words = content.split("\\s+");
 			currentFile.setNumOfWords(words.length);
+
+			IClient.getInstance(this).pause(5000);
 		} catch (Exception e) {
 			throw new JidokaItemException("Error counting the words of item " + currentFile.getFileName());
 		}
@@ -146,8 +153,12 @@ public class CountWordsRobot implements IRobot {
 	 * Updates the current item functional data
 	 */
 	public void updateQueueItem() {
-		server.setCurrentItemResultToOK("Num of words: " + currentFile.getNumOfWords());
-		genericQueueManager.updateItem(currentFile);
+		try {
+			server.setCurrentItemResultToOK("Num of words: " + currentFile.getNumOfWords());
+			genericQueueManager.updateItem(currentFile);
+		} catch (Exception e) {
+			throw new JidokaItemException("Error updating the current queue item");
+		}
 	}
 
 	/**
