@@ -1,6 +1,6 @@
 ## Instruction Snippet
 
-Manage the instructions and environment variables from your Appian RPA Workflow.
+Retrieve instructions and environment variables from your Appian RPA Workflow Panel.
 
 An integration example can be found [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-instruction) 
 
