@@ -2,7 +2,7 @@
 
 ## RPA Snippets: An Appian RPA utility, including examples, in order to integrate some robot actions over your process in an easier way.
 
-These code utilities have been designed in order to provide an easier implementation of the most frequently used actions in robotic processes, such as an internet navigator or an applications manager to interact with any windows application. 
+These code utilities have been designed to provide an easier implementation of the most frequently used actions in robotic processes, such as an internet navigator or an applications manager to interact with any windows application. 
 
 The snippets and examples of usage can be found in this repository. All the actions contained and updates are listed below:
 
@@ -18,31 +18,31 @@ After these previous steps, The deployed snippets will be fully available by add
 
 ### List of Snippets currently included (latest update 06/2020)
 
-#### 1. Credentials Snippet
+#### 1. [Credentials Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-credentials).
 
 The CredentialsUtils Class provides the actions to retrieve and manage 
 Appian RPA Console Credentials.
 
-#### 2. REST API Snippet
+#### 2. [REST API Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-rest-api).
 
-The REST API Snippet Class manages the actions referred to a REST API utility
+The REST API Snippet Class manages the actions referred to a REST API utility.
 
-#### 3. Browser Manager Snippet
+#### 3. [Browser Manager Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-browser-manager).
 
 This utility let the robot manage a web browser (Chrome, Firefox and
 IExplorer are supported). Your process should include an instance for each
 browser window involved in the robot actions. It also contains a SelectorsManager class, created 
 to retrieve all the selectors involved in the robotic process from the selectors.properties file.
 
-#### 4. Application Manager Snippet
+#### 4. [Application Manager Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-application-manager).
 
 Manage the actions referred to a desktop application.
 
-#### 5. 3270 Snippet.
+#### 5. [3270 Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-3270-manager).
 
-#### 6. Instructions Snippet. 
+#### 6. [Instructions Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-instruction). 
 
-#### 7. [Queue Manager](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/queue-manager)
+#### 7. [Queue Manager](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/queue-manager).
 
 The Queue Manager provides some utilities to create, update and release a list of elements to be processed by the robot. You can find further information about a queue and its usage [here](https://docs.appian.com/suite/help/20.1/rpa/modules/process-queues-module.html).
 An implementation can be found [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-excel-queue-manager)
