@@ -21,7 +21,7 @@ After these previous steps, The deployed snippets will be fully available by add
 #### 1. [Credentials Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-credentials).
 
 The CredentialsUtils Class provides the actions to retrieve and manage 
-Appian RPA Console Credentials.
+Appian RPA Console Credentials. 
 
 #### 2. [REST API Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-rest-api).
 
@@ -39,6 +39,8 @@ to retrieve all the selectors involved in the robotic process from the selectors
 Manage the actions referred to a desktop application.
 
 #### 5. [3270 Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-3270-manager).
+
+The Snippet IBM3270 Manager covers some methods to ease the IBM3270 terminal management. Example of usage [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-3270-snippet).
 
 #### 6. [Instructions Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-instruction). 
 
@@ -86,10 +88,3 @@ maximized. After that, the Windows native calculator application is opened,
 and then, the previous opened notepad is set as foreground application.
 Finally, both applicationes are closed. An exception will be thrown if
 something goes wrong during any of these actions.
-
-TEST_ROBOT 
-
-user1, user2, user3 
-
-password1, password2, password3 (the values are not relevant to understand how these are retrieved).
-
