@@ -1,6 +1,5 @@
-![AppianRPA](https://www.appian.com/wp-content/uploads/2020/03/ap_rpa_lockup.png)
+# RPA Snippets: An Appian RPA utility, including examples, in order to integrate some robot actions over your process in an easier way.
 
-## RPA Snippets: An Appian RPA utility, including examples, in order to integrate some robot actions over your process in an easier way.
 
 These code utilities have been designed to provide an easier implementation of the most frequently used actions in robotic processes, such as an internet navigator or an applications manager to interact with any windows application. 
 
