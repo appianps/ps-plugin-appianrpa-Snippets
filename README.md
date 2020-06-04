@@ -4,8 +4,6 @@
 
 These code utilities have been designed to provide an easier implementation of the most frequently used actions in robotic processes, such as an internet navigator or an applications manager to interact with any windows application. 
 
-The snippets and examples of usage can be found in this repository. All the actions contained and updates are listed below:
-
 #### * [snippets-libraries](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries).
 
 #### * [snippets-examples](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples).
@@ -15,6 +13,8 @@ The snippets and examples of usage can be found in this repository. All the acti
 Once your settings.xml file is successfully configured as explained in the [documentation](https://docs.appian.com/suite/help/20.1/rpa/setup/maven-setup.html),  each of the desired snippets must be previously deployed in the Appian RPA console where the execution is going to be managed. Further help to deploy an Appian RPA source code project can be found [here](https://docs.appian.com/suite/help/20.1/rpa/rpa_in_apps/deploying-apps-rps.html).
 
 After these previous steps, The deployed snippets will be fully available by adding them to your pom.xml project.
+
+The snippets and examples of usage can be found in this repository. All the actions contained and updates are listed below:
 
 ### List of Snippets currently included (latest update 06/2020)
 
