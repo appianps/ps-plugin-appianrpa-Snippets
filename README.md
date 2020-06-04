@@ -34,9 +34,13 @@ IExplorer are supported). Your process should include an instance for each
 browser window involved in the robot actions. It also contains a SelectorsManager class, created 
 to retrieve all the selectors involved in the robotic process from the selectors.properties file.
 
+We recommend you to read the [Browser Module documentation](https://docs.appian.com/suite/help/20.1/rpa/modules/browser-module.html) to get a better comprehension of this utility before using the snippet.
+
 #### 4. [Application Manager Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-application-manager).
 
-Manage the actions referred to a desktop application.
+Manage the actions referred to a Windows desktop application.
+
+We recommend you to read the [UIAutomation documentation](https://docs.appian.com/suite/help/20.1/rpa/modules/using-ui-automation.html) to get a better comprehension of this utility before using the snippet.
 
 #### 5. [3270 Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-3270-manager).
 
