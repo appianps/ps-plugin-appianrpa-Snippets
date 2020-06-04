@@ -1,13 +1,22 @@
 ![AppianRPA](https://www.appian.com/wp-content/uploads/2020/03/ap_rpa_lockup.png)
 
-## RPA Snippets: An Appian RPA utility, including examples, in order to integrate some robot actions over your process in an easier way. 
+## RPA Snippets: An Appian RPA utility, including examples, in order to integrate some robot actions over your process in an easier way.
 
-<<<<<<< HEAD
-### * snippets-libraries, with all the source code.
-### * snippets-examples, containing a robot example for each snippet.
+These code utilities have been designed in order to provide an easier implementation of the most frequently used actions in robotic processes, such as an internet navigator or an applications manager to interact with any windows application. 
 
+The snippets and examples of usage can be found in this repository. All the actions contained and updates are listed below:
 
-### Libraries
+#### * [snippets-libraries](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries).
+
+#### * [snippets-examples](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples).
+
+## How can I integrate these snippets into my RPA Project?
+
+Once your settings.xml file is successfully configured as explained in the [documentation](https://docs.appian.com/suite/help/20.1/rpa/setup/maven-setup.html),  each of the desired snippets must be previously deployed in the Appian RPA console where the execution is going to be managed. Further help to deploy an Appian RPA source code project can be found [here](https://docs.appian.com/suite/help/20.1/rpa/rpa_in_apps/deploying-apps-rps.html).
+
+After these previous steps, The deployed snippets will be fully available by adding them to your pom.xml project.
+
+### List of Snippets currently included (latest update 06/2020)
 
 #### 1. Credentials Snippet
 
@@ -16,7 +25,7 @@ Appian RPA Console Credentials.
 
 #### 2. REST API Snippet
 
-Class to manage the actions referred to a REST API utility
+The REST API Snippet Class manages the actions referred to a REST API utility
 
 #### 3. Browser Manager Snippet
 
@@ -28,6 +37,16 @@ to retrieve all the selectors involved in the robotic process from the selectors
 #### 4. Application Manager Snippet
 
 Manage the actions referred to a desktop application.
+
+#### 5. 3270 Snippet.
+
+#### 6. Instructions Snippet. 
+
+#### 7. [Queue Manager](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/queue-manager)
+
+The Queue Manager provides some utilities to create, update and release a list of elements to be processed by the robot. You can find further information about a queue and its usage [here](https://docs.appian.com/suite/help/20.1/rpa/modules/process-queues-module.html).
+An implementation can be found [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-excel-queue-manager)
+
 
 ### Examples
 
@@ -67,29 +86,10 @@ maximized. After that, the Windows native calculator application is opened,
 and then, the previous opened notepad is set as foreground application.
 Finally, both applicationes are closed. An exception will be thrown if
 something goes wrong during any of these actions.
-=======
-TODO: join iomenac snippet commonts and examples as explained below:
-
-### * examples, containing some robots using these snippets.
-### * snippet-commons, with all the source code.
-
-
-### Examples
-
-1. Credentials Snippets Example 
-
-Retrieve three credentials associated to the same application "TEST_ROBOT".
-
-How to use and run the example: 
-
-1. Upload the zip file located in snippets-examples/credentials/console as is. 
-It will automatically generate the robotic process with all the requirements needed. 
-
-2. reate three credentials as described: 
 
 TEST_ROBOT 
 
 user1, user2, user3 
 
 password1, password2, password3 (the values are not relevant to understand how these are retrieved).
->>>>>>> PS-460-queueWithoutExcel
+
