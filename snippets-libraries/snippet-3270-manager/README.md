@@ -1,6 +1,6 @@
 # Snippet IBM3270 Manager
 
-Snippet IBM3270 Manager is a simple project to facilitate the management of an IBM3270 terminal.
+Snippet IBM3270 Manager is a simple project to ease the management of an IBM3270 terminal.
 
 # Main functions
 
