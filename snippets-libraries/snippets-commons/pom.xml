@@ -5,11 +5,7 @@
 
 	<groupId>com.appian.snippets.commons</groupId>
 	<artifactId>snippets-commons</artifactId>
-<<<<<<< HEAD
-	<version>1.0.0-SNAPSHOT</version>
-=======
-	<version>1.0.1-SNAPSHOT</version>
->>>>>>> PS-460-queueWithoutExcel
+	<version>1.1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<parent>
@@ -18,8 +14,6 @@
 		<version>7.0.0</version>
 	</parent>
 
-<<<<<<< HEAD
-=======
 	<properties>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -31,7 +25,6 @@
 
 	</properties>
 
->>>>>>> PS-460-queueWithoutExcel
 	<profiles>
 
 		<profile>
@@ -95,78 +88,11 @@
 	</profiles>
 
 	<dependencies>
-
+	
 		<dependency>
-			<groupId>com.novayre.jidoka.module</groupId>
-			<artifactId>jidoka-data-provider-api</artifactId>
-			<version>${jidoka.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.novayre.jidoka.module</groupId>
-			<artifactId>jidoka-browser-api</artifactId>
-			<version>${jidoka.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>3.9</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-		</dependency>
-
-		<dependency>
-<<<<<<< HEAD
-=======
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
 			<version>1.9.4</version>
-		</dependency>
-
-		<dependency>
->>>>>>> PS-460-queueWithoutExcel
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-core</artifactId>
-			<version>2.11.0.rc1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.11.0.rc1</version>
-		</dependency>
-
-		<dependency>
-<<<<<<< HEAD
-=======
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi</artifactId>
-			<version>4.1.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.poi</groupId>
-			<artifactId>poi-ooxml</artifactId>
-			<version>4.1.2</version>
-		</dependency>
-
-		<dependency>
->>>>>>> PS-460-queueWithoutExcel
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.5.12</version>
-		</dependency>
-
-		<dependency>
-			<groupId>net.sf.json-lib</groupId>
-			<artifactId>json-lib</artifactId>
-			<version>2.4</version>
-			<classifier>jdk15</classifier>
 		</dependency>
 
 	</dependencies>

@@ -1,11 +1,18 @@
 package com.appian.rpa.snippets.queuemanager.utils.conversion;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.appian.rpa.snippets.queuemanager.annotations.AItemField;
+import com.appian.rpa.snippets.queuemanager.annotations.AItemFile;
 import com.appian.rpa.snippets.queuemanager.annotations.AItemKey;
 import com.appian.rpa.snippets.queuemanager.utils.annotations.AnnotationUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,9 +21,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
+import com.novayre.jidoka.client.api.queue.IQueueItem;
 
 public class ConversionUtils {
+
+	/** Constant with items files folder name */
+	private static final String ITEMS_FILES_FOLDER = "itemsFiles";
+
+	/** Items files folder name */
+	private static File itemsFilesFolder;
 
 	/** Private constructor */
 	private ConversionUtils() {
@@ -164,6 +179,45 @@ public class ConversionUtils {
 			throw new JidokaFatalException("Error mapping map to object", e);
 		}
 
+	}
+
+	public static <T> void setObjectFiles(T object, IQueueItem currentQueueItem, Class<?> clazz) {
+		try {
+
+			List<Field> fields = AnnotationUtils.getFieldsWithAnnotation(clazz, AItemFile.class);
+
+			Map<String, byte[]> filesMap = currentQueueItem.files();
+
+			Map<String, String> functionalData = currentQueueItem.functionalData();
+
+			Path folder = Paths.get(JidokaFactory.getServer().getCurrentDir(), ITEMS_FILES_FOLDER);
+
+			itemsFilesFolder = folder.toFile();
+			itemsFilesFolder.mkdirs();
+
+			for (Field field : fields) {
+
+				String fileName = functionalData.get(field.getName());
+
+				byte[] fileContent = filesMap.get(fileName);
+
+				File itemFile = Paths.get(itemsFilesFolder.getAbsolutePath(), fileName).toFile();
+
+				OutputStream os = new FileOutputStream(itemFile);
+				os.write(fileContent);
+				os.close();
+
+				if (Path.class.isAssignableFrom(field.getType())) {
+					AnnotationUtils.setFieldValue(object, field.getName(), itemFile.toPath());
+
+				} else if (File.class.isAssignableFrom(field.getType())) {
+					AnnotationUtils.setFieldValue(object, field.getName(), itemFile);
+				}
+			}
+
+		} catch (IOException e) {
+			throw new JidokaFatalException("Error setting the object files", e);
+		}
 	}
 
 }

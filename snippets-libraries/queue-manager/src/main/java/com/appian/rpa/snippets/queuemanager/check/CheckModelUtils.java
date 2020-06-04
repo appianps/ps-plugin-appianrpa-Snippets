@@ -85,13 +85,6 @@ public class CheckModelUtils {
 	 */
 	public static void checkFieldsWithAnnotations(Class<?> modelClass) {
 
-		List<Field> fields = AnnotationUtils.getFieldsWithAnnotation(modelClass, AItemField.class);
-
-		if (fields.isEmpty()) {
-			throw new JidokaFatalException(
-					"There is no fields with the annotation @" + AItemField.class.getSimpleName());
-		}
-
 		List<Field> fieldsKey = AnnotationUtils.getFieldsWithAnnotation(modelClass, AItemKey.class);
 
 		if (fieldsKey.isEmpty()) {

@@ -1,6 +1,9 @@
 package com.appian.rpa.snippets.queuemanager.generic.manager;
 
+import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +12,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.appian.rpa.snippets.queuemanager.annotations.AItemFile;
 import com.appian.rpa.snippets.queuemanager.check.CheckModelUtils;
 import com.appian.rpa.snippets.queuemanager.utils.annotations.AnnotationUtils;
 import com.appian.rpa.snippets.queuemanager.utils.conversion.ConversionUtils;
@@ -229,7 +233,9 @@ public class GenericQueueManager {
 	}
 
 	/**
-	 * Adds the given {@code object} to the queue, mapping it to a queue item
+	 * Adds the given {@code object} to the queue, mapping it to a queue item. If
+	 * the model contains fields of type Path or File, the files pointed by these
+	 * paths or saved on this File objects are going to be added to the item.
 	 * 
 	 * @param object Object to map to a queue item
 	 *
@@ -250,6 +256,31 @@ public class GenericQueueManager {
 			cip.setQueueId(currentQueueId);
 
 			Map<String, String> map = ConversionUtils.object2Map(object);
+
+			// Gets the fields with annotation @AItemField
+			List<Field> fields = AnnotationUtils.getFieldsWithAnnotation(modelClass, AItemFile.class);
+
+			List<Path> filesList = new ArrayList<>();
+
+			// Searches for Path and File fields and adds their values to the paths list
+			for (Field field : fields) {
+				if (File.class.isAssignableFrom(field.getType())) {
+					File file = (File) AnnotationUtils.getFieldValue(object, field);
+
+					Path path = file.toPath();
+
+					if (filesList.contains(path)) {
+						throw new JidokaFatalException(
+								"The file " + file.getName() + " can't be duplicated on the item files list");
+					}
+					filesList.add(path);
+					map.put(field.getName(), path.getFileName().toString());
+				}
+			}
+
+			if (!filesList.isEmpty()) {
+				cip.setFiles(filesList);
+			}
 
 			cip.setFunctionalData(map);
 
@@ -396,6 +427,8 @@ public class GenericQueueManager {
 			T object = (T) ConversionUtils.map2Object(currentQueueItem.functionalData(), this.modelClass);
 
 			ConversionUtils.setObjectKeyValue(object, currentQueueItem.key(), this.modelClass);
+
+			ConversionUtils.setObjectFiles(object, currentQueueItem, this.modelClass);
 
 			return object;
 
