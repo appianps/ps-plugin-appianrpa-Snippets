@@ -22,9 +22,11 @@ The snippets and examples of usage can be found in this repository. All the acti
 The CredentialsUtils Class provides the actions to retrieve and manage 
 Appian RPA Console Credentials. 
 
-#### 2. [REST API Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-rest-api).
 
-The REST API Snippet Class manages the actions referred to a REST API utility.
+#### 2. [Queue Manager](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/queue-manager).
+
+The Queue Manager provides some utilities to create, update and release a list of elements to be processed by the robot. You can find further information about a queue and its usage [here](https://docs.appian.com/suite/help/20.1/rpa/modules/process-queues-module.html).
+An implementation can be found [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-excel-queue-manager)
 
 #### 3. [Browser Manager Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-browser-manager).
 
@@ -49,8 +51,3 @@ The Snippet IBM3270 Manager covers some methods to ease the IBM3270 terminal man
 
 Retrieve instructions and environment variables from your Appian RPA Workflow Panel. Find an example [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-instruction).
 
-
-#### 7. [Queue Manager](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/queue-manager).
-
-The Queue Manager provides some utilities to create, update and release a list of elements to be processed by the robot. You can find further information about a queue and its usage [here](https://docs.appian.com/suite/help/20.1/rpa/modules/process-queues-module.html).
-An implementation can be found [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-excel-queue-manager)
