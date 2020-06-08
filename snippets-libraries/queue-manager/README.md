@@ -1,15 +1,15 @@
 # Snippet Queue Manager
 
-Snippet Queue Manager is a simple project to facilitate the management of queues.
-
-This snippet can manage two types of queues:
+The Queue Manager Snippet provides tools to ease the creation, usage and release of queues.
+This snippet can manage two different queue types:
   - Queues created from an Excel file.
   - Queues created from a generic source.
 
-# Initialization
+### Initialization
+
 To instantiate the class use the constructor provided by each class.
 
-# Main functions
+### Main functions
 See the main functions of each Queue Manager on his own README:
 
   - [ExcelQueueManager](./src/main/java/com/appian/rpa/snippets/queuemanager/excel/manager)
@@ -27,7 +27,5 @@ Snippet Queue Manager is distributed using Maven:
 ```
 
 ### Examples
-You can find examples on the README of each manager.
 
-
-
+There are multiple examples to show its usage, as a queue requires a more complex architecture. If the real life scenario requires to process a huge load of items, it would be interesting to split the functionality into two different robotic processes: A [dispatcher (filler)](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-generic-queue-manager-filler), uploading all the elements to be reviewed and a [performer (consumer)](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-generic-queue-manager-consumer), executing the actions needed for each queue element retrieved. Otherwise, an easier implementation (and frequently needed) requires to **create the queue from the rows of an Excel file provided**. The robot uploads and consumes the queue by itself. You can find an example of this configuration [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-excel-queue-manager).

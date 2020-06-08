@@ -1,7 +1,7 @@
 
 ## Credentials Snippet
 
-Manage the actions referred to the Credentials Utility.
+Retrieve, lock and release credentials usage previously created in the console. Please, take a look to the documentation to know more about [Credentials](https://docs.appian.com/suite/help/20.1/rpa/console/robotic-processes.html#credentials) and its usage. 
 
 An integration example can be found [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-credentials)
 
