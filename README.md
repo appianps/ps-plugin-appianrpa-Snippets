@@ -17,18 +17,23 @@ The snippets and examples of usage can be found in this repository. All the acti
 
 ### List of Snippets currently included (latest update 06/2020)
 
-#### 1. [Credentials Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-credentials).
+
+#### 1. [Queue Manager](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/queue-manager).
+
+The Queue Manager provides some utilities to create, update and release a list of elements to be processed by the robot. You can find further information about a queue and its usage [here](https://docs.appian.com/suite/help/20.1/rpa/modules/process-queues-module.html).
+An implementation can be found [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-excel-queue-manager)
+
+#### 2. [3270 Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-3270-manager).
+
+The Snippet IBM3270 Manager covers some methods to ease the IBM3270 terminal management. This [example](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-3270-snippet) shows its usage.
+
+#### 3. [Credentials Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-credentials).
 
 The CredentialsUtils Class provides the actions to retrieve and manage 
 Appian RPA Console Credentials. 
 
 
-#### 2. [Queue Manager](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/queue-manager).
-
-The Queue Manager provides some utilities to create, update and release a list of elements to be processed by the robot. You can find further information about a queue and its usage [here](https://docs.appian.com/suite/help/20.1/rpa/modules/process-queues-module.html).
-An implementation can be found [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-excel-queue-manager)
-
-#### 3. [Browser Manager Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-browser-manager).
+#### 4. [Browser Manager Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-browser-manager).
 
 This utility let the robot manage a web browser (Chrome, Firefox and
 IExplorer are supported). Your process should include an instance for each
@@ -37,15 +42,11 @@ to retrieve all the selectors involved in the robotic process from the selectors
 
 We recommend you to read the [Browser Module documentation](https://docs.appian.com/suite/help/20.1/rpa/modules/browser-module.html) to get a better comprehension of this utility before using the snippet.
 
-#### 4. [Application Manager Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-application-manager).
+#### 5. [Application Manager Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-application-manager).
 
 Manage the actions referred to a Windows desktop application.
 
 We recommend you to read the [UIAutomation documentation](https://docs.appian.com/suite/help/20.1/rpa/modules/using-ui-automation.html) to get a better comprehension of this utility before using the snippet.
-
-#### 5. [3270 Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-3270-manager).
-
-The Snippet IBM3270 Manager covers some methods to ease the IBM3270 terminal management. This [example](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-3270-snippet) shows its usage.
 
 #### 6. [Instructions Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-instruction). 
 
