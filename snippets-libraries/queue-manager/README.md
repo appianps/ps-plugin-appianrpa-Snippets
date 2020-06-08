@@ -5,11 +5,11 @@ This snippet can manage two different queue types:
   - Queues created from an Excel file.
   - Queues created from a generic source.
 
-# Initialization
+### Initialization
 
 To instantiate the class use the constructor provided by each class.
 
-# Main functions
+### Main functions
 See the main functions of each Queue Manager on his own README:
 
   - [ExcelQueueManager](./src/main/java/com/appian/rpa/snippets/queuemanager/excel/manager)
