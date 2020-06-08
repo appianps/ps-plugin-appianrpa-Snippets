@@ -45,7 +45,7 @@ We recommend you to read the [UIAutomation documentation](https://docs.appian.co
 
 #### 5. [3270 Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-3270-manager).
 
-The Snippet IBM3270 Manager covers some methods to ease the IBM3270 terminal management. Example of usage [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-3270-snippet).
+The Snippet IBM3270 Manager covers some methods to ease the IBM3270 terminal management. This [example](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-3270-snippet) shows its usage.
 
 #### 6. [Instructions Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-instruction). 
 
