@@ -22,7 +22,3 @@ The Snippet Excel Queue Manager Robot is distributed using Maven:
 Robot console configuration:
 [Robot console configuration](./console/robot-snippet-excel-queue-manager-configuration.zip)
 
-### Development
-You can find the snippet Excel Queue Manager in the folder snippets-libraries:
-
-[Queue Manager](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/PS-460-queueWithoutExcel/snippets-libraries/queue-manager)
