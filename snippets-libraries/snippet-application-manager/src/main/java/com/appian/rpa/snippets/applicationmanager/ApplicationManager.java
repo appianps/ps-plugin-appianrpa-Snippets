@@ -100,12 +100,24 @@ public class ApplicationManager {
 				window.close();
 				window = null;
 				boolean closed = client.waitCondition(15, 1000, "Closing window " + windowTittleRegex, null, false,
-						false, (i, t) -> client.getWindow(windowTittleRegex) == null);
+						false, (i, t) -> {
+							try {
+								return client.getWindow(windowTittleRegex) == null;
+							} catch (Exception e) {
+								return true;
+							}
+						});
 				if (!closed && application != null) {
 					application.close(Pattern.compile(windowTittleRegex));
 
 					closed = client.waitCondition(15, 1000, "Closing window " + windowTittleRegex, null, false, false,
-							(i, t) -> client.getWindow(windowTittleRegex) == null);
+							(i, t) -> {
+								try {
+									return client.getWindow(windowTittleRegex) == null;
+								} catch (Exception e) {
+									return true;
+								}
+							});
 					if (!closed) {
 						throw new JidokaFatalException("Can't close the window " + windowTittleRegex);
 					}
