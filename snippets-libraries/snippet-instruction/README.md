@@ -2,7 +2,7 @@
 
 Retrieve instructions and environment variables from your Appian RPA Workflow Panel.
 
-An integration example can be found [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-instruction) 
+An integration example can be found [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-instructions) 
 
 
 ### Installation
