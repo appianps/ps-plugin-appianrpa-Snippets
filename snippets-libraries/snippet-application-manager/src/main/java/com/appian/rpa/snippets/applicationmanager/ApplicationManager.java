@@ -6,8 +6,8 @@ import java.util.regex.Pattern;
 import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.IWaitFor;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
-import com.novayre.jidoka.windows.api.IWindows;
-
+import com.novayre.jidoka.client.api.multios.EClientShowWindowType;
+import com.novayre.jidoka.client.api.multios.IClient;
 import mmarquee.automation.UIAutomation;
 import mmarquee.automation.controls.Application;
 import mmarquee.automation.controls.Window;
@@ -19,7 +19,7 @@ import mmarquee.automation.controls.Window;
 public class ApplicationManager {
 
 	/** Client module */
-	private IWindows client;
+	private IClient client;
 
 	/** IWaitFor instance */
 	private IWaitFor waitFor;
@@ -56,7 +56,7 @@ public class ApplicationManager {
 
 		IRobot robot = IRobot.getDummyInstance();
 
-		this.client = IWindows.getInstance(robot);
+		this.client = IClient.getInstance(robot);
 		this.waitFor = client.waitFor(robot);
 		this.automation = UIAutomation.getInstance();
 
@@ -124,7 +124,11 @@ public class ApplicationManager {
 	public void activateWindow() {
 		try {
 			// Activate the Application
-			window.focus();
+			// Focus on app and activate the window on client module
+			client.activateWindow(this.windowTittleRegex);
+
+			client.showWindow(client.getWindow(this.windowTittleRegex).getId(), EClientShowWindowType.SHOW);
+			
 			// Wait to the window to activate
 			waitFor.windowActive(this.windowTittleRegex);
 		} catch (Exception e) {
