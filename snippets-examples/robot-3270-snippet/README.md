@@ -1,6 +1,6 @@
 # Snippet 3270 Manager Robot
 
-The IBM3270 Manager Robot provides a complete usage example from all the correspondent snippet methods. It opens an IBM3270 terminal using the emulator indicated as the robot's parameter, goes to a menu page and tries to change the user's password.
+The IBM3270 Manager Robot provides a complete usage example from all the [correspondent snippet methods](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-3270-manager). It opens an IBM3270 terminal using the emulator indicated as the robot's parameter, goes to a menu page and tries to change the user's password.
 
 Finally the robot closes the emulator.
 
