@@ -1,6 +1,6 @@
 # Snippet Excel Queue Manager Robot
 
-The Snippet Excel Queue Manager Consumer Robot provides a complete usage example from all the corresponding snippet methods to create and process a queue created from an Excel file, or using an already existing queue.
+The Snippet Excel Queue Manager Consumer Robot provides a complete usage example from all the [correspondent snippet methods](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/queue-manager) to create and process a queue created from an Excel file, or using an already existing queue.
 
 This robot is an example of usage from the Process Queues Module. You can read further information about queues and its usage [here](https://docs.appian.com/suite/help/20.1/rpa/modules/process-queues-module.html). The robot creates a queue using the input file given by parameters. Then, it process the queue and uses the search term of the item to search on Google. When the search has finished, it saves of the functional data the number of results and the time required to search. Finally, it closes the queue, updates the Excel file and returns it.
 
