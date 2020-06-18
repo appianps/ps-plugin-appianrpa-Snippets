@@ -392,6 +392,7 @@ public class ExcelQueueManager<T> {
 
 			// We update the file inside the queue with the results of the process
 			UpdateQueueParameters updateQueueParameters = new UpdateQueueParameters();
+			updateQueueParameters.name(reservedQueue.queue().name());
 			updateQueueParameters.fileContent(FileUtil.readBytes(queueResults.getExcelFile()));
 			queueManager.updateQueue(updateQueueParameters);
 
