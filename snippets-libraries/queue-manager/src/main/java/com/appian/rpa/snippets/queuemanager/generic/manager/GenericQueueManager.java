@@ -196,6 +196,22 @@ public class GenericQueueManager {
 	}
 
 	/**
+	 * Get the pending items if the queue is open
+	 * 
+	 */
+	public int getPendingItems() {
+		try {
+			if (queueManager.currentQueue()!=null) {
+				return queueManager.currentQueue().pendingItems();
+			} else {
+				return 0;
+			}
+		} catch (IOException | JidokaQueueException e) {
+			throw new JidokaFatalException("Error getting pending Items");
+		}
+	}
+	
+	/**
 	 * Reserves and closes the queue. Only one robot can close the queue.
 	 * 
 	 */
@@ -340,10 +356,32 @@ public class GenericQueueManager {
 			Map<String, String> functionalData = ConversionUtils.object2Map(object);
 
 			ReleaseItemWithOptionalParameters tiop = new ReleaseItemWithOptionalParameters();
-			tiop.functionalData(functionalData);
 			tiop.setProcess(releaseProcess);
 			tiop.setRetry(retries);
 
+			// Gets the fields with annotation @AItemFile
+			tiop.removePreviousFiles(true);
+			List<Field> fields = AnnotationUtils.getFieldsWithAnnotation(modelClass, AItemFile.class);
+			List<Path> filesList = new ArrayList<>();
+			// Searches for Path and File fields and adds their values to the paths list
+			for (Field field : fields) {
+				if (File.class.isAssignableFrom(field.getType())) {
+					File file = (File) AnnotationUtils.getFieldValue(object, field);
+
+					Path path = file.toPath();
+
+					if (filesList.contains(path)) {
+						throw new JidokaFatalException(
+								"The file " + file.getName() + " can't be duplicated on the item files list");
+					}
+					filesList.add(path);
+					functionalData.put(field.getName(), path.getFileName().toString());
+				}
+			}
+			if (!filesList.isEmpty()) {
+				tiop.filesToAdd(filesList);
+			}
+			tiop.functionalData(functionalData);
 			queueManager.releaseItem(tiop);
 
 		} catch (Exception e) {
