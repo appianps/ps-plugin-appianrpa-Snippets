@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.novayre.jidoka.robot</groupId>
+		<artifactId>jidoka-robot-parent</artifactId>
+		<version>7.1.0</version>
+	</parent>
+
+	<groupId>com.appian.rpa.snippets.exmamples.email</groupId>
+	<artifactId>robot-snippet-email</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0.0</version>
+
+	<name>robot-snippet-email</name>
+
+	<profiles>
+		<profile>
+			<id>ea-test-rpacoe</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<distributionManagement>
+				<repository>
+					<id>ea-test-rpacoe</id>
+					<url>https://ea-test-rpacoe.appiancloud.com/rpa/repo/</url>
+				</repository>
+			</distributionManagement>
+			<repositories>
+				<repository>
+					<releases />
+					<snapshots />
+					<id>ea-test-rpacoe</id>
+					<url>https://ea-test-rpacoe.appiancloud.com/rpa/repo/</url>
+				</repository>
+			</repositories>
+			<pluginRepositories>
+				<pluginRepository>
+					<releases />
+					<snapshots />
+					<id>ea-test-rpacoe</id>
+					<url>https://ea-test-rpacoe.appiancloud.com/rpa/repo/</url>
+				</pluginRepository>
+			</pluginRepositories>
+		</profile>
+
+		<profile>
+
+			<id>rpa-coe-lab</id>
+
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+
+
+			<repositories>
+				<repository>
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
+					<releases>
+					</releases>
+					<snapshots>
+					</snapshots>
+				</repository>
+			</repositories>
+
+			<pluginRepositories>
+				<pluginRepository>
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
+					<releases>
+					</releases>
+					<snapshots>
+					</snapshots>
+				</pluginRepository>
+			</pluginRepositories>
+			<distributionManagement>
+				<repository>
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
+					<layout>default</layout>
+				</repository>
+			</distributionManagement>
+		</profile>
+	</profiles>
+	<dependencies>
+		<dependency>
+			<groupId>com.appian.rpa.snippets</groupId>
+			<artifactId>snippet-email</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.appian.rpa.snippets</groupId>
+			<artifactId>snippet-instruction</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+	</dependencies>
+</project>

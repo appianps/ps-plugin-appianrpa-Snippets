@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.novayre.jidoka.robot</groupId>
+		<artifactId>jidoka-robot-parent</artifactId>
+		<version>7.1.0</version>
+	</parent>
+
+	<groupId>com.appian.rpa.snippets</groupId>
+	<artifactId>snippet-email</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>snippet-email</name>
+
+	<profiles>
+
+		<profile>
+			<id>ea-test-rpacoe</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<distributionManagement>
+				<repository>
+					<id>ea-test-rpacoe</id>
+					<url>https://ea-test-rpacoe.appiancloud.com/rpa/repo/</url>
+				</repository>
+			</distributionManagement>
+			<repositories>
+				<repository>
+					<releases />
+					<snapshots />
+					<id>ea-test-rpacoe</id>
+					<url>https://ea-test-rpacoe.appiancloud.com/rpa/repo/</url>
+				</repository>
+			</repositories>
+			<pluginRepositories>
+				<pluginRepository>
+					<releases />
+					<snapshots />
+					<id>ea-test-rpacoe</id>
+					<url>https://ea-test-rpacoe.appiancloud.com/rpa/repo/</url>
+				</pluginRepository>
+			</pluginRepositories>
+		</profile>
+		
+		<profile>
+			<id>rpa-coe-lab</id>
+
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+
+			<repositories>
+				<repository>
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</repository>
+				<repository>
+					<id>rpa-coe-lab-snapshots</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka-snapshots</url>
+					<releases>
+						<enabled>false</enabled>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</repository>
+			</repositories>
+
+			<pluginRepositories>
+				<pluginRepository>
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</pluginRepository>
+			</pluginRepositories>
+
+			<distributionManagement>
+				<repository>
+					<id>rpa-coe-lab</id>
+					<name>rpa-coe-lab</name>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
+					<layout>default</layout>
+				</repository>
+				<snapshotRepository>
+					<id>rpa-coe-lab-snapshots</id>
+					<name>rpa-coe-lab-snapshots</name>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka-snapshots</url>
+					<layout>default</layout>
+				</snapshotRepository>
+			</distributionManagement>
+		</profile>
+
+	</profiles>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.9</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.7</version>
+		</dependency>
+
+	</dependencies>
+</project>
