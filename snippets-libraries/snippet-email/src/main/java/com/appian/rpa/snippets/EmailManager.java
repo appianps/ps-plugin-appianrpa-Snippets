@@ -24,11 +24,13 @@ import com.novayre.jidoka.mail.api.IMail;
 import com.novayre.jidoka.mail.api.MailAttachment;
 import com.novayre.jidoka.mail.api.MailSendOptions;
 
+/**
+ * This snippet helps you on send email's from the server. You can configure a
+ * lot of email parameters.
+ */
 public class EmailManager implements IRobot {
 
-	/**
-	 * HTML pattern to identify the mail body.
-	 */
+	/** HTML pattern to identify the mail body. */
 	private static final String HTML_PATTERN = "<(\'[^\']*\'|'[^']*'|[^'\'>])*>";
 
 	/** Email model instance */
@@ -67,7 +69,9 @@ public class EmailManager implements IRobot {
 	/**
 	 * Send the mail using the server configuration. Must be defined a To Address
 	 * {@linkplain EmailManager#setToAddress(List)} in the manager <b>before</b>
-	 * call this method.
+	 * call this method.</br>
+	 * It is also important to configure the SMTP server, setting an user and a
+	 * password for the proper functioning.
 	 */
 	public void send() {
 
@@ -121,6 +125,12 @@ public class EmailManager implements IRobot {
 		}
 	}
 
+	/**
+	 * Fill the velocity template and returns the email body.
+	 * 
+	 * @param template Velocity template.
+	 * @return The body String.
+	 */
 	private String fillTemplate(File template) {
 
 		Properties p = new Properties();
@@ -138,6 +148,11 @@ public class EmailManager implements IRobot {
 		return w.toString();
 	}
 
+	/**
+	 * Sets the body format, either text or HTML.
+	 * 
+	 * @param body Returns the body formatted.
+	 */
 	private void setBodyFormat(String body) {
 
 		if (StringUtils.isBlank(body)) {
@@ -158,6 +173,9 @@ public class EmailManager implements IRobot {
 		}
 	}
 
+	/**
+	 * Sets the attachments files on the send mail configuration.
+	 */
 	private void setAttachments() {
 
 		File[] attachments = this.email.getAttachments();
@@ -185,57 +203,130 @@ public class EmailManager implements IRobot {
 
 	}
 
+	/**
+	 * Sets the SMTP server host. It only works if usingServerConfiguration is not
+	 * true.
+	 * 
+	 * @param host Host to set.
+	 * @return this (fluent API)
+	 */
 	public EmailManager host(String host) {
 		this.host = host;
 		return this;
 	}
 
+	/**
+	 * Sets the SMTP server port. It only works if usingServerConfiguration is not
+	 * true.
+	 * 
+	 * @param port Port to set.
+	 * @return this (fluent API)
+	 */
 	public EmailManager port(int port) {
 		this.port = port;
 		return this;
 	}
 
+	/**
+	 * If true, uses the SMTP server configuration to send email.
+	 * 
+	 * @param useServerConfiguration True if uses the server configuration.
+	 * @return this (fluent API)
+	 */
 	public EmailManager useServerConfiguration(boolean useServerConfiguration) {
 		this.useServerConfiguration = useServerConfiguration;
 		return this;
 	}
 
+	/**
+	 * Sets the email recipients.
+	 * 
+	 * @param toAddress List of recipients.
+	 * @return this (fluent API)
+	 */
 	public EmailManager toAddress(String[] toAddress) {
 		this.email.setToAddress(toAddress);
 		return this;
 	}
 
+	/**
+	 * Sets the email 'cc' addresses.
+	 * 
+	 * @param ccAddress List of 'cc' addresses.
+	 * @return this (fluent API)
+	 */
 	public EmailManager ccAddress(String[] ccAddress) {
 		this.email.setCcAddress(ccAddress);
 		return this;
 	}
 
+	/**
+	 * Sets the email 'bcc' addresses.
+	 * 
+	 * @param bccAddress List of 'bcc' addresses.
+	 * @return this (fluent API)
+	 */
 	public EmailManager bccAddress(String[] bccAddress) {
 		this.email.setBccAddress(bccAddress);
 		return this;
 	}
 
+	/**
+	 * Sets the email sender address.
+	 * 
+	 * @param fromAddress Sender address.
+	 * @return this (fluent API)
+	 */
 	public EmailManager fromAddress(String fromAddress) {
 		this.email.setFromAddress(fromAddress);
 		return this;
 	}
 
+	/**
+	 * Sets the attached files.
+	 * 
+	 * @param attachments List of attached files.
+	 * @return this (fluent API)
+	 */
 	public EmailManager attachments(List<File> attachments) {
 		File[] array = new File[attachments.size()];
 		this.email.setAttachments(attachments.toArray(array));
 		return this;
 	}
 
+	/**
+	 * Sets the email subject.
+	 * 
+	 * @param subject The email subject.
+	 * @return this (fluent API)
+	 */
 	public EmailManager subject(String subject) {
 		this.email.setSubject(subject);
 		return this;
 	}
 
+	/**
+	 * Sets the email body.
+	 * 
+	 * @param emailBody Email body.
+	 * @return this (fluent API)
+	 */
 	public EmailManager emailBody(String emailBody) {
 		this.email.setEmailBody(emailBody);
 		return this;
 	}
 
+	/**
+	 * Sets the velocity template and the velocity context.</br>
+	 * If the "body" parameter of the email is set, this has no effect.</br>
+	 * For more information about Velocity see <a href=
+	 * "https://velocity.apache.org/engine/2.2/getting-started.html">Velocity
+	 * Documentation</a>
+	 * 
+	 * @param template        The Velocity template.
+	 * @param velocityContext The velocity context.
+	 * @return this (fluent API)
+	 */
 	public EmailManager velocityConfiguration(File template, Map<String, Object> velocityContext) {
 
 		VelocityContext context = new VelocityContext();
