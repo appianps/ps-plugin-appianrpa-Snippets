@@ -13,6 +13,9 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
 import com.appian.rpa.snippets.EmailManager;
 import com.appian.rpa.snippets.examples.email.model.CovidModel;
 import com.appian.rpa.snippets.examples.email.params.EInstructions;
@@ -20,27 +23,29 @@ import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.annotations.Robot;
+import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 
 /**
- * test-mail-robot
+ * This robot sends an email with the given parameters on the RPA console. Also,
+ * it uses a Velocity template to fill the body dynamically. The attachment sent
+ * is a screenshot.
  */
 @Robot
 public class RobotTestMail implements IRobot {
 
-	/**
-	 * Velocity template file.
-	 */
+	/** Velocity template file. */
 	private File velocityTemplate;
 
-	/**
-	 * The JidokaServer instance.
-	 */
+	/** IJidokaServer instance. */
 	private IJidokaServer<?> server;
 
+	/** EmailManager instance */
 	private EmailManager emailManager;
 
+	/** CovidModel item */
 	private CovidModel currentItem;
 
+	/** List of attachments */
 	private List<File> attachments = new ArrayList<>();
 
 	/**
@@ -57,11 +62,9 @@ public class RobotTestMail implements IRobot {
 	}
 
 	/**
-	 * Action "start"
-	 * 
-	 * @throws Exception
+	 * Start action
 	 */
-	public void start() throws Exception {
+	public void start() {
 
 		this.emailManager = new EmailManager();
 
@@ -78,7 +81,7 @@ public class RobotTestMail implements IRobot {
 	}
 
 	/**
-	 * Action 'Prepare Attachment'
+	 * Prepare the attachments by taking a screenshot to send.
 	 * 
 	 * @throws IOException
 	 * @throws AWTException
@@ -96,11 +99,10 @@ public class RobotTestMail implements IRobot {
 	}
 
 	/**
-	 * Action 'Send Mail'
-	 * 
-	 * @throws IOException
+	 * Send the email with the given parameters, using the SMTP server
+	 * configuration.
 	 */
-	public void sendMailTest() {
+	public void sendMail() {
 
 		String fromAddress = EInstructions.FROM.getInstruction().getAsString();
 		String[] toAddresses = EInstructions.TO.getInstruction().getAsString().split(";");
@@ -115,16 +117,48 @@ public class RobotTestMail implements IRobot {
 				.bccAddress(bccAddresses).subject(subject).attachments(this.attachments)
 				.velocityConfiguration(this.velocityTemplate, velocityContext).send();
 
-		// .host("localhost").port(25).
-
 	}
 
 	/**
-	 * Action "end"
+	 * End action
 	 * 
 	 * @throws Exception
 	 */
-	public void end() throws Exception {
+	public void end() {
+		// No end actions
+	}
+
+	@Override
+	public String[] cleanUp() throws Exception {
+		return IRobot.super.cleanUp();
+	}
+
+	/**
+	 * Any type of error should be managed in this method.
+	 */
+	@Override
+	public String manageException(String action, Exception exception) throws Exception {
+
+		// Get the exception message
+		String errorMessage = ExceptionUtils.getRootCause(exception).getMessage();
+
+		// Send a screenshot to the log so the user can see the screen in the moment
+		// of the error. This is one of the best ways to trace errors clearly.
+		server.sendScreen("Screenshot of the error");
+
+		// Whenever a JidokaFatalException is thrown, the execution should be aborted.
+		if (ExceptionUtils.indexOfThrowable(exception, JidokaFatalException.class) >= 0) {
+
+			server.error(StringUtils.isBlank(errorMessage) ? "Fatal error" : errorMessage);
+			return IRobot.super.manageException(action, exception);
+		}
+
+		server.warn("Unknown exception!");
+
+		// If we have any other exception we must abort the execution, as we do not know
+		// what happened
+
+		return IRobot.super.manageException(action, exception);
 	}
 
 }

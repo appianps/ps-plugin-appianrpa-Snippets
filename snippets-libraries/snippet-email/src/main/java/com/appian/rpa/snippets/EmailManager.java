@@ -306,7 +306,8 @@ public class EmailManager implements IRobot {
 	}
 
 	/**
-	 * Sets the email body.
+	 * Sets the email body. If the "body" parameter of the email is set, Velocity
+	 * configuration has no effect.
 	 * 
 	 * @param emailBody Email body.
 	 * @return this (fluent API)
