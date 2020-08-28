@@ -14,7 +14,7 @@
 	<groupId>com.appian.rpa.snippets.exmamples.email</groupId>
 	<artifactId>robot-snippet-email</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 
 	<name>robot-snippet-email</name>
 
