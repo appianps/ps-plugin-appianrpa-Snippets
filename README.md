@@ -52,3 +52,7 @@ We recommend you to read the [UIAutomation documentation](https://docs.appian.co
 
 Retrieve instructions and environment variables from your Appian RPA Workflow Panel. Find an example [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-instruction).
 
+#### 7. [Email Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-email). 
+
+Helps you on send email's from the server. You can configure a lot of email parameters. . Find an example [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-email).
+
