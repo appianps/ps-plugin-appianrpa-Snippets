@@ -81,7 +81,7 @@ public class RobotTestMail implements IRobot {
 	}
 
 	/**
-	 * Prepare the attachments by taking a screenshot to send.
+	 * Prepares the attachments by taking a screenshot to send.
 	 * 
 	 * @throws IOException
 	 * @throws AWTException
@@ -99,7 +99,7 @@ public class RobotTestMail implements IRobot {
 	}
 
 	/**
-	 * Send the email with the given parameters, using the SMTP server
+	 * Sends the email with the given parameters, using the SMTP server
 	 * configuration.
 	 */
 	public void sendMail() {
