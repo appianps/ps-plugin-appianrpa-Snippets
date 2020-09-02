@@ -5,6 +5,8 @@ import java.io.Serializable;
 
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.ie.InternetExplorerOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import com.novayre.jidoka.browser.api.EBrowsers;
 import com.novayre.jidoka.browser.api.IWebBrowserSupport;
@@ -93,6 +95,18 @@ public class BrowserManager {
 				options.addArguments("--no-sandbox"); // Bypass OS security model
 
 				browser.setCapabilities(options);
+			} else if (selectedBrowser.equals(EBrowsers.INTERNET_EXPLORER)) {
+				DesiredCapabilities ieCapabilities = DesiredCapabilities.internetExplorer();
+				ieCapabilities.setCapability("nativeEvents", false);
+				ieCapabilities.setCapability("unexpectedAlertBehaviour", "accept");
+				ieCapabilities.setCapability("ignoreProtectedModeSettings", true);
+				ieCapabilities.setCapability("disable-popup-blocking", true);
+				ieCapabilities.setCapability("enablePersistentHover", true);
+				ieCapabilities.setCapability("ignoreZoomSetting", true);
+
+				InternetExplorerOptions ieOptions = new InternetExplorerOptions(ieCapabilities);
+
+				browser.setCapabilities(ieOptions);
 			}
 
 			// Inits browser
@@ -203,9 +217,8 @@ public class BrowserManager {
 		try {
 
 			browser.close();
-			if (browser.getDriver() == null) {
-				forceBrowserProcessKill();
-			}
+			forceBrowserProcessKill();
+
 			browser = null;
 
 		} catch (NoSuchSessionException | IOException e) {
@@ -225,10 +238,14 @@ public class BrowserManager {
 		switch (selectedBrowser) {
 		case CHROME:
 			client.killAllProcesses("chromedriver.exe", 1000);
+			break;
 		case INTERNET_EXPLORER:
 			client.killAllProcesses("IEDriverServer.exe", 1000);
+			client.killAllProcesses("iexplore.exe", 1000);
+			break;
 		case FIREFOX:
 			client.killAllProcesses("geckodriver.exe", 1000);
+			break;
 		default:
 			break;
 		}
