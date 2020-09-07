@@ -12,6 +12,6 @@ The Credentials utility can be integrated in your code using Maven. It just has 
 <dependency>
 	<groupId>com.appian.rpa.snippets</groupId>
 	<artifactId>snippet-credentials</artifactId>
-	<version>1.0.0</version>
+	<version>2.2.0</version>
 </dependency>
 ```
