@@ -7,6 +7,11 @@
 	<artifactId>snippet-3270-manager</artifactId>
 	<version>1.0.0</version>
 	<packaging>jar</packaging>
+	
+		<properties>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+	</properties>
 
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>
@@ -75,6 +80,33 @@
 			</distributionManagement>
 		</profile>
 	</profiles>
+	
+		<build>
+		<plugins>
+			<!-- we want JDK 1.8 source and binary compatiblility -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id> <!-- The actual id should be apparent from maven output -->
+						<configuration>
+							<additionalparam>${javadoc.opts}</additionalparam>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
 	<dependencies>
 		
