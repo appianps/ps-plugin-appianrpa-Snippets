@@ -144,6 +144,8 @@ public class BrowserManager {
 		}
 	}
 
+	
+	
 	/**
 	 * Navigates to the given {@code url} and waits until the given
 	 * {@code selectorKey} element is loaded. Before that, the browser window is
@@ -154,14 +156,16 @@ public class BrowserManager {
 	 * 
 	 * @param url         as String contains the target website
 	 * @param selectorKey Selector key on the selectors.properties file
+	 * @return True if the element has been loaded
 	 * 
 	 */
-	public void navigateTo(String url, String selectorKey) {
+	public boolean navigateTo(String url, String selectorKey) {
 
 		navigateTo(url);
 
-		waitForElement(selectorKey);
+		return waitForElement(selectorKey);
 	}
+
 
 	/**
 	 * Waits for the given {@code selectorKey} element to load.
@@ -171,8 +175,21 @@ public class BrowserManager {
 	 */
 	public boolean waitForElement(String selectorKey) {
 
+		return waitForElement(selectorKey, 10);
+	}
+	
+	
+	/**
+	 * Waits for the given {@code selectorKey} element to load.
+	 * 
+	 * @param selectorKey Selector key on the selectors.properties file
+	 * @param seconds Waiting time in seconds
+	 * @return True if the element has been loaded
+	 */
+	public boolean waitForElement(String selectorKey, Integer seconds) {
+
 		try {
-			return waitFor.wait(10, "Waiting for the web element to load", false, () -> {
+			return waitFor.wait(seconds, "Waiting for the web element to load", false, () -> {
 				try {
 
 					return selectorsManager.getElement(selectorKey) != null;
