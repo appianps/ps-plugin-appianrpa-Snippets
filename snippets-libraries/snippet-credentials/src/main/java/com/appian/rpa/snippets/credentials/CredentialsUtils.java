@@ -40,22 +40,22 @@ public class CredentialsUtils {
 	private Map<IUsernamePassword, Boolean> credentialsInUse = new HashMap<>();
 
 	/**
-	 * Private constructor restricted to the class itself
-	 * 
+	 * Constructor restricted to the class itself
+	 *
 	 * @param robot {@link IRobot} instance
 	 */
-	private CredentialsUtils() {
+	public CredentialsUtils() {
 		this.server = JidokaFactory.getServer();
 		this.client = IClient.getInstance(IRobot.getDummyInstance());
 		this.waitFor = client.getWaitFor(IRobot.getDummyInstance());
 	}
 
 	/**
-	 * 
+	 *
 	 * Static method to create an instance of the CredentialsUtils class
-	 * 
+	 *
 	 * @param robot {@link IRobot} instance
-	 * 
+	 *
 	 * @return CredentialsUtils instance
 	 */
 	public static CredentialsUtils getInstance() {
@@ -69,12 +69,12 @@ public class CredentialsUtils {
 	/**
 	 * Gets the given credential {@code currentCredentialApplication}. It waits for
 	 * the credential until the given {@code timeout} is over.
-	 * 
+	 *
 	 * @param application    Credential application
 	 * @param reserve        True if you want to reserve the credentials
 	 * @param search         Algorithm to search the credential
 	 * @param timeOutSeconds Maximum waiting time for the credential
-	 * 
+	 *
 	 * @return The {@link IUsernamePassword} object of the credential
 	 */
 	public IUsernamePassword getCredentials(String application, Boolean reserve, ECredentialSearch search,
@@ -107,13 +107,13 @@ public class CredentialsUtils {
 	 * Gets the given credentials {@code currentCredentialApplication} with the
 	 * given {@code userName}. It waits for the credential until the given
 	 * {@code timeout} is over.
-	 * 
+	 *
 	 * @param application    Credentials application
 	 * @param userName       Username to filter by
 	 * @param reserve        True if you want to reserve the credentials
 	 * @param search         Algorithm to search the credential
 	 * @param timeOutSeconds Maximum waiting time for the credential
-	 * 
+	 *
 	 * @return The {@link IUsernamePassword} object of the credential
 	 */
 	public IUsernamePassword getCredentialsByUser(String application, String userName, Boolean reserve,
@@ -162,7 +162,7 @@ public class CredentialsUtils {
 
 	/**
 	 * Release the specified credentials
-	 * 
+	 *
 	 * @param credentialApplication Credentials application
 	 * @param userName              Credentials username
 	 */
@@ -190,7 +190,7 @@ public class CredentialsUtils {
 
 	/**
 	 * Release all retrieved credentials
-	 * 
+	 *
 	 * @param credentialApplication Credentials application
 	 */
 	public void releaseAllCredentials(String credentialApplication) {
