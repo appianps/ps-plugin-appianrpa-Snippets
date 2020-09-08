@@ -54,7 +54,7 @@ Retrieve instructions and environment variables from your Appian RPA Workflow Pa
 
 #### 7. [Email Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-email). 
 
-Helps you on send email's from the server. You can configure a lot of email parameters. Find an example [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-email).
+The email snippet helps you sending an email from the server. It also lets the user set a variety of different email parameters.  Find an example [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-email).
 
 #### 8. [QR Manager](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-qr-manager). 
 
