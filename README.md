@@ -35,7 +35,7 @@ Appian RPA Console Credentials.
 
 #### 4. [Browser Manager Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-browser-manager).
 
-This utility let the robot manage a web browser (Chrome, Firefox and
+This utility lets the robot manage a web browser (Chrome, Firefox and
 IExplorer are supported). Your process should include an instance for each
 browser window involved in the robot actions. It also contains a SelectorsManager class, created 
 to retrieve all the selectors involved in the robotic process from the selectors.properties file.
@@ -54,7 +54,7 @@ Retrieve instructions and environment variables from your Appian RPA Workflow Pa
 
 #### 7. [Email Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-email). 
 
-The email snippet helps you sending an email from the server. It also lets the user set a variety of different email parameters.  Find an example [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-email).
+The email snippet helps you by sending an email from the server. It also lets the user set a variety of different email parameters.  Find an example [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-email).
 
 #### 8. [QR Manager](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-qr-manager). 
 
