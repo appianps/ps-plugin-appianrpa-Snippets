@@ -15,7 +15,7 @@ After these previous steps, The deployed snippets will be fully available by add
 
 The snippets and examples of usage can be found in this repository. All the actions contained and updates are listed below:
 
-### List of Snippets currently included (latest update 06/2020)
+### List of Snippets currently included (latest update 09/2020)
 
 
 #### 1. [Queue Manager](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/queue-manager).
@@ -55,4 +55,8 @@ Retrieve instructions and environment variables from your Appian RPA Workflow Pa
 #### 7. [Email Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-email). 
 
 Helps you on send email's from the server. You can configure a lot of email parameters. Find an example [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-email).
+
+#### 7. [QR Manager](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-qr-manager). 
+
+Encode & Decode QR Images. You can have a look to its usage in the test cases or the robot example provided [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-QR-manager).
 
