@@ -1,4 +1,4 @@
-# QR-Utils
+# Snippet QR Manager
  Encode & Decode QR Images.
 
 
@@ -9,7 +9,7 @@ This snippet makes use of the zxing core library (+ info [here](https://github.c
 * createQRImage
 * readQRImage
 
-Please, view the tests provided to get more details about how are these methods used. 
+Please, review the unit tests provided or the [example robot](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-QR-manager) to get more details about how are these methods used. 
 
 ## How to install 
 ```
