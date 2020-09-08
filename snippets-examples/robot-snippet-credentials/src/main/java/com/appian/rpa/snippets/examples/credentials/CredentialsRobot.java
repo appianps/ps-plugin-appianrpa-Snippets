@@ -14,7 +14,7 @@ import com.novayre.jidoka.client.api.exceptions.JidokaItemException;
 import com.novayre.jidoka.client.api.execution.IUsernamePassword;
 
 /**
- * 
+ *
  * The Credentials Robot provides a complete usage example from all the
  * CredentialsUtils snippet methods. The robot will retrieve three existent
  * credentials (Username + Password) associated to the application "TEST_ROBOT".
@@ -84,18 +84,18 @@ public class CredentialsRobot implements IRobot {
 			// First, reserves or gets the credentials needed. In this case, we are going to
 			// get/reserve 3 credentials.
 			// Gets the first credentials and reserve it, getting the first listed one
-			credentials1 = credentialsUtils.getCredential(APPLICATION_NAME, true, ECredentialSearch.FIRST_LISTED,
+			credentials1 = credentialsUtils.getCredentials(APPLICATION_NAME, true, ECredentialSearch.FIRST_LISTED,
 					DEFAULT_TIMEOUT);
 
 			// Then it gets the second credentials, searching them by user without reserving
 			// it
-			credentials2 = credentialsUtils.getCredentialByUser(APPLICATION_NAME, "test2", false, DEFAULT_TIMEOUT);
+			credentials2 = credentialsUtils.getCredentialsByUser(APPLICATION_NAME, "test2", false, DEFAULT_TIMEOUT);
 
 			// Finally it gets the third credentials, searching them by user and reserving
 			// it
 			// Then it gets the second credentials, searching them by user without reserving
 			// it
-			credentials3 = credentialsUtils.getCredentialByUser(APPLICATION_NAME, "test3", true, DEFAULT_TIMEOUT);
+			credentials3 = credentialsUtils.getCredentialsByUser(APPLICATION_NAME, "test3", true, DEFAULT_TIMEOUT);
 
 			// Here we should do the required login actions on the app
 			// As this is a blank robot, we are going to show the credentials in the log.
@@ -159,7 +159,7 @@ public class CredentialsRobot implements IRobot {
 		try {
 			// It closes the app and releases the credentials if were reserved. We are going
 			// to release the credentials1 and then release the others on the cleanUp
-			credentialsUtils.releaseCredential(APPLICATION_NAME, credentials1.getUsername());
+			credentialsUtils.releaseCredentials(APPLICATION_NAME, credentials1.getUsername());
 		} catch (Exception e) {
 			throw new JidokaFatalException("Error closing the app", e);
 		}
@@ -176,7 +176,7 @@ public class CredentialsRobot implements IRobot {
 
 	/**
 	 * Overrides the cleanUp method.
-	 * 
+	 *
 	 * We ensure that all the applications involved have been successfully closed,
 	 * even if an exception was thrown during the process. This is a common practice
 	 * to avoid undesired opened tasks in the following executions.

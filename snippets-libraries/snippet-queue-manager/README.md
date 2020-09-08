@@ -21,8 +21,8 @@ Snippet Queue Manager is distributed using Maven:
 ```xml
 <dependency>
 	<groupId>com.appian.rpa.snippets</groupId>
-	<artifactId>queue-manager</artifactId>
-	<version>1.1.0</version>
+	<artifactId>snippet-queue-manager</artifactId>
+	<version>1.4.0</version>
 </dependency>
 ```
 
