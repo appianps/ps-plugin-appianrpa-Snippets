@@ -3,6 +3,8 @@ package com.appian.rpa.snippets;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -34,18 +36,20 @@ public class PythonUtils {
 	 * @throws IOException
 	 */
 
-	public void runScript(String scriptPath, String scriptParameters) throws IOException {
+	public List<String> runScript(String scriptPath, String scriptParameters) throws IOException {
+		List<String> output = new ArrayList<String>();
 		try {
 
 			Process execution = Runtime.getRuntime().exec(pythonPath + " " + scriptPath + " " + scriptParameters);
 			String executionOutput = null;
 			BufferedReader stdInput = new BufferedReader(new InputStreamReader(execution.getInputStream()));
-			// read the output
+			// generate output
 			while ((executionOutput = stdInput.readLine()) != null) {
-				System.out.println(executionOutput);
+				output.add(executionOutput);
 			}
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
+		return output;
 	}
 }

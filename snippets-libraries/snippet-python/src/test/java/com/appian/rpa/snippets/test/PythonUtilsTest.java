@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -23,7 +24,12 @@ public class PythonUtilsTest {
 	@Test
 	public void testPythonAndItsOutput() {
 		try {
-			pythonRunner.runScript("C:/Users/javier.advani/Desktop/test.py", "");
+			List<String> result = pythonRunner.runScript("C:/Users/javier.advani/Desktop/test.py", "");
+
+			for (String line : result) {
+				System.out.println(line);
+
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

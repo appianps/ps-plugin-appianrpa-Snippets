@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.novayre.jidoka.robot</groupId>
+		<artifactId>jidoka-robot-parent</artifactId>
+		<version>7.0.0</version>
+	</parent>
+	<groupId>com.appian.rpa</groupId>
+	<artifactId>python-robot-example</artifactId>
+	<version>0.0.1</version>
+	<name>browser</name>
+	<dependencies>
+		<dependency>
+			<groupId>com.appian.rpa.snippets</groupId>
+			<artifactId>snippet-python</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+	</dependencies>
+	<profiles>
+		<profile>
+			<id>rpa-coe-lab</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<distributionManagement>
+				<repository>
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
+				</repository>
+			</distributionManagement>
+			<repositories>
+				<repository>
+					<releases />
+					<snapshots />
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
+				</repository>
+			</repositories>
+			<pluginRepositories>
+				<pluginRepository>
+					<releases />
+					<snapshots />
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
+				</pluginRepository>
+			</pluginRepositories>
+		</profile>
+	</profiles>
+</project>
