@@ -169,7 +169,7 @@ public class BrowserManager {
 
 		navigateTo(url);
 
-		return waitForElement(selectorKey);
+		return waitForElement(selectorKey, 60);
 	}
 
 
@@ -330,17 +330,9 @@ public class BrowserManager {
 	 * @param selectorKey
 	 * @return
 	 */
-	public boolean sendKeysOnElement(String stringToSend, String selectorKey) {
+	public void sendKeysOnElement(String stringToSend, String selectorKey) throws Exception {
 		
-		WebElement ele = selectorsManager.getElement(selectorKey);
-		
-		try {	
-			ele.sendKeys(stringToSend);	
-		} catch (Exception e) {
-			return false;
-		}
-		
-		return true;
+		selectorsManager.getElement(selectorKey).sendKeys(stringToSend);
 	}
 	
 	/**

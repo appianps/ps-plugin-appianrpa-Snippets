@@ -147,12 +147,12 @@ public class Instruction {
 	 */
 	public String getAsString() {
 
-		validate();
-
-		if(StringUtils.isNotBlank(parameter)) {
+		if(parameter != null) {
 			
 			parameter = parameter.trim();
 		}
+		
+		validate();
 		
 		return parameter;
 	}
@@ -181,7 +181,7 @@ public class Instruction {
 			throw new JidokaFatalException(String.format("The param %s is mandatory", name));
 		}
 		
-		if(validatePredicate != null && !validatePredicate.test(parameter)) {
+		if(validatePredicate != null && !(validatePredicate.test(parameter))) {
 				
 			throw new JidokaFatalException(String.format("The param %s is not valid with value %s", name, parameter));
 		}
