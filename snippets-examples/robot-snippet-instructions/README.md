@@ -1,6 +1,6 @@
 # Snippet Instruction Robot
 
-The Instruction Robot provides a usage example of all the Snippet Instruction methods. The robot reads all the instructions and assigns them to an object of the appropriate type, then prints the values in the server log.
+The Instruction Robot provides a usage example of all the [Instructions Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/edit/master/snippets-libraries/snippet-instruction) methods. The robot reads all the instructions and then assigns them to the corresponding object type. Finally, it prints the values received in the server log.
 
 ### Installation
 

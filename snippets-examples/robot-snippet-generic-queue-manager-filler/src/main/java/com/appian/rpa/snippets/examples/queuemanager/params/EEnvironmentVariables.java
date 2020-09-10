@@ -1,9 +1,9 @@
 package com.appian.rpa.snippets.examples.queuemanager.params;
 
-import com.appian.rpa.snippets.commons.instructions.EnvironmentVariable;
+import com.appian.rpa.snippets.instruction.EnvironmentVariable;
 
 /**
- * 
+ *
  * Enum in which all the environment variables of a robot are defined
  *
  */

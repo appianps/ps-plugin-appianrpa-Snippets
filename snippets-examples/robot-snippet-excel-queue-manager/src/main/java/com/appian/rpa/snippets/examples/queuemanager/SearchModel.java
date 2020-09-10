@@ -2,6 +2,11 @@ package com.appian.rpa.snippets.examples.queuemanager;
 
 import java.io.Serializable;
 
+/**
+ * SearchModel associates each Excel File row to a Java object, 
+ * an item to be uploaded to the Excel Queue created in the SearchRobot Class methods.
+ */
+
 import com.appian.rpa.snippets.queuemanager.annotations.AItemField;
 import com.appian.rpa.snippets.queuemanager.annotations.AItemKey;
 

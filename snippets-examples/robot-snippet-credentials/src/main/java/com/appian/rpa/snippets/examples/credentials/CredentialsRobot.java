@@ -14,7 +14,7 @@ import com.novayre.jidoka.client.api.exceptions.JidokaItemException;
 import com.novayre.jidoka.client.api.execution.IUsernamePassword;
 
 /**
- * 
+ *
  * The Credentials Robot provides a complete usage example from all the
  * CredentialsUtils snippet methods. The robot will retrieve three existent
  * credentials (Username + Password) associated to the application "TEST_ROBOT".
@@ -60,7 +60,7 @@ public class CredentialsRobot implements IRobot {
 	public boolean startUp() throws Exception {
 		// Init server module
 		server = JidokaFactory.getServer();
-		credentialsUtils = CredentialsUtils.getInstance(this);
+		credentialsUtils = new CredentialsUtils();
 
 		return true;
 	}
@@ -176,7 +176,7 @@ public class CredentialsRobot implements IRobot {
 
 	/**
 	 * Overrides the cleanUp method.
-	 * 
+	 *
 	 * We ensure that all the applications involved have been successfully closed,
 	 * even if an exception was thrown during the process. This is a common practice
 	 * to avoid undesired opened tasks in the following executions.

@@ -5,7 +5,7 @@
 
 	<groupId>com.appian.rpa.snippets.examples</groupId>
 	<artifactId>robot-snippet-generic-queue-manager-consumer</artifactId>
-	<version>0.0.1</version>
+	<version>1.0.1</version>
 
 	<name>robot-snippet-generic-queue-manager-consumer</name>
 
@@ -65,8 +65,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.appian.rpa.snippets</groupId>
-			<artifactId>queue-manager</artifactId>
-			<version>1.0.1-SNAPSHOT</version>
+			<artifactId>snippet-queue-manager</artifactId>
+			<version>1.4.0</version>
 		</dependency>
 	</dependencies>
 </project>

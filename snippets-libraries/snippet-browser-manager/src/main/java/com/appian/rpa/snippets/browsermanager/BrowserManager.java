@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.Serializable;
 
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.ie.InternetExplorerOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import com.novayre.jidoka.browser.api.EBrowsers;
 import com.novayre.jidoka.browser.api.IWebBrowserSupport;
@@ -82,13 +85,34 @@ public class BrowserManager {
 
 		try {
 
-			// Pick the as default browser
+			// Sets the browser type
 			browser.setBrowserType(this.selectedBrowser);
 
-			// init browser
+			if (selectedBrowser.equals(EBrowsers.CHROME)) {
+				ChromeOptions options = new ChromeOptions();
+
+				options.addArguments("--disable-dev-shm-usage"); // overcome limited resource problems
+				options.addArguments("--no-sandbox"); // Bypass OS security model
+
+				browser.setCapabilities(options);
+			} else if (selectedBrowser.equals(EBrowsers.INTERNET_EXPLORER)) {
+				DesiredCapabilities ieCapabilities = DesiredCapabilities.internetExplorer();
+				ieCapabilities.setCapability("nativeEvents", false);
+				ieCapabilities.setCapability("unexpectedAlertBehaviour", "accept");
+				ieCapabilities.setCapability("ignoreProtectedModeSettings", true);
+				ieCapabilities.setCapability("disable-popup-blocking", true);
+				ieCapabilities.setCapability("enablePersistentHover", true);
+				ieCapabilities.setCapability("ignoreZoomSetting", true);
+
+				InternetExplorerOptions ieOptions = new InternetExplorerOptions(ieCapabilities);
+
+				browser.setCapabilities(ieOptions);
+			}
+
+			// Inits browser
 			browser.initBrowser();
 
-			// wait browser complete
+			// Waits for the browser to open
 			waitFor.window(getBrowserWindowTitle());
 
 		} catch (Exception e) {
@@ -117,6 +141,64 @@ public class BrowserManager {
 		} catch (Exception e) {
 			throw new JidokaItemException((IJidokaServer<Serializable>) JidokaFactory.getServer(),
 					"Error navigating to " + url, e);
+		}
+	}
+
+	
+	
+	/**
+	 * Navigates to the given {@code url} and waits until the given
+	 * {@code selectorKey} element is loaded. Before that, the browser window is
+	 * activated.
+	 * 
+	 * To use this method, the robot must use a selectors.properties file with
+	 * selectors key/value pairs.
+	 * 
+	 * @param url         as String contains the target website
+	 * @param selectorKey Selector key on the selectors.properties file
+	 * @return True if the element has been loaded
+	 * 
+	 */
+	public boolean navigateTo(String url, String selectorKey) {
+
+		navigateTo(url);
+
+		return waitForElement(selectorKey);
+	}
+
+
+	/**
+	 * Waits for the given {@code selectorKey} element to load.
+	 * 
+	 * @param selectorKey Selector key on the selectors.properties file
+	 * @return True if the element has been loaded
+	 */
+	public boolean waitForElement(String selectorKey) {
+
+		return waitForElement(selectorKey, 10);
+	}
+	
+	
+	/**
+	 * Waits for the given {@code selectorKey} element to load.
+	 * 
+	 * @param selectorKey Selector key on the selectors.properties file
+	 * @param seconds Waiting time in seconds
+	 * @return True if the element has been loaded
+	 */
+	public boolean waitForElement(String selectorKey, Integer seconds) {
+
+		try {
+			return waitFor.wait(seconds, "Waiting for the web element to load", false, () -> {
+				try {
+
+					return selectorsManager.getElement(selectorKey) != null;
+				} catch (Exception e) {
+					return false;
+				}
+			});
+		} catch (JidokaUnsatisfiedConditionException e) {
+			throw new JidokaFatalException("Error waiting for the given web element to load", e);
 		}
 	}
 
@@ -192,9 +274,8 @@ public class BrowserManager {
 		try {
 
 			browser.close();
-			if (browser.getDriver() == null) {
-				forceBrowserProcessKill();
-			}
+			forceBrowserProcessKill();
+
 			browser = null;
 
 		} catch (NoSuchSessionException | IOException e) {
@@ -214,10 +295,14 @@ public class BrowserManager {
 		switch (selectedBrowser) {
 		case CHROME:
 			client.killAllProcesses("chromedriver.exe", 1000);
+			break;
 		case INTERNET_EXPLORER:
 			client.killAllProcesses("IEDriverServer.exe", 1000);
+			client.killAllProcesses("iexplore.exe", 1000);
+			break;
 		case FIREFOX:
 			client.killAllProcesses("geckodriver.exe", 1000);
+			break;
 		default:
 			break;
 		}

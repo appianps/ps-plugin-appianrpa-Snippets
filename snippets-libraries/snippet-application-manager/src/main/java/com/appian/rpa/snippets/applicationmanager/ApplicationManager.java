@@ -6,8 +6,8 @@ import java.util.regex.Pattern;
 import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.IWaitFor;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
-import com.novayre.jidoka.windows.api.IWindows;
-
+import com.novayre.jidoka.client.api.multios.EClientShowWindowType;
+import com.novayre.jidoka.client.api.multios.IClient;
 import mmarquee.automation.UIAutomation;
 import mmarquee.automation.controls.Application;
 import mmarquee.automation.controls.Window;
@@ -19,7 +19,7 @@ import mmarquee.automation.controls.Window;
 public class ApplicationManager {
 
 	/** Client module */
-	private IWindows client;
+	private IClient client;
 
 	/** IWaitFor instance */
 	private IWaitFor waitFor;
@@ -52,9 +52,11 @@ public class ApplicationManager {
 	 * @param windowTittleRegex App window title regex (i.e. ".*Calculator.*")
 	 * 
 	 */
-	public ApplicationManager(IRobot robot, String appLauncher, String appDir, String windowTittleRegex) {
+	public ApplicationManager(String appLauncher, String appDir, String windowTittleRegex) {
 
-		this.client = IWindows.getInstance(robot);
+		IRobot robot = IRobot.getDummyInstance();
+
+		this.client = IClient.getInstance(robot);
 		this.waitFor = client.waitFor(robot);
 		this.automation = UIAutomation.getInstance();
 
@@ -67,7 +69,7 @@ public class ApplicationManager {
 	/**
 	 * Starts the application and wait until the window opens.
 	 */
-	public void startApplication() throws JidokaFatalException {
+	public void startApplication() {
 
 		try {
 			// Get the App executable path
@@ -91,29 +93,39 @@ public class ApplicationManager {
 	/**
 	 * Close the application with a backup way in case the first one doesn't work
 	 */
-	public void closeApp() throws JidokaFatalException {
+	public void closeApp() {
 
 		try {
 			if (window != null) {
 				window.close();
 				window = null;
 				boolean closed = client.waitCondition(15, 1000, "Closing window " + windowTittleRegex, null, false,
-						false, (i, T) -> {
-							return client.getWindow(windowTittleRegex) == null;
+						false, (i, t) -> {
+							try {
+								return client.getWindow(windowTittleRegex) == null;
+							} catch (Exception e) {
+								return true;
+							}
 						});
 				if (!closed && application != null) {
 					application.close(Pattern.compile(windowTittleRegex));
 
 					closed = client.waitCondition(15, 1000, "Closing window " + windowTittleRegex, null, false, false,
-							(i, T) -> {
-								return client.getWindow(windowTittleRegex) == null;
+							(i, t) -> {
+								try {
+									return client.getWindow(windowTittleRegex) == null;
+								} catch (Exception e) {
+									return true;
+								}
 							});
 					if (!closed) {
 						throw new JidokaFatalException("Can't close the window " + windowTittleRegex);
 					}
 				}
 			}
-		} catch (Exception e) {
+		} catch (
+
+		Exception e) {
 			throw new JidokaFatalException("Error while closing the application", e);
 		}
 	}
@@ -121,10 +133,14 @@ public class ApplicationManager {
 	/**
 	 * Activate the window and shows it. Waits until the window is active.
 	 */
-	public void activateWindow() throws JidokaFatalException {
+	public void activateWindow() {
 		try {
 			// Activate the Application
-			window.focus();
+			// Focus on app and activate the window on client module
+			client.activateWindow(this.windowTittleRegex);
+
+			client.showWindow(client.getWindow(this.windowTittleRegex).getId(), EClientShowWindowType.SHOW);
+			
 			// Wait to the window to activate
 			waitFor.windowActive(this.windowTittleRegex);
 		} catch (Exception e) {

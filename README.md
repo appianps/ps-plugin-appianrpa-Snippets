@@ -1,69 +1,62 @@
-![AppianRPA](https://www.appian.com/wp-content/uploads/2020/03/ap_rpa_lockup.png)
-
-## RPA Snippets: An Appian RPA utility, including examples, in order to integrate some robot actions over your process in an easier way. 
-
-### * snippets-libraries, with all the source code.
-### * snippets-examples, containing a robot example for each snippet.
+# RPA Snippets: An Appian RPA utility, including examples, in order to integrate some robot actions over your process in an easier way.
 
 
-### Libraries
+These code utilities have been designed to provide an easier implementation of the most frequently used actions in robotic processes, such as an internet navigator or an applications manager to interact with any windows application. 
 
-#### 1. Credentials Snippet
+#### * [snippets-libraries](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries).
+
+#### * [snippets-examples](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples).
+
+## How can I integrate these snippets into my RPA Project?
+
+Once your settings.xml file is successfully configured as explained in the [documentation](https://docs.appian.com/suite/help/20.1/rpa/setup/maven-setup.html),  each of the desired snippets must be previously deployed in the Appian RPA console where the execution is going to be managed. Further help to deploy an Appian RPA source code project can be found [here](https://docs.appian.com/suite/help/20.1/rpa/rpa_in_apps/deploying-apps-rps.html).
+
+After these previous steps, The deployed snippets will be fully available by adding them to your pom.xml project.
+
+The snippets and examples of usage can be found in this repository. All the actions contained and updates are listed below:
+
+### List of Snippets included (latest update 09/2020)
+
+
+#### 1. [Queue Manager](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/queue-manager).
+
+The Queue Manager provides some utilities to create, update and release a list of elements to be processed by the robot. You can find further information about a queue and its usage [here](https://docs.appian.com/suite/help/20.1/rpa/modules/process-queues-module.html).
+An implementation can be found [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-excel-queue-manager)
+
+#### 2. [3270 Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-3270-manager).
+
+The Snippet IBM3270 Manager covers some methods to ease the IBM3270 terminal management. This [example](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-3270-snippet) shows its usage.
+
+#### 3. [Credentials Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-credentials).
 
 The CredentialsUtils Class provides the actions to retrieve and manage 
-Appian RPA Console Credentials.
+Appian RPA Console Credentials. 
 
-#### 2. REST API Snippet
 
-Class to manage the actions referred to a REST API utility
+#### 4. [Browser Manager Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-browser-manager).
 
-#### 3. Browser Manager Snippet
-
-This utility let the robot manage a web browser (Chrome, Firefox and
+This utility lets the robot manage a web browser (Chrome, Firefox and
 IExplorer are supported). Your process should include an instance for each
 browser window involved in the robot actions. It also contains a SelectorsManager class, created 
 to retrieve all the selectors involved in the robotic process from the selectors.properties file.
 
-#### 4. Application Manager Snippet
+We recommend you to read the [Browser Module documentation](https://docs.appian.com/suite/help/20.1/rpa/modules/browser-module.html) to get a better comprehension of this utility before using the snippet.
 
-Manage the actions referred to a desktop application.
+#### 5. [Application Manager Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-application-manager).
 
-### Examples
+Manage the actions referred to a Windows desktop application.
 
-#### 1. Credentials Snippet Example 
+We recommend you to read the [UIAutomation documentation](https://docs.appian.com/suite/help/20.1/rpa/modules/using-ui-automation.html) to get a better comprehension of this utility before using the snippet.
 
-The Credentials Snippet Example provides a complete usage example from all the
-CredentialsUtils snippet methods. The robot will retrieve three existent
-credentials (Username + Password) associated to the application "TEST_ROBOT".
-In case that these three credentials were not previously created in the
-console side, the application will throw an exception.
+#### 6. [Instructions Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-instruction). 
 
+Retrieve instructions and environment variables from your Appian RPA Workflow Panel. Find an example [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-instruction).
 
-#### 2. REST API Snippet Example 
+#### 7. [Email Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-email). 
 
-The Rest API Robot provides a complete usage example from all the
-correspondent snippet methods. Given a queueItem ID, this robotic process
-updates the number of attempts to 3. It also set the status as "PENDING". An
-error will be thrown if the Item does not exist, or the Status was not
-previously marked as "FINISHED_WARN".
+The email snippet helps you by sending an email from the server. It also lets the user set a variety of different email parameters.  Find an example [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-email).
 
+#### 8. [QR Manager](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-qr-manager). 
 
-#### 3. Browser Manager Snippet Example.
-
-This robotic process has been created to illustrate how the Browser Manager
-Snippet should be integrated in your process. It basically shows how a Chrome 
-Browser can be easilly opened. Then, the word "Appian" in Google and shows up the 
-first result found in the console. An exception will be thrown if any error 
-occurs during the process execution.
-
-
-#### 4. Application Manager Snippet Example. 
-
-
-The Application Manager Robot provides a complete usage example from all the
-correspondent snippet methods. First of all, the notepad editor is opened and
-maximized. After that, the Windows native calculator application is opened,
-and then, the previous opened notepad is set as foreground application.
-Finally, both applicationes are closed. An exception will be thrown if
-something goes wrong during any of these actions.
+Encode & Decode QR Images. You can have a look to its usage in the test cases or the robot example provided [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-QR-manager).
 

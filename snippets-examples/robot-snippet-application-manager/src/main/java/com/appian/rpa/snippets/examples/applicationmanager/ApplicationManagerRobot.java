@@ -17,8 +17,8 @@ import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
  * and then, the previous opened notepad is set as foreground application.
  * Finally, both applicationes are closed. An exception will be thrown if
  * something goes wrong during any of these actions.
- * 
- * 
+ *
+ *
  */
 @Robot
 public class ApplicationManagerRobot implements IRobot {
@@ -49,8 +49,8 @@ public class ApplicationManagerRobot implements IRobot {
 
 	public void start() {
 
-		calculatorApp = new ApplicationManager(this, "calc.exe", "C:\\Windows\\system32\\", ".*Calculator.*");
-		notepadApp = new ApplicationManager(this, "notepad.exe", "C:\\Windows\\system32\\", ".*Notepad.*");
+		calculatorApp = new ApplicationManager("calc.exe", "C:\\Windows\\system32\\", ".*Calculator.*");
+		notepadApp = new ApplicationManager("notepad.exe", "C:\\Windows\\system32\\", ".*Notepad.*");
 	}
 
 	/**
@@ -138,7 +138,7 @@ public class ApplicationManagerRobot implements IRobot {
 
 	/**
 	 * Overrides the cleanUp method.
-	 * 
+	 *
 	 * We ensure that all the applications involved have been successfully closed,
 	 * even if an exception was thrown during the process. This is a common practice
 	 * to avoid undesired opened tasks in the following executions.
