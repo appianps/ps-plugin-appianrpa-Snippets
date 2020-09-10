@@ -5,14 +5,14 @@
 
 	<groupId>com.appian.rpa.snippets</groupId>
 	<artifactId>snippet-browser-manager</artifactId>
-	<version>1.5.0</version>
+	<version>1.6.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>
 		<artifactId>jidoka-robot-parent</artifactId>
-		<version>7.0.0</version>
+		<version>7.1.0</version>
 	</parent>
 
 	<properties>
@@ -114,6 +114,9 @@
 			<artifactId>jidoka-browser-api</artifactId>
 			<version>${jidoka.version}</version>
 		</dependency>
-
+ 		<dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
 	</dependencies>
 </project>
