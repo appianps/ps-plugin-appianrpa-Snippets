@@ -13,6 +13,6 @@ The Browser Manager utility can be integrated in your code using Maven. It just 
 <dependency>
 	<groupId>com.appian.rpa.snippets</groupId>
 	<artifactId>snippet-browser-manager</artifactId>
-	<version>1.0.0</version>
+	<version>1.7.0</version>
 </dependency>
 ```
