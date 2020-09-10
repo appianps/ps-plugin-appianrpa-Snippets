@@ -2,6 +2,7 @@ package com.appian.rpa.snippets.instruction;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.function.Predicate;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -38,6 +39,11 @@ public class Instruction {
 	 * This variable stores the instruction value in the console
 	 */
 	private String parameter;
+	
+	/**
+	 * This variable stores a predicate to validate the instruction
+	 */
+	private Predicate<Object> validatePredicate;
 
 	/**
 	 * Constructor for a non required instruction
@@ -58,9 +64,22 @@ public class Instruction {
 	 */
 	public Instruction(String name, Boolean required) {
 
+		this(name, required, null);
+	}
+	
+	/**
+	 * Constructor for a single instruction
+	 * 
+	 * @param name     of the instruction
+	 * @param required <code>true</code> if the instruction is required (mandatory)
+	 *                 for the robot
+	 */
+	public Instruction(String name, Boolean required, Predicate<Object> validatePredicate) {
+
 		this.server = JidokaFactory.getServer();
 		this.name = name;
 		this.required = required;
+		this.validatePredicate = validatePredicate;
 
 		this.parameter = server.getParameters().get(name);
 	}
@@ -72,7 +91,7 @@ public class Instruction {
 	 */
 	public Boolean getAsBoolean() {
 
-		checkRequired();
+		validate();
 
 		return Boolean.valueOf(parameter);
 	}
@@ -84,7 +103,7 @@ public class Instruction {
 	 */
 	public Integer getAsInteger() {
 
-		checkRequired();
+		validate();
 
 		if (StringUtils.isBlank(parameter)) {
 
@@ -106,7 +125,7 @@ public class Instruction {
 	 */
 	public Long getAsLong() {
 
-		checkRequired();
+		validate();
 
 		if (StringUtils.isBlank(parameter)) {
 
@@ -128,8 +147,13 @@ public class Instruction {
 	 */
 	public String getAsString() {
 
-		checkRequired();
+		validate();
 
+		if(StringUtils.isNotBlank(parameter)) {
+			
+			parameter = parameter.trim();
+		}
+		
 		return parameter;
 	}
 
@@ -140,7 +164,7 @@ public class Instruction {
 	 */
 	public File getAsFile() {
 
-		checkRequired();
+		validate();
 
 		return Paths.get(server.getCurrentDir(), parameter).toFile();
 	}
@@ -150,10 +174,16 @@ public class Instruction {
 	 * case, @throws a JidokaFatalException
 	 */
 
-	private void checkRequired() throws JidokaFatalException {
+	private void validate() throws JidokaFatalException {
 
 		if (StringUtils.isBlank(parameter) && required) {
+			
 			throw new JidokaFatalException(String.format("The param %s is mandatory", name));
+		}
+		
+		if(validatePredicate != null && !validatePredicate.test(parameter)) {
+				
+			throw new JidokaFatalException(String.format("The param %s is not valid with value %s", name, parameter));
 		}
 	}
 
