@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.TakesScreenshot;
@@ -20,15 +21,15 @@ import org.openqa.selenium.WebElement;
 public class ScreenshotsManager {
 
 	/**
-	 * This function will take screenshot of a visible element
+	 * This function will take screenshot of a visible element and save it into the given path
 	 * 
 	 * @param screenShotPath
 	 * @throws Exception
 	 */
-	public void visibleElementScreenShot(WebDriver webDriver, By visibleElementBy, Path screenShotPath) throws IOException {
+	public void visibleElementScreenShot(WebDriver webDriver, By visibleElementBy, Path screenShotPath) throws IOException, NoSuchElementException {
 
 		WebElement ele = webDriver.findElement(visibleElementBy);
-
+		
 		// Get entire page screenshot
 		TakesScreenshot scrShot = ((TakesScreenshot) webDriver);
 		File screenshot = scrShot.getScreenshotAs(OutputType.FILE);
