@@ -1,12 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.appian.rpa.snippets</groupId>
-	<artifactId>snippet-ftp-client</artifactId>
-	<version>1.0.0</version>
+	<groupId>com.appian.rpa.snippets.examples</groupId>
+	<artifactId>robot-snippet-ftp</artifactId>
 	<packaging>jar</packaging>
+	<version>0.0.1</version>
+
+	<name>robot-snippet-ftp</name>
 
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>
@@ -70,6 +73,16 @@
 			<groupId>commons-net</groupId>
 			<artifactId>commons-net</artifactId>
 			<version>3.6</version>
+		</dependency>
+		<dependency>
+			<groupId>com.appian.rpa.snippets</groupId>
+			<artifactId>snippet-credentials</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.appian.rpa.snippets</groupId>
+			<artifactId>snippet-ftp-client</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 </project>
