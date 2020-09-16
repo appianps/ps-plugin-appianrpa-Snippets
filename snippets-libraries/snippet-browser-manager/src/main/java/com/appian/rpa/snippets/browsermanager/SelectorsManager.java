@@ -110,6 +110,16 @@ public class SelectorsManager {
 
 		By by = getBy(key);
 
+		return getElement(by);
+	}
+	
+	/**
+	 * Finds the {@link WebElement} object using {@link By}, if not found return null.
+	 * @param by
+	 * @return
+	 */
+	public WebElement getElement(By by) {
+
 		if (by != null) {
 
 			return browser.getElement(by);
@@ -153,6 +163,16 @@ public class SelectorsManager {
 
 		By by = getBy(key);
 
+		return getAllElements(by);
+	}
+	
+	/**
+	 * Find all {@link WebElement} objects using {@link By}, if none element found return empty list.
+	 * @param by
+	 * @return
+	 */
+	public List<WebElement> getAllElements(By by) {
+
 		if (by != null) {
 
 			return browser.getElements(by);
@@ -160,7 +180,7 @@ public class SelectorsManager {
 
 		return null;
 	}
-
+	
 	/**
 	 * Check if the {@link WebElement} exists in the DOM using the saved selector in
 	 * selectors file, which can found filtering by the given {@code key}. Searches
@@ -175,6 +195,16 @@ public class SelectorsManager {
 	public Boolean existsElement(String key) {
 
 		By by = getBy(key);
+
+		return existsElement(by);
+	}
+	
+	/**
+	 * Check if the {@link WebElement} exists in the DOM using the given {@link By}
+	 * @param by
+	 * @return
+	 */
+	public Boolean existsElement(By by) {
 
 		if (by != null) {
 

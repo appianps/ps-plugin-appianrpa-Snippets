@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.Serializable;
 
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -41,6 +43,9 @@ public class BrowserManager {
 
 	/** SelectorsManager instance */
 	private SelectorsManager selectorsManager;
+	
+	/** ScreenshotManager instance */
+	private ScreenshotsManager screenShotsManager;
 
 	/**
 	 * BrowserManager constructor
@@ -58,13 +63,14 @@ public class BrowserManager {
 		browser = IWebBrowserSupport.getInstance(robot, client);
 		browser.setTimeoutSeconds(120);
 		selectorsManager = new SelectorsManager();
-
+		screenShotsManager = new ScreenshotsManager();
+		
 		if (selectedBrowser == null) {
 			throw new JidokaFatalException("You must select the browser to open");
 		}
 
 		this.selectedBrowser = selectedBrowser;
-
+		
 	}
 
 	/**
@@ -163,7 +169,7 @@ public class BrowserManager {
 
 		navigateTo(url);
 
-		return waitForElement(selectorKey);
+		return waitForElement(selectorKey, 60);
 	}
 
 
@@ -316,4 +322,65 @@ public class BrowserManager {
 	public SelectorsManager getSelectorsManager() {
 		return this.selectorsManager;
 	}
+	
+	/**
+	 * Get the {@link ScreenShotsManager} instance
+	 * 
+	 * @return The {@link ScreenShotsManager} instance
+	 */
+	public ScreenshotsManager getScreenShotManager() {
+		return this.screenShotsManager;
+	}
+	
+	/**
+	 * Click on the given element 
+	 * @param selectorKey
+	 * @return
+	 */
+	public boolean clickOnElement(String selectorKeyClick) {
+		return clickOnElement(selectorKeyClick, null, 0);
+	}
+	
+	/**
+	 * Click on the given element and wait until find another element
+	 * @param selectorKey
+	 * @return
+	 */
+	public boolean clickOnElement(String selectorKeyClick, String selectorKeyWait, int waitTime) {
+		
+		WebElement ele = selectorsManager.getElement(selectorKeyClick);
+		
+		try {	
+			ele.click();	
+		} catch (Exception e) {
+			return false;
+		}
+		
+		if (selectorKeyWait != null) {
+			
+			return waitForElement(selectorKeyWait, waitTime);
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Send a string into the element
+	 * @param stringToSend
+	 * @param selectorKey
+	 * @return
+	 */
+	public void sendKeysOnElement(String stringToSend, String selectorKey) throws Exception {
+		
+		selectorsManager.getElement(selectorKey).sendKeys(stringToSend);
+	}
+	
+	/**
+	 * Return the web driver
+	 * @return
+	 */
+	public WebDriver getDriver() {
+		return browser.getDriver();
+	}
+	
 }
