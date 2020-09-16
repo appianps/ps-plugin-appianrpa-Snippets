@@ -12,6 +12,6 @@ The Instruction Snippet can be integrated in your code using Maven. It just has 
 <dependency>
 	<groupId>com.appian.rpa.snippets</groupId>
 	<artifactId>snippet-instruction</artifactId>
-	<version>1.1.0</version>
+	<version>1.2.0</version>
 </dependency>
 ```
