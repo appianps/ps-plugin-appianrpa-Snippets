@@ -10,7 +10,6 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 
 import com.appian.rpa.snippets.credentials.CredentialsUtils;
 import com.appian.rpa.snippets.ftp.RpaFtpClient;
-import com.novayre.jidoka.client.api.ECredentialSearch;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.JidokaFactory;
@@ -36,10 +35,13 @@ public class FTPRobot implements IRobot {
 	private CredentialsUtils credentialsUtils;
 
 	/** FTP application name */
-	private static final String APPLICATION_NAME = "FTP_TEST";
+	private static final String APPLICATION_NAME = "FTP";
 
-	/** FTP Host */
+	/** FTP Host instruction label */
 	private String PARAM_HOST = "HOST";
+
+	/** FTP User instruction label */
+	private String PARAM_FTP_USER = "FTP_USER";
 
 	/** Credentials */
 	private IUsernamePassword ftpCredentials;
@@ -69,11 +71,10 @@ public class FTPRobot implements IRobot {
 	public void start() {
 		// All files to work with
 		supportFiles = server.getSupportFiles().stream().map(Path::toFile).collect(Collectors.toList());
-
-		ftpCredentials = credentialsUtils.getCredentials(APPLICATION_NAME, false, ECredentialSearch.FIRST_LISTED, 30);
+		String ftpUser = server.getParameters().get(PARAM_FTP_USER);
+		ftpCredentials = credentialsUtils.getCredentialsByUser(APPLICATION_NAME, ftpUser, false, 30);
 		// Initializing the FTP client. The default directory to connect is root but you
-		// can choose a different one
-		// that exists in the FTP
+		// can choose a different one that exists in the FTP
 		rpaFtpClient.init(server.getParameters().get(PARAM_HOST), ftpCredentials.getUsername(),
 				ftpCredentials.getPassword());
 	}
