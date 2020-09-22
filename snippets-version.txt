@@ -1,0 +1,10 @@
+snippet-3270-manager: 1.0.0
+snippet-application-manager: 1.3.0
+snippet-browser-manager: 1.7.0
+snippet-credentials: 2.2.0
+snippet-email: 1.1.0
+snippet-instruction: 1.2.0
+snippet-python: 1.0.0
+snippet-qr-manager: 1.0.0
+snippet-queue-manager: 1.4.0
+snippet-commons: 1.1.0
