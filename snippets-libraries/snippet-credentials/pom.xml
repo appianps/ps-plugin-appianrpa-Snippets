@@ -5,14 +5,15 @@
 
 	<groupId>com.appian.rpa.snippets</groupId>
 	<artifactId>snippet-credentials</artifactId>
-	<version>2.2.0</version>
+	<version>2.2.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>
 		<artifactId>jidoka-robot-parent</artifactId>
-		<version>7.0.0</version>
+		<version>7.2.0</version>
 	</parent>
+	
 	<properties>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -21,61 +22,31 @@
 
 		<profile>
 			<id>rpa-coe-lab</id>
-
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
-
-			<repositories>
-				<repository>
-					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
-					<releases>
-						<enabled>true</enabled>
-					</releases>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</repository>
-				<repository>
-					<id>rpa-coe-lab-snapshots</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka-snapshots</url>
-					<releases>
-						<enabled>false</enabled>
-					</releases>
-					<snapshots>
-						<enabled>true</enabled>
-					</snapshots>
-				</repository>
-			</repositories>
-
-			<pluginRepositories>
-				<pluginRepository>
-					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
-					<releases>
-						<enabled>true</enabled>
-					</releases>
-					<snapshots>
-						<enabled>true</enabled>
-					</snapshots>
-				</pluginRepository>
-			</pluginRepositories>
-
 			<distributionManagement>
 				<repository>
 					<id>rpa-coe-lab</id>
-					<name>rpa-coe-lab</name>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
-					<layout>default</layout>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 				</repository>
-				<snapshotRepository>
-					<id>rpa-coe-lab-snapshots</id>
-					<name>rpa-coe-lab-snapshots</name>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka-snapshots</url>
-					<layout>default</layout>
-				</snapshotRepository>
 			</distributionManagement>
+			<repositories>
+				<repository>
+					<releases />
+					<snapshots />
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
+				</repository>
+			</repositories>
+			<pluginRepositories>
+				<pluginRepository>
+					<releases />
+					<snapshots />
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
+				</pluginRepository>
+			</pluginRepositories>
 		</profile>
 	</profiles>
 	
