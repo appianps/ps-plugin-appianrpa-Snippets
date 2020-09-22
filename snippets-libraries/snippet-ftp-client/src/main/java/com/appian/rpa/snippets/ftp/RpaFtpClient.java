@@ -43,9 +43,6 @@ public class RpaFtpClient {
 	/** Folder to store files obtained from FTP */
 	private String downloadDirectory;
 
-	/** For internal use */
-	private String workingDirBackUp;
-
 	/** Server module */
 	private IJidokaServer<?> server;
 
@@ -71,7 +68,7 @@ public class RpaFtpClient {
 	}
 
 	/**
-	 * TODO documentar
+	 * Init the FTP manager
 	 * 
 	 * @param host
 	 * @param username
@@ -87,11 +84,12 @@ public class RpaFtpClient {
 	}
 
 	/**
-	 * TODO documentar
+	 * Init the FTP manager, including a starting FTP working directory
 	 * 
 	 * @param host
 	 * @param username
 	 * @param password
+	 * @param workingDirectory
 	 */
 	public void init(String host, String username, String password, String workingDirectory) {
 
@@ -104,11 +102,13 @@ public class RpaFtpClient {
 	}
 
 	/**
-	 * TODO documentar
+	 * Init the FTP manager, including a starting FTP working and download directory
 	 * 
 	 * @param host
 	 * @param username
 	 * @param password
+	 * @param workingDirectory
+	 * @param downloadDirectory
 	 */
 	public void init(String host, String username, String password, String workingDirectory, String downloadDirectory) {
 
@@ -121,7 +121,9 @@ public class RpaFtpClient {
 	}
 
 	/**
-	 * Delete the file in the current active directory with the given name.
+	 * Delete the {@link File} in the current active directory with the given name.
+	 * Return <code>true</code> if the files are removed, <code>false</code> for a
+	 * different case.
 	 * 
 	 * @param fileName
 	 * @return
@@ -136,9 +138,11 @@ public class RpaFtpClient {
 	}
 
 	/**
-	 * Delete the file list in the current directory with the given names.
+	 * Delete the {@link File} {@link List} in the current directory with the given
+	 * exacts names. Return <code>true</code> if the files are removed,
+	 * <code>false</code> for a different case.
 	 * 
-	 * @param fileName
+	 * @param fileNameList
 	 * @return
 	 */
 	public boolean deleteFiles(List<String> fileNameList) {
@@ -164,9 +168,9 @@ public class RpaFtpClient {
 	}
 
 	/**
-	 * Download the file with the given name.
+	 * Download the first {@link File} with the given regExp.
 	 * 
-	 * @param fileName
+	 * @param fileNameRegExp
 	 * @return
 	 */
 	public File downloadFile(String fileNameRegExp) {
@@ -175,7 +179,7 @@ public class RpaFtpClient {
 	}
 
 	/**
-	 * Download the first file that match the given predicate.
+	 * Download the first {@link File} that match the given {@link Predicate}.
 	 * 
 	 * @param predicate
 	 * @return
@@ -192,7 +196,7 @@ public class RpaFtpClient {
 	}
 
 	/**
-	 * Download the file with the given name.
+	 * Download the {@link File} {@link List} that matches the given regExp.
 	 * 
 	 * @param fileNameRegExp
 	 * @return
@@ -203,7 +207,7 @@ public class RpaFtpClient {
 	}
 
 	/**
-	 * Download the given file list.
+	 * Download the given {@link File} {@link List} from the working FTP directory.
 	 * 
 	 * @param fileNameList
 	 * @return
@@ -223,7 +227,7 @@ public class RpaFtpClient {
 	}
 
 	/**
-	 * Download all files matching the given predicate.
+	 * Download all {@link File} matching the given predicate.
 	 * 
 	 * @param predicate
 	 * @return
@@ -267,7 +271,7 @@ public class RpaFtpClient {
 	}
 
 	/**
-	 * Upload the file to the active folder.
+	 * Upload the {@link File} to the FTP working folder.
 	 * 
 	 * @param fileToUpload
 	 * @return
@@ -282,7 +286,7 @@ public class RpaFtpClient {
 	}
 
 	/**
-	 * Upload all files to the active folder.
+	 * Upload a {@link List} of {@link File} to the FTP working folder.
 	 * 
 	 * @param filesToUpload
 	 * @return
@@ -341,6 +345,36 @@ public class RpaFtpClient {
 	}
 
 	/**
+	 * Returns a {@link List} with the name of all the files in the FTP.
+	 * 
+	 * @return
+	 */
+	public List<String> getAllDirectories() {
+
+		FTPClient ftpClient = connect();
+
+		server.debug("Obtaining directories in the current working directory: " + workingDirectory);
+		try {
+
+			FTPFile[] listDir = ftpClient.listDirectories();
+
+			if (listDir == null) {
+				server.debug("The directory is empty.");
+				return new ArrayList<>();
+			}
+
+			return Arrays.asList(listDir).stream()
+					.filter(f -> f != null && (!f.getName().equals(".") && !f.getName().equals("..")))
+					.map(f -> f.getName()).collect(Collectors.toList());
+
+		} catch (Exception e) {
+			throw new JidokaItemException("There is an error retriving the directories list from the ftp.");
+		} finally {
+			disconnect(ftpClient);
+		}
+	}
+
+	/**
 	 * @return the workingDirectory
 	 */
 	public String getWorkingDirectory() {
@@ -359,14 +393,17 @@ public class RpaFtpClient {
 	}
 
 	/**
-	 * @return the destinyFolder
+	 * @return the download directory
 	 */
-	public String getDownloadFolder() {
+	public String getDownloadDirectory() {
 		return downloadDirectory;
 	}
 
 	/**
-	 * @param downloadDirectory the destinyFolder to set
+	 * Set the download directory, if the directory to set doesn't exist it will be
+	 * created
+	 * 
+	 * @param downloadDirectory the absolute path of the download directory to set
 	 */
 	public void setDownloadDirectory(String downloadDirectory) {
 		if (!downloadDirectory.endsWith("/")) {
@@ -384,9 +421,19 @@ public class RpaFtpClient {
 		this.downloadDirectory = downloadDirectory;
 	}
 
+	/**
+	 * Create a new directory in the FTP following the format
+	 * "/dir_in_root/sub_dir/". If the directory is created return <code>true</code>
+	 * any other case return <code>false</code>
+	 * 
+	 * @param dir
+	 * @return
+	 */
 	public boolean mkDirFtp(String dir) {
 
-		setWorkingDirBackup("");
+		String previousWorkingDir = workingDirectory;
+
+		setWorkingDirectory("");
 
 		FTPClient ftpClient = connect();
 
@@ -397,10 +444,10 @@ public class RpaFtpClient {
 			}
 
 		} catch (Exception e) {
-			throw new JidokaItemException("Error creating directory " + dir);
+			return false;
 		} finally {
 			disconnect(ftpClient);
-			restoreWorkDir();
+			setWorkingDirectory(previousWorkingDir);
 		}
 
 		server.debug("Directory " + dir + " created in the FTP.");
@@ -408,14 +455,33 @@ public class RpaFtpClient {
 		return true;
 	}
 
+	/**
+	 * Remove a empty directory in the FTP following the format
+	 * "/dir_in_root/sub_dir/...". If the directory is removed return
+	 * <code>true</code> any other case return <code>false</code>
+	 * 
+	 * @param dir
+	 * @return
+	 */
 	public boolean rmDirFtp(String dir) {
 		return rmDirFtp(dir, false);
 	}
 
-	public boolean rmDirFtp(String dir, boolean removeFiles) {
+	/**
+	 * Remove a directory in the FTP following the format
+	 * "/dir_in_root/sub_dir/...". If the directory is removed return
+	 * <code>true</code> any other case return <code>false</code>
+	 * 
+	 * @param dir
+	 * @param removeContent if is <code>true</code> remove all content in the
+	 *                      directory too, else the directory must be empty to be
+	 *                      removed.
+	 * @return
+	 */
+	public boolean rmDirFtp(String dir, boolean removeContent) {
 
-		if (removeFiles) {
-			removeAllFiles(dir);
+		if (removeContent) {
+			removeDirContent(dir);
 		}
 
 		FTPClient ftpClient = connect();
@@ -428,7 +494,8 @@ public class RpaFtpClient {
 			}
 
 		} catch (Exception e) {
-			throw new JidokaItemException("Error deleting directory " + dir);
+			server.warn("Error deleting directory " + dir);
+			return false;
 		} finally {
 			disconnect(ftpClient);
 		}
@@ -438,20 +505,55 @@ public class RpaFtpClient {
 		return true;
 	}
 
-	public void removeAllFiles(String dir) {
+	/**
+	 * Remove all the content in the current working directory, this directory is
+	 * not removed.
+	 * 
+	 * @return
+	 */
+	public boolean removeDirContent() {
 
-		setWorkingDirBackup(dir);
+		return removeDirContent(workingDirectory);
+	}
+
+	/**
+	 * Remove all the content in the given FTP directory. This method removed all
+	 * files and directories in a recursive way, but don't remove the given
+	 * directory itself.
+	 * 
+	 * @param dir
+	 * @return
+	 */
+	public boolean removeDirContent(String dir) {
+
+		String previousWorkingDir = workingDirectory;
+
+		setWorkingDirectory(dir);
 
 		try {
 			List<String> arrayFtpFiles = getAllFilesName();
 
-			deleteFiles(arrayFtpFiles);
+			List<String> arrayDirectories = getAllDirectories();
+
+			for (String directory : arrayDirectories) {
+
+				if (!rmDirFtp(workingDirectory + directory, true)) {
+
+					return false;
+				}
+			}
+			arrayFtpFiles.removeAll(arrayDirectories);
+
+			if (!deleteFiles(arrayFtpFiles)) {
+				return false;
+			}
 
 		} finally {
 
-			restoreWorkDir();
+			setWorkingDirectory(previousWorkingDir);
 		}
 
+		return true;
 	}
 
 	private FTPClient connect() {
@@ -603,14 +705,4 @@ public class RpaFtpClient {
 
 		return false;
 	}
-
-	private void restoreWorkDir() {
-		setWorkingDirectory(workingDirBackUp);
-	}
-
-	private void setWorkingDirBackup(String dir) {
-		workingDirBackUp = workingDirectory;
-		setWorkingDirectory(dir);
-	}
-
 }

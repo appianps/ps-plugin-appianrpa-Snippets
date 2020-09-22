@@ -17,7 +17,7 @@ public class RpaFtpClientTest {
 	static RpaFtpClient ftpClient;
 	private static IJidokaServer<?> server;
 
-	@Ignore
+//	@Ignore
 	@BeforeClass
 	public static void beforeClass() throws Exception {
 
@@ -145,6 +145,12 @@ public class RpaFtpClientTest {
 			server.debug(fileString);
 		}
 
+	}
+
+	@Test
+	public void testDirContent() {
+
+		ftpClient.rmDirFtp("/test-jid/", true);
 	}
 
 }

@@ -1,18 +1,18 @@
 
-## Browser Manager Snippet
+## FTP Client Snippet
 
-Manage the actions referred to the Browser Manager and Selector Manager utilities.
+Manager to perform the connection to an FTP and all the associated basic actions.
 
-An integration example can be found [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-browser-manager) 
+An integration example can be found [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-ftp) 
 
 
 ### Installation
 
-The Browser Manager utility can be integrated in your code using Maven. It just has to be included in the ```pom.xml``` file as shown below:
+The FTP Client Manager can be integrated in your code using Maven. It just has to be included in the ```pom.xml``` file as shown below:
 ```xml
 <dependency>
 	<groupId>com.appian.rpa.snippets</groupId>
-	<artifactId>snippet-browser-manager</artifactId>
+	<artifactId>snippet-ftp-client</artifactId>
 	<version>1.0.0</version>
 </dependency>
 ```

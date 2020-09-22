@@ -5,7 +5,7 @@
 
 	<groupId>com.appian.rpa.snippets</groupId>
 	<artifactId>snippet-ftp-client</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<parent>
@@ -16,7 +16,7 @@
 
 	<profiles>
 		<profile>
-			<id>rpa-coe-lab</id>
+			<id>rpa-coe-lab-profile</id>
 
 			<activation>
 				<activeByDefault>true</activeByDefault>
@@ -25,7 +25,7 @@
 			<repositories>
 				<repository>
 					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 					<releases>
 						<enabled>true</enabled>
 					</releases>
@@ -34,8 +34,8 @@
 					</snapshots>
 				</repository>
 				<repository>
-					<id>rpa-coe-lab-snapshots</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka-snapshots</url>
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 					<releases>
 						<enabled>false</enabled>
 					</releases>
@@ -48,7 +48,7 @@
 			<pluginRepositories>
 				<pluginRepository>
 					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 					<releases>
 						<enabled>true</enabled>
 					</releases>
