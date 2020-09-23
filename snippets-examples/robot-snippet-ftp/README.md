@@ -1,22 +1,25 @@
 
-## Credentials Robot (A snippet usage example)
+## FTP Client Robot Example (A snippet usage example)
 
 
-The Credentials Snippet Example provides a complete usage example from all the
-[CredentialsUtils](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-credentials) snippet methods. The robot will retrieve three existent
-credentials (Username + Password) associated to the application "TEST_ROBOT".
-In case that these three credentials were not previously created in the
-console side, the application will throw an exception.
+The FTP Client Snippet Example provides a complete usage example from all the
+[RpaFtpClient](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-ftp-client) snippet methods. 
 
-Please, follow the [setup instructions](https://docs.appian.com/suite/help/20.1/rpa/develop/deploying-code.html) to set your enviroment and run this example.
+This robot do the basics operations with a FTP using the snippet for FTP management (list, upload, download and remove files from remote). To test this we are going to connect to a Public FTP test site. The files will only be stored for 30 minutes before being deleted (every minute 00 and 30).
+
+All the info about the site can be found in: https://dlptest.com/ftp-test/
+
+We are going to use the console credentials for store the FTP user password (credential application -> "FTP").
+
+Please, follow the [setup instructions](https://docs.appian.com/suite/help/20.3/rpa/develop/deploying-code.html) to set your enviroment and run this example.
 
 ![AppianRPA](img/workflow.jpg)
 
 ### Process (AS IS):
 
-1. **Start.** The start method initializes modules and global variables.
-2. **Retrive Credentials.**  This method retrieves the three credentials associated to the same TEST_ROBOT application, whether the number of usages is limited or not. A JidokaFatalException is thrown in case that the number of retrievals was already exceeded or simply the desired credential does not exist.
-3. **Do actions.** This method let the process confirm if each credential was successfully retrieved or not.
-4. **Any Items left?.** Checks if there are more pending items.
-5. **Close App.** This method closes the app and updates each the credential usages.
+1. **Init** The start method initializes modules and global variables.
+2. **Get All Files In Root**  Retrieve and write in the robot log all the files and directories presents in the FTP root directory.
+3. **Upload Support Files** Uploads all the support files that have been loaded into the robot. The remote folder for that will be "test_jid".
+4. **Download Files** Download all the previously uploaded files in "AppianRPA directory path/ftpDownloadTest/".
+5. **Delete Files** Remove all the uploaded files. First remove the first one (to have an example of selective remove) and later the rest together. Finally the remote directory "test_jid" will be delete too.
 6. **End.** Any further actions to close the robot process can be performed here.
