@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.novayre.jidoka.robot</groupId>
+		<artifactId>jidoka-robot-parent</artifactId>
+		<version>7.2.0</version>
+	</parent>
+	
+	<groupId>com.appian.rpa.snippets.libraries</groupId>
+	<artifactId>SnippetsCredentialsLibraries</artifactId>
+	
+	<name>SnippetsCredentialsLibraries</name>
+	
+	<properties>
+		<jidoka.serverId>rpa-coe-lab</jidoka.serverId>
+		<junit.jupyter.version>5.4.0</junit.jupyter.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>com.appian.rpa.snippets</groupId>
+			<artifactId>snippet-credentials</artifactId>
+			<version>7.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.9</version>
+		</dependency>
+		<dependency>
+			<groupId>com.novayre.jidoka.module</groupId>
+			<artifactId>jidoka-browser-api</artifactId>
+			<version>${jidoka.version}</version>
+		</dependency>
+	</dependencies>
+	<profiles>
+		<profile>
+			<id>rpa-coe-lab</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<distributionManagement>
+				<repository>
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
+				</repository>
+			</distributionManagement>
+			<repositories>
+				<repository>
+					<releases />
+					<snapshots />
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
+				</repository>
+			</repositories>
+			<pluginRepositories>
+				<pluginRepository>
+					<releases />
+					<snapshots />
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
+				</pluginRepository>
+			</pluginRepositories>
+		</profile>
+	</profiles>
+</project>
