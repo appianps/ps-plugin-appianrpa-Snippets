@@ -3,23 +3,20 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
-	<groupId>com.appian.rpa.snippets.examples</groupId>
-	<artifactId>robot-snippet-credentials</artifactId>
+	<groupId>com.appian.rpa.snippets.libraries</groupId>
+	<artifactId>SnipetQRLibraries</artifactId>
 	<packaging>jar</packaging>
 
-	<name>robot-snippet-credentials</name>
+	<properties>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+	</properties>
 
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>
 		<artifactId>jidoka-robot-parent</artifactId>
-		<version>7.2.0</version> <!-- VC -->
+		<version>7.2.0</version>
 	</parent>
-
-	<properties>
-		<jidoka.serverId>rpa-coe-lab</jidoka.serverId>
-		<junit.jupyter.version>5.4.0</junit.jupyter.version>
-	</properties>
 
 	<profiles>
 
@@ -54,21 +51,47 @@
 
 	</profiles>
 
+	<build>
+		<plugins>
+			<!-- we want JDK 1.8 source and binary compatiblility -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id> <!-- The actual id should be apparent from maven output -->
+						<configuration>
+							<additionalparam>${javadoc.opts}</additionalparam>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 	<dependencies>
 		<dependency>
-			<groupId>com.appian.rpa.snippets</groupId>
-			<artifactId>snippet-credentials</artifactId>
-			<version>7.2.0</version>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>core</artifactId>
+			<version>3.3.2</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>3.9</version>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>javase</artifactId>
+			<version>3.3.0</version>
 		</dependency>
-		<dependency>
-			<groupId>com.novayre.jidoka.module</groupId>
-			<artifactId>jidoka-browser-api</artifactId>
-			<version>${jidoka.version}</version>
-		</dependency>
+
 	</dependencies>
 </project>
+
+
+
+	

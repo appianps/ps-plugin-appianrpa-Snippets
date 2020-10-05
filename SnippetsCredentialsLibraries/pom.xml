@@ -4,19 +4,38 @@
 	xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
-
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>
 		<artifactId>jidoka-robot-parent</artifactId>
 		<version>7.2.0</version>
 	</parent>
-
-	<groupId>com.appian.rpa.snippets.examples</groupId>
-	<artifactId>robot-snippet-email</artifactId>
-	<packaging>jar</packaging>
-
-	<name>robot-snippet-email</name>
-
+	
+	<groupId>com.appian.rpa.snippets.libraries</groupId>
+	<artifactId>SnippetsCredentialsLibraries</artifactId>
+	
+	<name>SnippetsCredentialsLibraries</name>
+	
+	<properties>
+		<jidoka.serverId>rpa-coe-lab</jidoka.serverId>
+		<junit.jupyter.version>5.4.0</junit.jupyter.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>com.appian.rpa.snippets</groupId>
+			<artifactId>snippet-credentials</artifactId>
+			<version>7.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.9</version>
+		</dependency>
+		<dependency>
+			<groupId>com.novayre.jidoka.module</groupId>
+			<artifactId>jidoka-browser-api</artifactId>
+			<version>${jidoka.version}</version>
+		</dependency>
+	</dependencies>
 	<profiles>
 		<profile>
 			<id>rpa-coe-lab</id>
@@ -47,23 +66,4 @@
 			</pluginRepositories>
 		</profile>
 	</profiles>
-
-	<dependencies>
-		<dependency>
-			<groupId>com.appian.rpa.snippets</groupId>
-			<artifactId>snippet-email</artifactId>
-			<version>7.2.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.appian.rpa.snippets</groupId>
-			<artifactId>snippet-instruction</artifactId>
-			<version>1.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.appian.rpa.snippets</groupId>
-			<artifactId>snippet-email</artifactId>
-			<version>7.2.0</version>
-			<classifier>javadoc</classifier>
-		</dependency>
-	</dependencies>
 </project>
