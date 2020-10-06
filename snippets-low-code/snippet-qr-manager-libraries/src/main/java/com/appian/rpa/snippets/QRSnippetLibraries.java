@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -39,21 +40,28 @@ import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
  */
 @Nano
 public class QRSnippetLibraries implements INano{
+	
 	/**
 	 * Given a text String, an image format and the output path as inputs, this
 	 * method generates a QR Image encoding that text information.
 	 *
-	 * @param qrFile     the file path where the image is going to be saved. This
-	 *                   must be passed as a File format.
+	 * @param qrFilename Name of the QR file to be generated.
 	 * @param qrCodeText The text information as String to be encoded as an image.
 	 * @param size       The QR image size (width and height are always the same, as
 	 *                   it is a square image)
 	 * @param fileType   The image output format.
+	 * @param rpVariableName Name of the Low Code variable to save the QR image
 	 * @throws JidokaFatalException, surrounding WriterException & IOException
 	 *
 	 */
-
-	public void createQRImage(File qrFile, String qrCodeText, int size, String fileType) throws JidokaFatalException {
+	@JidokaMethod(name = "Create a QR image", description = "Create a QR image encoding the text information")
+	public void createQRImage(
+			@JidokaParameter(defaultValue = "", name = "Name of the QR file to be generated * ")  String qrFilename, 
+			@JidokaParameter(defaultValue = "", name = "Text information to be encoded * ") String qrCodeText, 
+			@JidokaParameter(defaultValue = "125", name = "QR image size * ") int size, 
+			@JidokaParameter(defaultValue = "png", name = "Image output format * ") String fileType,
+			@JidokaParameter(defaultValue = "", name = "Image Destination Variable Name * ") String rpVariableName) throws JidokaFatalException {
+		
 		// Create the ByteMatrix for the QR-Code that encodes the given String
 		Hashtable<EncodeHintType, ErrorCorrectionLevel> hintMap = new Hashtable<EncodeHintType, ErrorCorrectionLevel>();
 		hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
@@ -72,7 +80,11 @@ public class QRSnippetLibraries implements INano{
 			// Paint and save the image using the ByteMatrix
 			graphics.setColor(Color.BLACK);
 			drawQRCode(byteMatrix, matrixWidth, graphics);
+			File qrFile = Paths.get(JidokaFactory.getServer().getCurrentDir(), qrFilename).toFile();
 			ImageIO.write(image, fileType, qrFile);
+			
+			JidokaFactory.getServer().getWorkflowVariables().get(rpVariableName).setValue(qrFile);
+						
 		} catch (WriterException e) {
 
 		} catch (IOException e) {
@@ -89,19 +101,48 @@ public class QRSnippetLibraries implements INano{
 			}
 		}
 	}
+	
+	
 	/**
 	 * Given a QR Image url, decodes its text value.
 	 *
 	 * @param imageUrl Url of QR image
 	 * @param rpVariableName Name of the Low Code variable to save the QR text
 	 */
-
-	@JidokaMethod(name = "Read QR image from URL", description = "Read QR image from URL adn returns the text value to the given robotic process variables")
+	@JidokaMethod(name = "Read QR image from URL", description = "Read QR image from URL and returns the text value to the given robotic process variables")
 	public void readQRImageFromUrl(@JidokaParameter(defaultValue = "", name = "QR image URL * ") String imageUrl,
 			@JidokaParameter(defaultValue = "", name = "Destination Variable Name * ") String rpVariableName) {
 		try {
 			URL url = new URL(imageUrl);
 			BufferedImage qrImage = ImageIO.read(url);
+			
+			String qrText = readQRImage(qrImage);
+			
+			JidokaFactory.getServer().getWorkflowVariables().get(rpVariableName).setValue(qrText);
+
+		} catch (Exception e) {
+			throw new JidokaFatalException(e.getMessage());
+		}
+
+	}
+	
+	/**
+	 * Given a QR Image file, decodes its text value.
+	 *
+	 * @param instructionName Name of the instruction that contains the image
+	 * @param rpVariableName Name of the Low Code variable to save the QR text
+	 */
+	@JidokaMethod(name = "Read QR from file", description = "Read QR image from a file and returns the text value to the given robotic process variables")
+	public void readQRImageFromFile(@JidokaParameter(defaultValue = "", name = "Name of the instruction that contains the image * ") String instructionName,
+								    @JidokaParameter(defaultValue = "", name = "Destination Variable Name * ") String rpVariableName) {
+		
+		try {
+
+			String parameter = JidokaFactory.getServer().getParameters().get(instructionName);
+			
+			File imageFile = Paths.get(JidokaFactory.getServer().getCurrentDir(), parameter).toFile();
+			
+			BufferedImage qrImage = ImageIO.read(imageFile);
 			
 			String qrText = readQRImage(qrImage);
 			
@@ -123,7 +164,6 @@ public class QRSnippetLibraries implements INano{
 	 * @throws IOException
 	 * @throws NotFoundException
 	 */
-
 	public String readQRImage(BufferedImage image) {
 		try {
 			Map<DecodeHintType, ErrorCorrectionLevel> hintMap = new HashMap<>();

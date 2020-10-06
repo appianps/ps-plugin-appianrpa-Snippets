@@ -24,7 +24,7 @@ public class QRTest {
 		String fileType = "png";
 		File qrFile = new File(filePath);
 		try {
-			qrUtils.createQRImage(qrFile, qrCodeText, size, fileType);
+			qrUtils.createQRImage(filePath, qrCodeText, size, fileType, "");
 			assertTrue(qrFile.exists());
 		} catch (Exception e) {
 			e.printStackTrace();
