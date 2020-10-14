@@ -11,14 +11,20 @@
 		<version>7.2.0</version>
 	</parent>
 
-	<groupId>com.appian.rpa.snippets.exmamples.email</groupId>
-	<artifactId>robot-snippet-email</artifactId>
+	<groupId>com.appian.rpa.snippets</groupId>
+	<artifactId>snippet-email-libraries</artifactId>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
-	<version>1.0.1</version>
 
-	<name>robot-snippet-email</name>
+	<name>snippet-email</name>
+
+	<properties>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+	</properties>
 
 	<profiles>
+
 		<profile>
 			<id>rpa-coe-lab</id>
 			<activation>
@@ -47,18 +53,47 @@
 				</pluginRepository>
 			</pluginRepositories>
 		</profile>
+
 	</profiles>
-	
+
+	<build>
+		<plugins>
+			<!-- we want JDK 1.8 source and binary compatiblility -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id> <!-- The actual id should be apparent from maven output -->
+						<configuration>
+							<additionalparam>${javadoc.opts}</additionalparam>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 	<dependencies>
 		<dependency>
-			<groupId>com.appian.rpa.snippets</groupId>
-			<artifactId>snippet-email</artifactId>
-			<version>1.1.0</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.9</version>
 		</dependency>
+
 		<dependency>
-			<groupId>com.appian.rpa.snippets</groupId>
-			<artifactId>snippet-instruction</artifactId>
-			<version>1.1.0</version>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.7</version>
 		</dependency>
+
 	</dependencies>
 </project>

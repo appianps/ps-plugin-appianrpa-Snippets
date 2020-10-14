@@ -24,6 +24,10 @@ import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.annotations.Robot;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
+import com.novayre.jidoka.client.api.exceptions.JidokaItemException;
+import com.novayre.jidoka.mail.api.IMail;
+import com.novayre.jidoka.mail.api.MailAttachment;
+import com.novayre.jidoka.mail.api.MailSendOptions;
 
 /**
  * This robot sends an email with the given parameters on the RPA console. Also,
