@@ -1,6 +1,6 @@
 # Snippet IBM3270 Manager
 
-Snippet IBM3270 Manager is a simple project to ease the management of an IBM3270 terminal. You can find an example of usage [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-3270-snippet).
+Snippet IBM3270 Manager is a simple project to ease the management of an IBM3270 terminal. You can find an example of usage [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-3270).
 
 # Main functions
 
