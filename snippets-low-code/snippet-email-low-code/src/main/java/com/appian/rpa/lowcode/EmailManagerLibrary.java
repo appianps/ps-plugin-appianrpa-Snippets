@@ -112,8 +112,6 @@ public class EmailManagerLibrary implements INano {
 		
 		this.attachments.add(Paths.get(server.getCurrentDir(), name).toFile());
 		
-		server.debug("El fichero existe!!: " + attachment);
-
 	}
 
 }
