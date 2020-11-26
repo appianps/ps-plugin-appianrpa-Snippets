@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>
 		<artifactId>jidoka-robot-parent</artifactId>
-		<version>7.1.0</version>
+		<version>7.4.0</version>
 	</parent>
 
 	<groupId>com.appian.rpa.snippets.exmamples.email</groupId>
@@ -20,71 +20,61 @@
 
 	<profiles>
 		<profile>
-			<id>ea-test-rpacoe</id>
+			<id>rpa-coe-lab</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<distributionManagement>
 				<repository>
-					<id>ea-test-rpacoe</id>
-					<url>https://ea-test-rpacoe.appiancloud.com/rpa/repo/</url>
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 				</repository>
 			</distributionManagement>
 			<repositories>
 				<repository>
 					<releases />
 					<snapshots />
-					<id>ea-test-rpacoe</id>
-					<url>https://ea-test-rpacoe.appiancloud.com/rpa/repo/</url>
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 				</repository>
 			</repositories>
 			<pluginRepositories>
 				<pluginRepository>
 					<releases />
 					<snapshots />
-					<id>ea-test-rpacoe</id>
-					<url>https://ea-test-rpacoe.appiancloud.com/rpa/repo/</url>
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 				</pluginRepository>
 			</pluginRepositories>
 		</profile>
 
 		<profile>
-
-			<id>rpa-coe-lab</id>
-
+			<id>204-rpa-training</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
-
-
-			<repositories>
-				<repository>
-					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
-					<releases>
-					</releases>
-					<snapshots>
-					</snapshots>
-				</repository>
-			</repositories>
-
-			<pluginRepositories>
-				<pluginRepository>
-					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
-					<releases>
-					</releases>
-					<snapshots>
-					</snapshots>
-				</pluginRepository>
-			</pluginRepositories>
 			<distributionManagement>
 				<repository>
-					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
-					<layout>default</layout>
+					<id>204-rpa-training</id>
+					<url>https://204-rpa-training.appianci.net/rpa/repo/</url>
 				</repository>
 			</distributionManagement>
+			<repositories>
+				<repository>
+					<releases />
+					<snapshots />
+					<id>204-rpa-training</id>
+					<url>https://204-rpa-training.appianci.net/rpa/repo/</url>
+				</repository>
+			</repositories>
+			<pluginRepositories>
+				<pluginRepository>
+					<releases />
+					<snapshots />
+					<id>204-rpa-training</id>
+					<url>https://204-rpa-training.appianci.net/rpa/repo/</url>
+				</pluginRepository>
+			</pluginRepositories>
 		</profile>
 	</profiles>
 	<dependencies>
