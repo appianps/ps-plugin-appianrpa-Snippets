@@ -111,7 +111,7 @@ public class EmailManagerLibrary implements INano {
 		String name = server.getWorkflowVariables().get("file").getFileNameValue();
 		
 		this.attachments.add(Paths.get(server.getCurrentDir(), name).toFile());
-		
+
 	}
 
 }
