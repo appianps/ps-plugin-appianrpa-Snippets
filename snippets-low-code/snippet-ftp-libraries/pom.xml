@@ -5,41 +5,41 @@
 
 	<groupId>com.appian.rpa.snippets.libraries</groupId>
 	<artifactId>ftp-client-library</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2</version>
 	<packaging>jar</packaging>
 
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>
 		<artifactId>jidoka-robot-parent</artifactId>
-		<version>7.4.0</version>
+		<version>7.2.0</version>
 	</parent>
 
 	<profiles>
 		<profile>
-			<id>rpa-training-profile</id>
+			<id>rpa-coe-lab</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<distributionManagement>
 				<repository>
-					<id>rpa-training</id>
-					<url>https://204-rpa-training.appianci.net/rpa/repo/</url>
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 				</repository>
 			</distributionManagement>
 			<repositories>
 				<repository>
 					<releases />
 					<snapshots />
-					<id>rpa-training</id>
-					<url>https://204-rpa-training.appianci.net/rpa/repo/</url>
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 				</repository>
 			</repositories>
 			<pluginRepositories>
 				<pluginRepository>
 					<releases />
 					<snapshots />
-					<id>rpa-training</id>
-					<url>https://204-rpa-training.appianci.net/rpa/repo/</url>
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 				</pluginRepository>
 			</pluginRepositories>
 		</profile>

@@ -138,6 +138,48 @@ public class RpaFtpClientLibraries implements INano {
 
 	}
 
+	@JidokaMethod(name = "Delete File", description = "Delete a specific file in the FTP")
+	public boolean deleteFile(@JidokaParameter(defaultValue = "", name = "File to delete") String filePath) {
+
+		String fileName = "";
+		try {
+			Pattern regex = Pattern.compile("([^\\\\/:*?\"<>|\r\n]+$)");
+			Matcher regexMatcher = regex.matcher(filePath);
+			if (regexMatcher.find()) {
+				fileName = regexMatcher.group(1);
+			}
+		} catch (PatternSyntaxException ex) {
+			throw new JidokaItemException("Error in the file path to download");
+		}
+
+		String previousWorkingDir = rpaFtpClient.getWorkingDirectory();
+
+		rpaFtpClient.setWorkingDirectory(filePath.replace(fileName, ""));
+
+		boolean deleteResult = rpaFtpClient.deleteFile(fileName);
+
+		rpaFtpClient.setWorkingDirectory(previousWorkingDir);
+
+		return deleteResult;
+	}
+
+	@JidokaMethod(name = "Delete Files", description = "Delete a list of files in the FTP")
+	public boolean deleteFiles(
+			@JidokaParameter(defaultValue = "", name = "List of files to delete") List<String> filePathList) {
+
+		boolean deleteResult = (filePathList != null) && !filePathList.isEmpty();
+
+		for (String path : filePathList) {
+
+			if (!deleteFile(path)) {
+				server.debug("There is an error deleting the file: " + path);
+				deleteResult = false;
+			}
+		}
+
+		return deleteResult;
+	}
+
 	@JidokaMethod(name = "List Files", description = "List the files that contains one FTP directory")
 	public List<String> listFilesInFolder(
 			@JidokaParameter(defaultValue = "", name = "Folder to search. If empty, last configured folder is used") String folder) {
