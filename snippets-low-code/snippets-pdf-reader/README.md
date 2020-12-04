@@ -2,13 +2,7 @@
 
 
 
-This snippet provides low code actions to extract the text from a PDF file and convert the extracted text to a Word.
-
-
-## Utilities:
-
-* Read PDF file
-* Convert PDF to Word
+This snippet provides low code actions to extract and update the text from a PDF file. The actions performed are detailed in the image below shown:
 
 ![Robot workflow](./console/workflow.png)
 
