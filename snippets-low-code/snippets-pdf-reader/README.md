@@ -1,21 +1,14 @@
-# Snippet QR Manager
- Encode & Decode QR Images.
+# Low Code Snippet: PDF Reader
 
 
-This snippet makes use of the zxing core library (+ info [here](https://github.com/zxing/zxing))
+
+This snippet provides low code actions to extract the text from a PDF file and convert the extracted text to a Word.
+
 
 ## Utilities:
 
-* createQRImage
-* readQRImage
+* Read PDF file
+* Convert PDF to Word
 
-Please, review the unit tests provided or the [example robot](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-QR-manager) to get more details about how are these methods used. 
+![Robot workflow](./console/workflow.png)
 
-## How to install 
-```
-<dependency>
-    <groupId>com.appian.rpa.snippets</groupId>
-    <artifactId>snippet-qr-manager</artifactId>
-    <version>1.0.3</version>
-</dependency>
-```
