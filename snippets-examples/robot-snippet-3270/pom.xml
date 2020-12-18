@@ -5,7 +5,7 @@
 
 	<groupId>com.appian.rpa.snippets.examples</groupId>
 	<artifactId>robot-snippet-3270-manager</artifactId>
-	<version>1.0.0</version>
+	<version>7.4.0</version>
 	<packaging>jar</packaging>
 	
 	<name>robot-snippet-3270-manager</name>
@@ -13,7 +13,7 @@
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>
 		<artifactId>jidoka-robot-parent</artifactId>
-		<version>7.0.0</version>
+		<version>7.4.0</version>
 	</parent>
 
 
@@ -29,22 +29,12 @@
 			<repositories>
 				<repository>
 					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 					<releases>
 						<enabled>true</enabled>
 					</releases>
 					<snapshots>
 						<enabled>false</enabled>
-					</snapshots>
-				</repository>
-				<repository>
-					<id>rpa-coe-lab-snapshots</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka-snapshots</url>
-					<releases>
-						<enabled>false</enabled>
-					</releases>
-					<snapshots>
-						<enabled>true</enabled>
 					</snapshots>
 				</repository>
 			</repositories>
@@ -52,7 +42,7 @@
 			<pluginRepositories>
 				<pluginRepository>
 					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 					<releases>
 						<enabled>true</enabled>
 					</releases>
@@ -66,15 +56,9 @@
 				<repository>
 					<id>rpa-coe-lab</id>
 					<name>appian-lab</name>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 					<layout>default</layout>
 				</repository>
-				<snapshotRepository>
-					<id>rpa-coe-lab-snapshots</id>
-					<name>rpa-coe-lab</name>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka-snapshots</url>
-					<layout>default</layout>
-				</snapshotRepository>
 			</distributionManagement>
 		</profile>
 	</profiles>
@@ -91,7 +75,7 @@
 		<dependency>
 			<groupId>com.appian.rpa.snippets</groupId>
 			<artifactId>snippet-3270-manager</artifactId>
-			<version>1.0.0</version>
+			<version>7.0.0</version>
 		</dependency>
 		
 	</dependencies>
