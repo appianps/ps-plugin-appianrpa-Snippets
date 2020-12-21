@@ -5,14 +5,14 @@
 
 	<groupId>com.appian.rpa.snippets.examples</groupId>
 	<artifactId>robot-snippet-generic-queue-manager-consumer</artifactId>
-	<version>1.0.1</version>
+	<version>7.4.0</version>
 
 	<name>robot-snippet-generic-queue-manager-consumer</name>
 
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>
 		<artifactId>jidoka-robot-parent</artifactId>
-		<version>7.0.0</version>
+		<version>7.4.0</version>
 	</parent>
 
 	<profiles>
@@ -27,7 +27,7 @@
 			<repositories>
 				<repository>
 					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 					<releases>
 						<enabled>true</enabled>
 					</releases>
@@ -40,7 +40,7 @@
 			<pluginRepositories>
 				<pluginRepository>
 					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 					<releases>
 						<enabled>true</enabled>
 					</releases>
@@ -54,7 +54,7 @@
 				<repository>
 					<id>rpa-coe-lab</id>
 					<name>rpa-coe-lab</name>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 					<layout>default</layout>
 				</repository>
 			</distributionManagement>
@@ -66,7 +66,7 @@
 		<dependency>
 			<groupId>com.appian.rpa.snippets</groupId>
 			<artifactId>snippet-queue-manager</artifactId>
-			<version>1.4.0</version>
+			<version>7.4.0</version>
 		</dependency>
 	</dependencies>
 </project>
