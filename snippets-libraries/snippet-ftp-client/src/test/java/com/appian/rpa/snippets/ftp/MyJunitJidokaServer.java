@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.novayre.jidoka.client.api.ECredentialSearch;
+import com.novayre.jidoka.client.api.EShapeType;
 import com.novayre.jidoka.client.api.IJidokaEncryption;
 import com.novayre.jidoka.client.api.IJidokaGlobalContext;
 import com.novayre.jidoka.client.api.IJidokaServer;
@@ -18,6 +19,7 @@ import com.novayre.jidoka.client.api.IMessageOptions;
 import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.ItemData;
 import com.novayre.jidoka.client.api.ItemData.ESubResult;
+import com.novayre.jidoka.client.api.appian.expression.IAppianBinding;
 import com.novayre.jidoka.client.api.execution.IExecution;
 import com.novayre.jidoka.client.api.execution.IUsernamePassword;
 import com.novayre.jidoka.client.api.queue.IQueueManager;
@@ -42,7 +44,7 @@ public class MyJunitJidokaServer implements IJidokaServer<Serializable> {
 
 	/**
 	 * Available log levels .
-	 * 
+	 *
 	 * @author Juan Manuel Reina Morales
 	 *
 	 */
@@ -52,7 +54,7 @@ public class MyJunitJidokaServer implements IJidokaServer<Serializable> {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param log
 	 * @param parameters
 	 */
@@ -558,7 +560,7 @@ public class MyJunitJidokaServer implements IJidokaServer<Serializable> {
 	/**
 	 * Write message (and optionally stack trace if throwable is passed) to console
 	 * output logger
-	 * 
+	 *
 	 * @param level
 	 * @param message
 	 * @param t
@@ -796,6 +798,24 @@ public class MyJunitJidokaServer implements IJidokaServer<Serializable> {
 
 	@Override
 	public Map<String, IRobotVariable> getWorkflowVariables() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, IRobotVariable> getWorkflowParameters() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, IAppianBinding> getBindingContextMap() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public EShapeType getCurrentActionShapeType() {
 		// TODO Auto-generated method stub
 		return null;
 	}
