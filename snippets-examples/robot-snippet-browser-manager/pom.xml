@@ -7,14 +7,14 @@
 	<groupId>com.appian.rpa.snippets.examples</groupId>
 	<artifactId>robot-snippet-browser-manager</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.1</version>
+	<version>7.4.0</version>
 
 	<name>robot-snippet-browser-manager</name>
 
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>
 		<artifactId>jidoka-robot-parent</artifactId>
-		<version>7.0.0</version> <!-- VC -->
+		<version>7.4.0</version> <!-- VC -->
 	</parent>
 
 	<profiles>
@@ -30,7 +30,7 @@
 			<repositories>
 				<repository>
 					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 					<releases>
 						<enabled>true</enabled>
 					</releases>
@@ -38,22 +38,13 @@
 						<enabled>false</enabled>
 					</snapshots>
 				</repository>
-				<repository>
-					<id>rpa-coe-lab-snapshots</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka-snapshots</url>
-					<releases>
-						<enabled>false</enabled>
-					</releases>
-					<snapshots>
-						<enabled>true</enabled>
-					</snapshots>
-				</repository>
+
 			</repositories>
 
 			<pluginRepositories>
 				<pluginRepository>
 					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 					<releases>
 					</releases>
 					<snapshots>
@@ -63,7 +54,7 @@
 			<distributionManagement>
 				<repository>
 					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 					<layout>default</layout>
 				</repository>
 			</distributionManagement>

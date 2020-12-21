@@ -14,15 +14,15 @@ import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.client.api.multios.IClient;
 
 /**
- * 
+ *
  * This robotic process has been created to illustrate how the Browser Manager
  * Snippet should be integrated in your process. It basically searches the word
  * "Appian" in Google and shows up the first result found in the console. An
  * exception will be thrown if any error occurs during the process execution.
  * Further instructions to configure and execute the process can be found here:
  * https://github.com/appianps/ps-plugin-appianrpa-Snippets
- * 
- * 
+ *
+ *
  */
 
 @Robot
@@ -55,14 +55,14 @@ public class BrowserManagerRobot implements IRobot {
 
 	/**
 	 * Initialize the objects involved in the robotic process.
-	 * 
+	 *
 	 * @throws Exception
 	 */
 
 	public void start() throws Exception {
 
 		browserManager = new BrowserManager(EBrowsers.CHROME);
-		searcherURL = server.getParameters().get("platformURL");
+		searcherURL = server.getWorkflowParameters().get("platformURL").getValue();
 		selectorsManager = browserManager.getSelectorsManager();
 	}
 
@@ -76,7 +76,7 @@ public class BrowserManagerRobot implements IRobot {
 	/**
 	 * Navigate to searcherURL. An exception is thrown if the search button selector
 	 * was not found.
-	 * 
+	 *
 	 * @throws JidokaFatalException
 	 */
 	public void navigateToWeb() throws JidokaFatalException {
@@ -89,7 +89,7 @@ public class BrowserManagerRobot implements IRobot {
 	/**
 	 * If the search result was successfully loaded, print the first result found in
 	 * Console
-	 * 
+	 *
 	 * @throws JidokaFatalException
 	 */
 	public void printWebResultInConsole() throws JidokaFatalException {
