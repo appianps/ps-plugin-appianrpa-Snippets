@@ -7,14 +7,14 @@
 	<groupId>com.appian.rpa.snippets.examples</groupId>
 	<artifactId>robot-snippet-credentials</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.1</version>
+	<version>7.4.0</version>
 
 	<name>robot-snippet-credentials</name>
 
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>
 		<artifactId>jidoka-robot-parent</artifactId>
-		<version>7.0.0</version> <!-- VC -->
+		<version>7.4.0</version> <!-- VC -->
 	</parent>
 
 	<properties>
@@ -39,7 +39,7 @@
 			<repositories>
 				<repository>
 					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 					<releases>
 					</releases>
 					<snapshots>
@@ -50,7 +50,7 @@
 			<pluginRepositories>
 				<pluginRepository>
 					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 					<releases>
 					</releases>
 					<snapshots>
@@ -60,7 +60,7 @@
 			<distributionManagement>
 				<repository>
 					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 					<layout>default</layout>
 				</repository>
 			</distributionManagement>
@@ -72,7 +72,7 @@
 		<dependency>
 			<groupId>com.appian.rpa.snippets</groupId>
 			<artifactId>snippet-credentials</artifactId>
-			<version>2.2.0</version>
+			<version>7.4.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
