@@ -7,17 +7,17 @@
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>
 		<artifactId>jidoka-robot-parent</artifactId>
-		<version>7.0.0</version>
+		<version>7.4.0</version>
 	</parent>
 	<groupId>com.appian.rpa</groupId>
 	<artifactId>qr-robot-example</artifactId>
-	<version>0.0.3</version>
+	<version>7.4.0</version>
 	<name>browser</name>
 	<dependencies>
 		<dependency>
 			<groupId>com.appian.rpa.snippets</groupId>
 			<artifactId>snippet-qr-manager</artifactId>
-			<version>1.0.3</version>
+			<version>7.4.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.novayre.jidoka.module</groupId>
@@ -39,7 +39,7 @@
 			<distributionManagement>
 				<repository>
 					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 				</repository>
 			</distributionManagement>
 			<repositories>
@@ -47,7 +47,7 @@
 					<releases />
 					<snapshots />
 					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 				</repository>
 			</repositories>
 			<pluginRepositories>
@@ -55,7 +55,7 @@
 					<releases />
 					<snapshots />
 					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 				</pluginRepository>
 			</pluginRepositories>
 		</profile>

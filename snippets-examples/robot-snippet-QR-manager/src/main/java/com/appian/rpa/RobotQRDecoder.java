@@ -7,7 +7,6 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
-import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -46,7 +45,7 @@ public class RobotQRDecoder implements IRobot {
 		browser = IWebBrowserSupport.getInstance(this, client);
 		falcon = IFalcon.getInstance(this, client);
 		qrutils = new QRUtils();
-		webURL = server.getParameters().get(QR_SITE_URL);
+		webURL = server.getWorkflowParameters().get(QR_SITE_URL).getValue();
 		return IRobot.super.startUp();
 
 	}
@@ -65,19 +64,9 @@ public class RobotQRDecoder implements IRobot {
 	 */
 	public void openBrowser() throws Exception {
 
-		browserType = server.getParameters().get("Browser");
-
-		// Select browser type
-		if (StringUtils.isBlank(browserType)) {
-			server.info("Browser parameter not present. Using the default browser CHROME");
-			browser.setBrowserType(EBrowsers.CHROME);
-			browserType = EBrowsers.CHROME.name();
-		} else {
-			EBrowsers selectedBrowser = EBrowsers.valueOf(browserType);
-			browserType = selectedBrowser.name();
-			browser.setBrowserType(selectedBrowser);
-			server.info("Browser selected: " + selectedBrowser.name());
-		}
+		server.info("Using the default browser CHROME");
+		browser.setBrowserType(EBrowsers.CHROME);
+		browserType = EBrowsers.CHROME.name();
 
 		// Set timeout to 60 seconds
 		browser.setTimeoutSeconds(60);
