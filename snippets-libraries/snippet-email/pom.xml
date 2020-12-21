@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.appian.rpa.snippets</groupId>
+	<artifactId>snippet-email</artifactId>
+	<version>7.4.0</version>
+	<packaging>jar</packaging>
+
+	<properties>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+	</properties>
 
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>
@@ -11,10 +19,7 @@
 		<version>7.4.0</version>
 	</parent>
 
-	<groupId>com.appian.rpa.snippets</groupId>
-	<artifactId>snippet-email</artifactId>
-	<version>1.1.0</version>
-	<packaging>jar</packaging>
+
 
 	<name>snippet-email</name>
 
@@ -23,62 +28,34 @@
 		<profile>
 			<id>rpa-coe-lab</id>
 			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<distributionManagement>
-				<repository>
-					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
-				</repository>
-			</distributionManagement>
-			<repositories>
-				<repository>
-					<releases />
-					<snapshots />
-					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
-				</repository>
-			</repositories>
-			<pluginRepositories>
-				<pluginRepository>
-					<releases />
-					<snapshots />
-					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
-				</pluginRepository>
-			</pluginRepositories>
-		</profile>
-
-		<profile>
-			<id>204-rpa-training</id>
-			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<distributionManagement>
 				<repository>
-					<id>204-rpa-training</id>
-					<url>https://204-rpa-training.appianci.net/rpa/repo/</url>
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 				</repository>
 			</distributionManagement>
 			<repositories>
 				<repository>
 					<releases />
 					<snapshots />
-					<id>204-rpa-training</id>
-					<url>https://204-rpa-training.appianci.net/rpa/repo/</url>
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 				</repository>
 			</repositories>
 			<pluginRepositories>
 				<pluginRepository>
 					<releases />
 					<snapshots />
-					<id>204-rpa-training</id>
-					<url>https://204-rpa-training.appianci.net/rpa/repo/</url>
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 				</pluginRepository>
 			</pluginRepositories>
 		</profile>
 
 	</profiles>
+
 
 	<dependencies>
 		<dependency>
