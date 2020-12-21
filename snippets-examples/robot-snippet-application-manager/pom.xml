@@ -7,14 +7,14 @@
 	<groupId>com.appian.rpa.snippets.examples</groupId>
 	<artifactId>robot-snippet-application-manager</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.0</version>
+	<version>7.4.0</version>
 
 	<name>robot-snippet-application-manager</name>
 
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>
 		<artifactId>jidoka-robot-parent</artifactId>
-		<version>7.0.0</version> <!-- VC -->
+		<version>7.4.0</version> <!-- VC -->
 	</parent>
 
 	<profiles>
@@ -31,7 +31,7 @@
 
 				<repository>
 					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 					<releases>
 						<enabled>true</enabled>
 					</releases>
@@ -39,23 +39,14 @@
 						<enabled>false</enabled>
 					</snapshots>
 				</repository>
-				<repository>
-					<id>rpa-coe-lab-snapshots</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka-snapshots</url>
-					<releases>
-						<enabled>false</enabled>
-					</releases>
-					<snapshots>
-						<enabled>true</enabled>
-					</snapshots>
-				</repository>
+
 
 			</repositories>
 
 			<pluginRepositories>
 				<pluginRepository>
 					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka/</url>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 					<releases>
 					</releases>
 					<snapshots>
@@ -66,15 +57,9 @@
 				<repository>
 					<id>rpa-coe-lab</id>
 					<name>rpa-coe-lab</name>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 					<layout>default</layout>
 				</repository>
-				<snapshotRepository>
-					<id>rpa-coe-lab-snapshots</id>
-					<name>rpa-coe-lab</name>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka-snapshots</url>
-					<layout>default</layout>
-				</snapshotRepository>
 			</distributionManagement>
 		</profile>
 
@@ -84,7 +69,7 @@
 		<dependency>
 			<groupId>com.appian.rpa.snippets</groupId>
 			<artifactId>snippet-application-manager</artifactId>
-			<version>1.3.0</version>
+			<version>7.4.0</version>
 		</dependency>
 	</dependencies>
 </project>

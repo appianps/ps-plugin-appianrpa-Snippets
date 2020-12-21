@@ -27,8 +27,8 @@ public class RobotPython implements IRobot {
 	public boolean startUp() throws Exception {
 
 		server = JidokaFactory.getServer();
-		pythonPath = server.getParameters().get(PYTHON_PATH);
-		scriptPath = server.getParameters().get(SCRIPT_PATH);
+		pythonPath = server.getWorkflowParameters().get(PYTHON_PATH).getValue();
+		scriptPath = server.getWorkflowParameters().get(SCRIPT_PATH).getValue();
 		pythonUtils = new PythonUtils(pythonPath);
 		return IRobot.super.startUp();
 

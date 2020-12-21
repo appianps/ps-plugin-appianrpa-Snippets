@@ -5,13 +5,13 @@
 
 	<groupId>com.appian.rpa.snippets</groupId>
 	<artifactId>snippet-application-manager</artifactId>
-	<version>1.3.0-SNAPSHOT</version>
+	<version>7.4.0</version>
 	<packaging>jar</packaging>
 
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>
 		<artifactId>jidoka-robot-parent</artifactId>
-		<version>7.2.0</version>
+		<version>7.4.0</version>
 	</parent>
 
 	<properties>
