@@ -1,4 +1,4 @@
-package com.appian.rpa.snippet;
+package com.appian.rpa.snippet.ibm3270;
 
 import java.awt.Point;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -18,7 +18,10 @@ import com.novayre.jidoka.client.api.IWaitFor;
 import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.client.api.exceptions.JidokaUnsatisfiedConditionException;
-import com.novayre.jidoka.client.api.multios.IClient;
+import com.novayre.jidoka.windows.api.IWindows;
+import com.sun.jna.platform.win32.User32;
+import com.sun.jna.platform.win32.WinDef.HWND;
+import com.sun.jna.ptr.IntByReference;
 
 /**
  * Class for operating an IBM 3270 terminal
@@ -50,23 +53,26 @@ public abstract class IBM3270Commons {
 	private int maxCoordY = 24;
 
 	/** Client Module Instance */
-	protected IClient client;
+	protected IWindows windows;
 
 	/** Keyboard module instance */
 	protected IKeyboard keyboard;
 
+	private String windowsTitle3270;
+	
 	/**
 	 * Instantiates a new IBM3270Commons
 	 * 
 	 * @param robot IRobot instance (i.e. this)
 	 */
-	public IBM3270Commons(IRobot robot) {
+	public IBM3270Commons(IRobot robot, String windowsTitle3270) {
 
+		this.windowsTitle3270 = windowsTitle3270;
 		this.server = JidokaFactory.getServer();
-		this.client = IClient.getInstance(robot);
+		this.windows = IWindows.getInstance(robot);
 		this.robot = robot;
-		waitFor = client.waitFor(robot);
-		keyboard = client.keyboard();
+		waitFor = windows.waitFor(robot);
+		keyboard = windows.keyboard();
 	}
 
 	/**
@@ -74,11 +80,41 @@ public abstract class IBM3270Commons {
 	 */
 	public abstract void selectAllText();
 
-	/**
-	 * Abstract method to activate a window by its title
-	 */
-	public abstract void activateWindow();
 
+	/**
+	 * Activate a window by title
+	 */
+	public void activateWindow() {
+
+		windows.activateWindow(windowsTitle3270);
+		windows.pause();
+	}
+
+	public void close() throws IOException {
+		server.warn("Closing Window");
+		while (windows.activateWindow(windowsTitle3270)) {
+			server.warn("Closing Window Activate");
+			HWND whandle = windows.getWindow(windowsTitle3270).gethWnd();
+			boolean result = windows.destroyWindow(whandle);
+			if (result) {
+				server.info("Emul 3270 closed");
+			} else {
+				server.info("Emul 3270 not closed. Killing process");
+				windows.getWindow(windowsTitle3270);
+				IntByReference PIDRef = new IntByReference();
+				User32 user32 = User32.INSTANCE;
+				user32.GetWindowThreadProcessId(whandle, PIDRef);
+				if (PIDRef.getValue() != 0) {
+					String cmd = "taskkill /F /PID " + PIDRef.getValue();
+					Runtime.getRuntime().exec(cmd);
+					server.info("Emul 3270 process ended.");
+
+				} else {
+					server.warn("Error closing Emul 3270");
+				}
+			}
+		}
+	}
 	/**
 	 * Abstract method to move the cursor to the bottom right corner of the screen
 	 */
@@ -91,19 +127,6 @@ public abstract class IBM3270Commons {
 	 */
 	public abstract String[] splitScreenLines(String screen);
 
-	/**
-	 * Returns the window title regex
-	 * 
-	 * @return Window title regex
-	 */
-	public abstract String getWindowTitleRegex();
-
-	/**
-	 * Returns the process name
-	 * 
-	 * @return Process name
-	 */
-	public abstract String getProcessName();
 
 	/**
 	 * Returns the first text it finds on the screen among those passed as a
@@ -196,13 +219,15 @@ public abstract class IBM3270Commons {
 
 						for (int y = 0; y < screen.size(); y++) {
 
+							server.warn("Texto "+screen.get(y)+ "Fila "+y);
 							Matcher m = p.matcher(screen.get(y));
 							if (m.find()) {
+								server.warn("Texto Match "+screen.get(y));
 								int x = screen.get(y).indexOf(t);
 
 								TextInScreen res = new TextInScreen();
 								res.setText(t);
-								res.setPointInScreen(new Point(x + 1, y - 1));
+								res.setPointInScreen(new Point(x + 1, y + 1));
 								res.setScreen(screen);
 								textInScreen.set(res);
 
@@ -213,7 +238,7 @@ public abstract class IBM3270Commons {
 
 				} while (!samePage);
 
-				client.pause(1000);
+				windows.pause(1000);
 				return false;
 			});
 
@@ -253,11 +278,11 @@ public abstract class IBM3270Commons {
 
 			server.debug("Getting all the text on the active screen");
 
-			client.characterPause(500);
+			windows.characterPause(500);
 
 			selectAllText();
 
-			client.pause(1000);
+			windows.pause(1000);
 
 			screen = copyText();
 
@@ -265,6 +290,7 @@ public abstract class IBM3270Commons {
 
 				throw new JidokaFatalException("Unable to read the screen");
 			}
+			server.warn("Text "+screen);
 
 			String[] lines = splitScreenLines(screen);
 
@@ -279,7 +305,7 @@ public abstract class IBM3270Commons {
 		} catch (Exception e) {
 			throw new JidokaFatalException(e.getMessage(), e);
 		} finally {
-			client.characterPause(0);
+			windows.characterPause(0);
 		}
 
 		return res;
@@ -312,7 +338,7 @@ public abstract class IBM3270Commons {
 					return true;
 				}
 				;
-				client.pause(1000);
+				windows.pause(1000);
 				return false;
 			});
 		} catch (JidokaUnsatisfiedConditionException e) {
@@ -332,14 +358,12 @@ public abstract class IBM3270Commons {
 	 * @param offsetX X-coordinate adjustment
 	 * @param offsetY Y-coordinate adjustment
 	 */
-	public void moveToCoodinates(String text, int offsetX, int offsetY) {
+	public void moveToCoordinates(String text, int offsetX, int offsetY, int retries) {
 
 		if (text == null) {
-
 			throw new JidokaFatalException("The coordinates to move to are null");
 		}
-
-		moveToCoodinates(locateText(text), offsetX, offsetY);
+		moveToCoordinates(locateText(retries, text), offsetX, offsetY);
 	}
 
 	/**
@@ -350,14 +374,13 @@ public abstract class IBM3270Commons {
 	 * @param offsetX      X-coordinate adjustment
 	 * @param offsetY      Y-coordinate adjustment
 	 */
-	public void moveToCoodinates(TextInScreen textInScreen, int offsetX, int offsetY) {
+	private void moveToCoordinates(TextInScreen textInScreen, int offsetX, int offsetY) {
 
 		if (textInScreen == null) {
-
 			throw new JidokaFatalException("The coordinates to move to are null");
 		}
 
-		moveToCoodinates(textInScreen.getPointInScreen(), offsetX, offsetY);
+		moveToCoordinates(textInScreen.getPointInScreen(), offsetX, offsetY);
 	}
 
 	/**
@@ -367,26 +390,24 @@ public abstract class IBM3270Commons {
 	 * @param offsetX       X-coordinate adjustment
 	 * @param offsetY       Y-coordinate adjustment
 	 */
-	public void moveToCoodinates(Point pointOnScreen, int offsetX, int offsetY) {
-
-		activateWindow();
-
+	private void moveToCoordinates(Point pointOnScreen, int offsetX, int offsetY) {
 		if (pointOnScreen == null) {
-
 			throw new JidokaFatalException("The coordinates to move to are null");
 		}
 
 		int targetXCoodinate = (int) (pointOnScreen.getX() + offsetX);
 		int targetYCoodinate = (int) (pointOnScreen.getY() + offsetY);
-
+		moveToCoordinates(targetXCoodinate, targetYCoodinate);
+	}
+		
+	public void moveToCoordinates(int targetXCoodinate, int targetYCoodinate) {
 		server.debug(String.format("We're moving to the coordinates (%d, %d)", targetYCoodinate, targetXCoodinate));
-
+		activateWindow();
 		moveToBottonRightCorner();
-
-		client.characterPause(10);
+		windows.characterPause(10);
 		keyboard.left(getMaxCoordX() - targetXCoodinate);
 		keyboard.up(getMaxCoordY() - targetYCoodinate);
-		client.characterPause(ConstantsWaits.DEFAULT_CHARACTER_PAUSE);
+		windows.characterPause(ConstantsWaits.DEFAULT_CHARACTER_PAUSE);
 	}
 
 	/**
@@ -430,7 +451,7 @@ public abstract class IBM3270Commons {
 	 * @param pf
 	 * @return IBM3270Commons instance
 	 */
-	public IClient pressPF(int pf) {
+	public IWindows pressPF(int pf) {
 
 		activateWindow();
 
@@ -438,16 +459,16 @@ public abstract class IBM3270Commons {
 
 		if (pf > 12) {
 
-			client.keyboardSequence().pressShift().typeFunction(pf - 12).releaseShift().apply();
+			windows.keyboardSequence().pressShift().typeFunction(pf - 12).releaseShift().apply();
 
 		} else {
 
 			keyboard.function(pf);
 		}
 
-		client.pause();
+		windows.pause();
 
-		return client;
+		return windows;
 	}
 
 	/**
@@ -466,6 +487,17 @@ public abstract class IBM3270Commons {
 		return this;
 	}
 
+	/**
+	 * Press enter
+	 * 
+	 * @return IBM3270Commons instance
+	 */
+	public IBM3270Commons control() {
+		activateWindow();
+		keyboard.control(null);
+		return this;
+	}
+	
 	/**
 	 * Press Tab
 	 * 
@@ -618,7 +650,7 @@ public abstract class IBM3270Commons {
 	 * @throws UnsupportedFlavorException
 	 */
 	public String copyText() throws IOException, UnsupportedFlavorException {
-		return client.copyAndGet();
+		return windows.copyAndGet();
 	}
 
 	/**

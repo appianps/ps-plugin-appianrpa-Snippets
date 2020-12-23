@@ -1,4 +1,4 @@
-package com.appian.rpa.snippet;
+package com.appian.rpa.snippet.ibm3270;
 
 /**
  * Constants class with the different types of pauses required

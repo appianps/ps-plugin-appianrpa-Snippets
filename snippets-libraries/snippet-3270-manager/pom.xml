@@ -5,7 +5,7 @@
 
 	<groupId>com.appian.rpa.snippets</groupId>
 	<artifactId>snippet-3270-manager</artifactId>
-	<version>7.0.0</version>
+	<version>7.4.0</version>
 	<packaging>jar</packaging>
 
 	<properties>
@@ -20,36 +20,45 @@
 	</parent>
 
 	<profiles>
-
 		<profile>
-			<id>rpa-coe-lab</id>
+			<id>santander_poc</id>
+
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
-			<distributionManagement>
-				<repository>
-					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
-				</repository>
-			</distributionManagement>
+
 			<repositories>
 				<repository>
-					<releases />
-					<snapshots />
-					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
+					<id>santander_poc</id>
+					<url>https://santander-rpa-poc-alpha.appiancloud.com/rpa/repo/</url>
+					<releases>
+					</releases>
+					<snapshots>
+					</snapshots>
 				</repository>
 			</repositories>
+
 			<pluginRepositories>
 				<pluginRepository>
-					<releases />
-					<snapshots />
-					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
+					<id>santander_poc</id>
+					<url>https://santander-rpa-poc-alpha.appiancloud.com/rpa/repo/</url>
+					<releases>
+					</releases>
+					<snapshots>
+					</snapshots>
 				</pluginRepository>
 			</pluginRepositories>
+			<distributionManagement>
+				<repository>
+					<id>santander_poc</id>
+					<url>https://santander-rpa-poc-alpha.appiancloud.com/rpa/repo/</url>
+					<layout>default</layout>
+				</repository>
+			</distributionManagement>
 		</profile>
+
 	</profiles>
+
 
 	<build>
 		<plugins>
@@ -79,14 +88,6 @@
 	</build>
 
 	<dependencies>
-
-		<dependency>
-			<groupId>com.novayre.jidoka.module</groupId>
-			<artifactId>jidoka-client-impl</artifactId>
-			<version>${jidoka.version}</version>
-			<scope>test</scope>
-		</dependency>
-
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-text</artifactId>

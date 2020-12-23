@@ -1,4 +1,4 @@
-package com.appian.rpa.snippet;
+package com.appian.rpa.snippet.ibm3270;
 
 import java.awt.Point;
 import java.util.List;

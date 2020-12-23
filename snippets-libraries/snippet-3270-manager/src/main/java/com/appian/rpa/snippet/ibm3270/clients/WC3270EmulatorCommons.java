@@ -1,22 +1,12 @@
-package com.appian.rpa.snippet.clients;
+package com.appian.rpa.snippet.ibm3270.clients;
 
-import com.appian.rpa.snippet.IBM3270Commons;
+import com.appian.rpa.snippet.ibm3270.IBM3270Commons;
 import com.novayre.jidoka.client.api.IRobot;
 
 /**
  * IBM3270Commons extension for wc3270
  */
-public class WC3270EmulatorManager extends IBM3270Commons {
-
-	/**
-	 * The Constant WINDOW_TITLE_REGEX.
-	 */
-	private static final String WINDOW_TITLE_REGEX = ".*3270";
-
-	/**
-	 * Process Name wc3270
-	 */
-	public static final String PROCESS_NAME = "wc3270.exe";
+public class WC3270EmulatorCommons extends IBM3270Commons {
 
 	/**
 	 * Default X-coordinate
@@ -35,9 +25,9 @@ public class WC3270EmulatorManager extends IBM3270Commons {
 	 * @param client
 	 * @param robot
 	 */
-	public WC3270EmulatorManager(IRobot robot) {
+	public WC3270EmulatorCommons(IRobot robot, String windowsTitle3270) {
 
-		super(robot);
+		super(robot, windowsTitle3270);
 
 		setMaxCoordX(MAX_COORD_X);
 		setMaxCoordY(MAX_COORD_Y);
@@ -51,17 +41,6 @@ public class WC3270EmulatorManager extends IBM3270Commons {
 
 		moveToBottonRightCorner();
 		keyboard.control("a").pause();
-	}
-
-	/**
-	 * Activate a window by title
-	 */
-	@Override
-	public void activateWindow() {
-
-		client.activateWindow(WINDOW_TITLE_REGEX);
-
-		client.pause();
 	}
 
 	/**
@@ -82,23 +61,4 @@ public class WC3270EmulatorManager extends IBM3270Commons {
 		return screen.split("(?<=\\G.{80})");
 	}
 
-	/**
-	 * Returns the window title regex
-	 * 
-	 * @return
-	 */
-	@Override
-	public String getWindowTitleRegex() {
-		return WINDOW_TITLE_REGEX;
-	}
-
-	/**
-	 * Returns the process name
-	 * 
-	 * @return
-	 */
-	@Override
-	public String getProcessName() {
-		return PROCESS_NAME;
-	}
 }

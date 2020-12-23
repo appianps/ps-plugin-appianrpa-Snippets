@@ -1,25 +1,16 @@
-package com.appian.rpa.snippet.clients;
+package com.appian.rpa.snippet.ibm3270.clients;
 
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
-import com.appian.rpa.snippet.IBM3270Commons;
+import com.appian.rpa.snippet.ibm3270.IBM3270Commons;
 import com.novayre.jidoka.client.api.IRobot;
 
 /**
- * IBM3270Commons extension for PCOMM emulator
+ * Commons para partenon, This must be renames
  */
-public class PCOMMEmulatorManager extends IBM3270Commons {
+public class PartenonEmulatorCommons extends IBM3270Commons {
 
-	/**
-	 * The Constant WINDOW_TITLE_REGEX.
-	 */
-	private static final String WINDOW_TITLE_REGEX = "Session.*";
-
-	/**
-	 * Process Name
-	 */
-	public static final String PROCESS_NAME = "pcsws.exe";
 
 	/**
 	 * Default X-coordinate
@@ -38,9 +29,9 @@ public class PCOMMEmulatorManager extends IBM3270Commons {
 	 * @param client
 	 * @param robot
 	 */
-	public PCOMMEmulatorManager(IRobot robot) {
+	public PartenonEmulatorCommons(IRobot robot, String windowsTitle3270) {
 
-		super(robot);
+		super(robot, windowsTitle3270);
 
 		setMaxCoordX(MAX_COORD_X);
 		setMaxCoordY(MAX_COORD_Y);
@@ -57,16 +48,6 @@ public class PCOMMEmulatorManager extends IBM3270Commons {
 
 	}
 
-	/**
-	 * Activate a window by title
-	 */
-	@Override
-	public void activateWindow() {
-
-		client.activateWindow(WINDOW_TITLE_REGEX);
-
-		client.pause();
-	}
 
 	/**
 	 * Move the cursor to the bottom right corner of the screen
@@ -81,18 +62,9 @@ public class PCOMMEmulatorManager extends IBM3270Commons {
 	 */
 	@Override
 	public String[] splitScreenLines(String screen) {
-		return screen.split("(?<=\\G.{80})");
+		return screen.split("\\n");
 	}
 
-	/**
-	 * Returns the window title regex
-	 * 
-	 * @return
-	 */
-	@Override
-	public String getWindowTitleRegex() {
-		return WINDOW_TITLE_REGEX;
-	}
 
 	/**
 	 * Copy the selected text
@@ -107,16 +79,7 @@ public class PCOMMEmulatorManager extends IBM3270Commons {
 		keyboard.alt("e").pause();
 		keyboard.type("c").pause();
 
-		return client.clipboardGet();
+		return windows.clipboardGet();
 	}
 
-	/**
-	 * Returns the process name
-	 * 
-	 * @return
-	 */
-	@Override
-	public String getProcessName() {
-		return PROCESS_NAME;
-	}
 }
