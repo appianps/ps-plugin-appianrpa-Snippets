@@ -88,7 +88,7 @@ public class SearchRobot implements IRobot {
 		try {
 			excelQueueManager.assignQueue();
 
-			server.setNumberOfItems(excelQueueManager.getCurrentQueue().pendingItems());
+//			server.setNumberOfItems(excelQueueManager.getCurrentQueue().pendingItems());
 		} catch (Exception e) {
 			throw new JidokaFatalException("Error assigning the queue", e);
 		}

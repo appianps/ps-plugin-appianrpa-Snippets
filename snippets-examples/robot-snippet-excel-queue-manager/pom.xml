@@ -12,53 +12,37 @@
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>
 		<artifactId>jidoka-robot-parent</artifactId>
-		<version>7.0.0</version>
+		<version>7.4.0</version>
 	</parent>
 
 	<profiles>
 		<profile>
-
 			<id>rpa-coe-lab</id>
-
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
-
-			<repositories>
-				<repository>
-					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
-					<releases>
-						<enabled>true</enabled>
-					</releases>
-					<snapshots>
-						<enabled>true</enabled>
-					</snapshots>
-				</repository>
-			</repositories>
-
-			<pluginRepositories>
-				<pluginRepository>
-					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
-					<releases>
-						<enabled>true</enabled>
-					</releases>
-					<snapshots>
-						<enabled>true</enabled>
-					</snapshots>
-				</pluginRepository>
-			</pluginRepositories>
-
 			<distributionManagement>
 				<repository>
 					<id>rpa-coe-lab</id>
-					<name>rpa-coe-lab</name>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa-repo/repository/jidoka</url>
-					<layout>default</layout>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 				</repository>
 			</distributionManagement>
-
+			<repositories>
+				<repository>
+					<releases />
+					<snapshots />
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
+				</repository>
+			</repositories>
+			<pluginRepositories>
+				<pluginRepository>
+					<releases />
+					<snapshots />
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
+				</pluginRepository>
+			</pluginRepositories>
 		</profile>
 	</profiles>
 
@@ -66,7 +50,7 @@
 		<dependency>
 			<groupId>com.appian.rpa.snippets</groupId>
 			<artifactId>snippet-queue-manager</artifactId>
-			<version>1.4.0</version>
+			<version>7.4.0</version>
 		</dependency>
 
 		<dependency>
