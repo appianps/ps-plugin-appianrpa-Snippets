@@ -5,7 +5,7 @@
 
 	<groupId>com.appian.rpa.snippets</groupId>
 	<artifactId>snippet-queue-manager</artifactId>
-	<version>7.4.0</version>
+	<version>7.4.1</version>
 
 	<name>queue-manager</name>
 

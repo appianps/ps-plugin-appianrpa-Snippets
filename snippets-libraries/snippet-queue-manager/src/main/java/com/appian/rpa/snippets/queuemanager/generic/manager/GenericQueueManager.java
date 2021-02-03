@@ -47,13 +47,13 @@ import com.novayre.jidoka.client.api.queue.ReserveQueueParameters;
 public class GenericQueueManager {
 
 	/** Server instance */
-	private static IJidokaServer<?> server;
+	private IJidokaServer<?> server;
 
 	/** Current queue id */
-	private static String currentQueueId;
+	private String currentQueueId;
 
 	/** IQueueManager instance */
-	private static IQueueManager queueManager;
+	private IQueueManager queueManager;
 
 	/** Model class */
 	private Class<?> modelClass;
@@ -123,13 +123,13 @@ public class GenericQueueManager {
 		try {
 			GenericQueueManager instance = new GenericQueueManager(clazz);
 
-			currentQueueId = queueManager.createQueue(queueParams);
+			instance.currentQueueId = instance.queueManager.createQueue(queueParams);
 
-			if (StringUtils.isBlank(currentQueueId)) {
+			if (StringUtils.isBlank(instance.currentQueueId)) {
 				throw new JidokaFatalException("Queue not created correctly");
 			}
 
-			server.info("Queue " + queueParams.getName() + " created with id: " + currentQueueId);
+			instance.server.info("Queue " + queueParams.getName() + " created with id: " + instance.currentQueueId);
 
 			return instance;
 		} catch (IOException | JidokaQueueException e) {
@@ -156,17 +156,19 @@ public class GenericQueueManager {
 			if (StringUtils.isBlank(queueName)) {
 				throw new JidokaFatalException("The queue name can't be null or empty. Name given: " + queueName);
 			}
-
+			instance.server.debug("Checking existing queue with name " + queueName);
 			FindQueuesParameters fqp = new FindQueuesParameters();
 			fqp.nameRegex(queueName);
 
-			List<IQueue> foundQueueList = queueManager.findQueues(fqp);
+			List<IQueue> foundQueueList = instance.queueManager.findQueues(fqp);
 
 			IQueue foundQueue;
 
 			if (!foundQueueList.isEmpty()) {
 				foundQueue = foundQueueList.get(0);
+				instance.server.debug("Queue already exists");
 			} else {
+				instance.server.debug("Queue not found");
 				return null;
 			}
 
@@ -174,19 +176,21 @@ public class GenericQueueManager {
 				ReserveQueueParameters rqp = new ReserveQueueParameters();
 				rqp.queueId(foundQueue.queueId());
 
-				queueManager.reserveQueue(rqp);
+				instance.queueManager.reserveQueue(rqp);
 
 				ReleaseQueueParameters rlqp = new ReleaseQueueParameters().closed(false)
 						.state(EQueueCurrentState.PENDING);
-				queueManager.releaseQueue(rlqp);
+				instance.queueManager.releaseQueue(rlqp);
 			}
 
 			AssignQueueParameters aqp = new AssignQueueParameters();
 			aqp.queueId(foundQueue.queueId());
 
-			queueManager.assignQueue(aqp);
+			instance.queueManager.assignQueue(aqp);
 
-			currentQueueId = foundQueue.queueId();
+			instance.currentQueueId = foundQueue.queueId();
+
+			instance.server.debug("Queue assigned");
 
 			return instance;
 
@@ -201,7 +205,7 @@ public class GenericQueueManager {
 	 */
 	public int getPendingItems() {
 		try {
-			if (queueManager.currentQueue()!=null) {
+			if (queueManager.currentQueue() != null) {
 				return queueManager.currentQueue().pendingItems();
 			} else {
 				return 0;
@@ -210,7 +214,7 @@ public class GenericQueueManager {
 			throw new JidokaFatalException("Error getting pending Items");
 		}
 	}
-	
+
 	/**
 	 * Reserves and closes the queue. Only one robot can close the queue.
 	 * 

@@ -96,7 +96,7 @@ public class FillQueueRobot implements IRobot {
 	 * @param dateFormat The format to apply
 	 * @return The formatted date
 	 */
-	public static String getDateFormated(Date date, String dateFormat) {
+	private static String getDateFormated(Date date, String dateFormat) {
 
 		if (date == null) {
 			return "";
@@ -112,6 +112,7 @@ public class FillQueueRobot implements IRobot {
 	 * @return A list with the pending files
 	 */
 	public void checkIfQueueExists() {
+
 		genericQueueManager = GenericQueueManager.assignExistingQueue(FileModel.class, this.queueName);
 
 		if (genericQueueManager == null) {
@@ -150,6 +151,7 @@ public class FillQueueRobot implements IRobot {
 		}
 
 		if (!itemsAdded && filesToAdd.isEmpty()) {
+			server.info("Execution marked as needless, this execution will be deleted at finish");
 			server.executionNeedless("No new files to add to the queue");
 		}
 
