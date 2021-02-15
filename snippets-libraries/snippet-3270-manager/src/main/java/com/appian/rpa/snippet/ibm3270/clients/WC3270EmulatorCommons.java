@@ -1,5 +1,6 @@
 package com.appian.rpa.snippet.ibm3270.clients;
 
+import com.appian.rpa.snippet.ibm3270.ConstantsWaits;
 import com.appian.rpa.snippet.ibm3270.IBM3270Commons;
 import com.novayre.jidoka.client.api.IRobot;
 
@@ -39,18 +40,23 @@ public class WC3270EmulatorCommons extends IBM3270Commons {
 	@Override
 	public void selectAllText() {
 
-		moveToBottonRightCorner();
+		moveToBottomRightCorner();
 		keyboard.control("a").pause();
 	}
 
 	/**
-	 * Move the cursor to the bottom right corner of the screen
+	 * Move the cursor to the designated coordinates
 	 */
 	@Override
-	public void moveToBottonRightCorner() {
-
+	public void moveToCoordinates(int targetXCoodinate, int targetYCoodinate) {
+		server.debug(String.format("We're moving to the coordinates (%d, %d)", targetYCoodinate, targetXCoodinate));
+		activateWindow();
 		keyboard.down().pause();
-		keyboard.control("g").pause().control("g").pause();
+		moveToBottomRightCorner();
+		windows.characterPause(10);
+		keyboard.left(getMaxCoordX() - targetXCoodinate);
+		keyboard.up(getMaxCoordY() - targetYCoodinate);
+		windows.characterPause(ConstantsWaits.DEFAULT_CHARACTER_PAUSE);
 	}
 
 	/**
@@ -59,6 +65,15 @@ public class WC3270EmulatorCommons extends IBM3270Commons {
 	@Override
 	public String[] splitScreenLines(String screen) {
 		return screen.split("(?<=\\G.{80})");
+	}
+
+	/**
+	 * Move the cursor to the bottom right corner, this must be configured as
+	 * shortcut in the keymap file -> 'Ctrl<Key>g: MoveCursor(23,79)'
+	 */
+	private void moveToBottomRightCorner() {
+		
+		keyboard.control("g").pause().control("g").pause();
 	}
 
 }

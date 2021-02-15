@@ -1,12 +1,12 @@
 package com.appian.rpa.snippet.ibm3270;
 
+import java.awt.Point;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.appian.rpa.snippet.ibm3270.clients.PCOMMEmulatorCommons;
-import com.appian.rpa.snippet.ibm3270.clients.PartenonEmulatorCommons;
 import com.appian.rpa.snippet.ibm3270.clients.WC3270EmulatorCommons;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
@@ -49,15 +49,14 @@ public class IBM3270AppManager {
 		IBM3270AppManager instance = new IBM3270AppManager(path, windowsTitle, robot, emulType);
 		return instance;
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	private IBM3270AppManager(String path, String windowsTitle, IRobot robot, String emulType) {
 		if (emulType.toUpperCase().equals("WC3270")) {
 			ibm3270Commons = new WC3270EmulatorCommons(robot, windowsTitle);
-		} else if (emulType.toUpperCase().equals("PCOMM")){
+		} else if (emulType.toUpperCase().equals("PCOMM")) {
 			ibm3270Commons = new PCOMMEmulatorCommons(robot, windowsTitle);
-		} else if (emulType.toUpperCase().equals("PARTENON")){
-			ibm3270Commons = new PartenonEmulatorCommons(robot, windowsTitle);
-		}else {
+		} else {
 			throw new JidokaFatalException("Only [WC3270] , [PCOMM] or [PARTENON] emulTypes are valid");
 		}
 		this.server = (IJidokaServer<Serializable>) JidokaFactory.getServer();
@@ -73,23 +72,27 @@ public class IBM3270AppManager {
 		try {
 			Runtime.getRuntime().exec(cmdArray);
 		} catch (IOException e1) {
-			throw new JidokaFatalException(String.format("Unable to open 3270 Terminal with path [%s] and Windows title [%s]",path, windows), e1);
+			throw new JidokaFatalException(
+					String.format("Unable to open 3270 Terminal with path [%s] and Windows title [%s]", path, windows),
+					e1);
 		}
 
 		AtomicReference<HWND> ieAtomic = new AtomicReference<>();
 		try {
-			waitFor.wait(LONG_WAIT_SECONDS, String.format("Waiting for the application [%s] to open", windowsTitle), false, () -> {
-				WindowInfo window = windows.getWindow(windowsTitle);
-				if (window != null) {
-					ieAtomic.set(window.gethWnd());
-					windows.showWindow(window.gethWnd(), EShowWindowState.SW_MAXIMIZE);
-					windows.pause(WAIT_MILLISECONDS);
-					return true;
-				}
-				return false;
-			});
+			waitFor.wait(LONG_WAIT_SECONDS, String.format("Waiting for the application [%s] to open", windowsTitle),
+					false, () -> {
+						WindowInfo window = windows.getWindow(windowsTitle);
+						if (window != null) {
+							ieAtomic.set(window.gethWnd());
+							windows.showWindow(window.gethWnd(), EShowWindowState.SW_MAXIMIZE);
+							windows.pause(WAIT_MILLISECONDS);
+							return true;
+						}
+						return false;
+					});
 		} catch (JidokaUnsatisfiedConditionException e) {
-			throw new JidokaFatalException(String.format("Unable to open 3270 Terminal with path [%s] and Windows title [%s]",path, windowsTitle));
+			throw new JidokaFatalException(String
+					.format("Unable to open 3270 Terminal with path [%s] and Windows title [%s]", path, windowsTitle));
 		}
 	}
 
@@ -98,11 +101,11 @@ public class IBM3270AppManager {
 		ibm3270Commons.write(text);
 	}
 
-	public void write( int X, int Y, String text) {
+	public void write(int X, int Y, String text) {
 		ibm3270Commons.moveToCoordinates(X, Y);
 		ibm3270Commons.write(text);
 	}
-	
+
 	public void control() {
 		ibm3270Commons.control();
 	}
@@ -110,26 +113,35 @@ public class IBM3270AppManager {
 	public void enter() {
 		ibm3270Commons.enter();
 	}
-
-	public String getStringLine(int line, int startX, int endX) {
-		//TODO To implement
-		return null;
+	
+	public List<String> getTextInScreen() {
+		return ibm3270Commons.scrapScreen();
+	}
+	
+	public boolean existText(String textToLocate) {
+		
+		return getTextPosition(textToLocate) != null;
+	}
+	
+	public Point getTextPosition(String textToLocate) {
+		
+		TextInScreen displayedText = ibm3270Commons.locateText(1, false, null, textToLocate);
+		
+		if(displayedText != null) {
+			
+			return displayedText.getPointInScreen();
+		}
+		
+		return null; 
 	}
 
-	
-	public List<String> getString(int startX, int startY, int endX, int endY) {
-		//TODO TO implement
-		return null;
-	}
-
-	
-	
 	/**
 	 * Close 3270 terminal.
-	 * @throws IOException 
+	 * 
+	 * @throws IOException
 	 */
 	public void close() throws IOException {
-		if (ibm3270Commons!=null) {
+		if (ibm3270Commons != null) {
 			ibm3270Commons.close();
 		}
 	}

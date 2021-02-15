@@ -43,7 +43,7 @@ public class BrowserManager {
 
 	/** SelectorsManager instance */
 	private SelectorsManager selectorsManager;
-	
+
 	/** ScreenshotManager instance */
 	private ScreenshotsManager screenShotsManager;
 
@@ -64,13 +64,12 @@ public class BrowserManager {
 		browser.setTimeoutSeconds(120);
 		selectorsManager = new SelectorsManager();
 		screenShotsManager = new ScreenshotsManager();
-		
+
 		if (selectedBrowser == null) {
 			throw new JidokaFatalException("You must select the browser to open");
 		}
-
 		this.selectedBrowser = selectedBrowser;
-		
+
 	}
 
 	/**
@@ -150,8 +149,6 @@ public class BrowserManager {
 		}
 	}
 
-	
-	
 	/**
 	 * Navigates to the given {@code url} and waits until the given
 	 * {@code selectorKey} element is loaded. Before that, the browser window is
@@ -172,7 +169,6 @@ public class BrowserManager {
 		return waitForElement(selectorKey, 60);
 	}
 
-
 	/**
 	 * Waits for the given {@code selectorKey} element to load.
 	 * 
@@ -183,13 +179,12 @@ public class BrowserManager {
 
 		return waitForElement(selectorKey, 10);
 	}
-	
-	
+
 	/**
 	 * Waits for the given {@code selectorKey} element to load.
 	 * 
 	 * @param selectorKey Selector key on the selectors.properties file
-	 * @param seconds Waiting time in seconds
+	 * @param seconds     Waiting time in seconds
 	 * @return True if the element has been loaded
 	 */
 	public boolean waitForElement(String selectorKey, Integer seconds) {
@@ -282,7 +277,7 @@ public class BrowserManager {
 	public SelectorsManager getSelectorsManager() {
 		return this.selectorsManager;
 	}
-	
+
 	/**
 	 * Get the {@link ScreenShotsManager} instance
 	 * 
@@ -291,56 +286,60 @@ public class BrowserManager {
 	public ScreenshotsManager getScreenShotManager() {
 		return this.screenShotsManager;
 	}
-	
+
 	/**
-	 * Click on the given element 
+	 * Click on the given element
+	 * 
 	 * @param selectorKey
 	 * @return
 	 */
 	public boolean clickOnElement(String selectorKeyClick) {
 		return clickOnElement(selectorKeyClick, null, 0);
 	}
-	
+
 	/**
 	 * Click on the given element and wait until find another element
+	 * 
 	 * @param selectorKey
 	 * @return
 	 */
 	public boolean clickOnElement(String selectorKeyClick, String selectorKeyWait, int waitTime) {
-		
+
 		WebElement ele = selectorsManager.getElement(selectorKeyClick);
-		
-		try {	
-			ele.click();	
+
+		try {
+			ele.click();
 		} catch (Exception e) {
 			return false;
 		}
-		
+
 		if (selectorKeyWait != null) {
-			
+
 			return waitForElement(selectorKeyWait, waitTime);
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Send a string into the element
+	 * 
 	 * @param stringToSend
 	 * @param selectorKey
 	 * @return
 	 */
 	public void sendKeysOnElement(String stringToSend, String selectorKey) throws Exception {
-		
+
 		selectorsManager.getElement(selectorKey).sendKeys(stringToSend);
 	}
-	
+
 	/**
 	 * Return the web driver
+	 * 
 	 * @return
 	 */
 	public WebDriver getDriver() {
 		return browser.getDriver();
 	}
-	
+
 }

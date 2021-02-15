@@ -35,7 +35,7 @@ public abstract class IBM3270Commons {
 	private static final String SPACE_HTML = "&#160;";
 
 	/** Jidoka Server Instance */
-	private IJidokaServer<?> server;
+	protected IJidokaServer<?> server;
 
 	/** IRobot instance */
 	private IRobot robot;
@@ -59,7 +59,7 @@ public abstract class IBM3270Commons {
 	protected IKeyboard keyboard;
 
 	private String windowsTitle3270;
-	
+
 	/**
 	 * Instantiates a new IBM3270Commons
 	 * 
@@ -79,7 +79,6 @@ public abstract class IBM3270Commons {
 	 * Abstract method to select all text in screen
 	 */
 	public abstract void selectAllText();
-
 
 	/**
 	 * Activate a window by title
@@ -115,10 +114,11 @@ public abstract class IBM3270Commons {
 			}
 		}
 	}
+
 	/**
 	 * Abstract method to move the cursor to the bottom right corner of the screen
 	 */
-	public abstract void moveToBottonRightCorner();
+	public abstract void moveToCoordinates(int targetXCoodinate, int targetYCoodinate);
 
 	/**
 	 * Abstract method to split the lines of text on the screen
@@ -126,7 +126,6 @@ public abstract class IBM3270Commons {
 	 * @param screen
 	 */
 	public abstract String[] splitScreenLines(String screen);
-
 
 	/**
 	 * Returns the first text it finds on the screen among those passed as a
@@ -219,10 +218,10 @@ public abstract class IBM3270Commons {
 
 						for (int y = 0; y < screen.size(); y++) {
 
-							server.warn("Texto "+screen.get(y)+ "Fila "+y);
+//							server.warn("Texto " + screen.get(y) + "Fila " + y);
 							Matcher m = p.matcher(screen.get(y));
 							if (m.find()) {
-								server.warn("Texto Match "+screen.get(y));
+								server.warn("Texto Match " + screen.get(y));
 								int x = screen.get(y).indexOf(t);
 
 								TextInScreen res = new TextInScreen();
@@ -243,7 +242,7 @@ public abstract class IBM3270Commons {
 			});
 
 		} catch (JidokaUnsatisfiedConditionException e) {
-			;
+			e.printStackTrace();;
 		}
 
 		if (textInScreen.get() == null) {
@@ -256,8 +255,8 @@ public abstract class IBM3270Commons {
 		}
 
 		server.debug(String.format("Text found %s in (%d, %d)", textInScreen.get().getText(),
-				(int) textInScreen.get().getPointInScreen().getY(),
-				(int) textInScreen.get().getPointInScreen().getX()));
+				(int) textInScreen.get().getPointInScreen().getX(),
+				(int) textInScreen.get().getPointInScreen().getY()));
 
 		return textInScreen.get();
 	}
@@ -290,7 +289,7 @@ public abstract class IBM3270Commons {
 
 				throw new JidokaFatalException("Unable to read the screen");
 			}
-			server.warn("Text "+screen);
+			server.warn("Text " + screen);
 
 			String[] lines = splitScreenLines(screen);
 
@@ -399,16 +398,6 @@ public abstract class IBM3270Commons {
 		int targetYCoodinate = (int) (pointOnScreen.getY() + offsetY);
 		moveToCoordinates(targetXCoodinate, targetYCoodinate);
 	}
-		
-	public void moveToCoordinates(int targetXCoodinate, int targetYCoodinate) {
-		server.debug(String.format("We're moving to the coordinates (%d, %d)", targetYCoodinate, targetXCoodinate));
-		activateWindow();
-		moveToBottonRightCorner();
-		windows.characterPause(10);
-		keyboard.left(getMaxCoordX() - targetXCoodinate);
-		keyboard.up(getMaxCoordY() - targetYCoodinate);
-		windows.characterPause(ConstantsWaits.DEFAULT_CHARACTER_PAUSE);
-	}
 
 	/**
 	 * Write the text on screen
@@ -497,7 +486,7 @@ public abstract class IBM3270Commons {
 		keyboard.control(null);
 		return this;
 	}
-	
+
 	/**
 	 * Press Tab
 	 * 

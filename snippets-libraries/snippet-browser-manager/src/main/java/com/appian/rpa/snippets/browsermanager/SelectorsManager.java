@@ -112,9 +112,11 @@ public class SelectorsManager {
 
 		return getElement(by);
 	}
-	
+
 	/**
-	 * Finds the {@link WebElement} object using {@link By}, if not found return null.
+	 * Finds the {@link WebElement} object using {@link By}, if not found return
+	 * null.
+	 * 
 	 * @param by
 	 * @return
 	 */
@@ -165,9 +167,11 @@ public class SelectorsManager {
 
 		return getAllElements(by);
 	}
-	
+
 	/**
-	 * Find all {@link WebElement} objects using {@link By}, if none element found return empty list.
+	 * Find all {@link WebElement} objects using {@link By}, if none element found
+	 * return empty list.
+	 * 
 	 * @param by
 	 * @return
 	 */
@@ -180,7 +184,7 @@ public class SelectorsManager {
 
 		return null;
 	}
-	
+
 	/**
 	 * Check if the {@link WebElement} exists in the DOM using the saved selector in
 	 * selectors file, which can found filtering by the given {@code key}. Searches
@@ -198,9 +202,10 @@ public class SelectorsManager {
 
 		return existsElement(by);
 	}
-	
+
 	/**
 	 * Check if the {@link WebElement} exists in the DOM using the given {@link By}
+	 * 
 	 * @param by
 	 * @return
 	 */

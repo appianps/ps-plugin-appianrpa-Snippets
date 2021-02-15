@@ -5,7 +5,7 @@
 
 	<groupId>com.appian.rpa.snippets</groupId>
 	<artifactId>snippet-3270-manager</artifactId>
-	<version>7.4.0</version>
+	<version>7.4.1</version>
 	<packaging>jar</packaging>
 
 	<properties>
@@ -21,42 +21,33 @@
 
 	<profiles>
 		<profile>
-			<id>santander_poc</id>
-
+			<id>rpa-coe-lab</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
-
-			<repositories>
-				<repository>
-					<id>santander_poc</id>
-					<url>https://santander-rpa-poc-alpha.appiancloud.com/rpa/repo/</url>
-					<releases>
-					</releases>
-					<snapshots>
-					</snapshots>
-				</repository>
-			</repositories>
-
-			<pluginRepositories>
-				<pluginRepository>
-					<id>santander_poc</id>
-					<url>https://santander-rpa-poc-alpha.appiancloud.com/rpa/repo/</url>
-					<releases>
-					</releases>
-					<snapshots>
-					</snapshots>
-				</pluginRepository>
-			</pluginRepositories>
 			<distributionManagement>
 				<repository>
-					<id>santander_poc</id>
-					<url>https://santander-rpa-poc-alpha.appiancloud.com/rpa/repo/</url>
-					<layout>default</layout>
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 				</repository>
 			</distributionManagement>
+			<repositories>
+				<repository>
+					<releases />
+					<snapshots />
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
+				</repository>
+			</repositories>
+			<pluginRepositories>
+				<pluginRepository>
+					<releases />
+					<snapshots />
+					<id>rpa-coe-lab</id>
+					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
+				</pluginRepository>
+			</pluginRepositories>
 		</profile>
-
 	</profiles>
 
 
@@ -93,7 +84,6 @@
 			<artifactId>commons-text</artifactId>
 			<version>1.3</version>
 		</dependency>
-
 	</dependencies>
 
 </project>
