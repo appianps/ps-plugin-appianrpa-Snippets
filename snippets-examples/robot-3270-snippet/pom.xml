@@ -1,0 +1,70 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.novayre.jidoka.robot.test</groupId>
+	<artifactId>3270-manager-test</artifactId>
+	<version>0.0.1</version>
+	<packaging>jar</packaging>
+	
+	<name>3270-manager-test</name>
+
+	<parent>
+		<groupId>com.novayre.jidoka.robot</groupId>
+		<artifactId>jidoka-robot-parent</artifactId>
+		<version>7.4.0</version>
+	</parent>
+
+
+	<profiles>
+		<profile>
+			<id>santander_poc</id>
+
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+
+			<repositories>
+				<repository>
+					<id>santander_poc</id>
+					<url>https://santander-rpa-poc-alpha.appiancloud.com/rpa/repo/</url>
+					<releases>
+					</releases>
+					<snapshots>
+					</snapshots>
+				</repository>
+			</repositories>
+
+			<pluginRepositories>
+				<pluginRepository>
+					<id>santander_poc</id>
+					<url>https://santander-rpa-poc-alpha.appiancloud.com/rpa/repo/</url>
+					<releases>
+					</releases>
+					<snapshots>
+					</snapshots>
+				</pluginRepository>
+			</pluginRepositories>
+			<distributionManagement>
+				<repository>
+					<id>santander_poc</id>
+					<url>https://santander-rpa-poc-alpha.appiancloud.com/rpa/repo/</url>
+					<layout>default</layout>
+				</repository>
+			</distributionManagement>
+		</profile>
+
+	</profiles>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>com.appian.rpa.snippets</groupId>
+			<artifactId>snippet-3270-manager</artifactId>
+			<version>7.4.1</version>
+		</dependency>
+		
+	</dependencies>
+
+</project>
