@@ -4,8 +4,10 @@ package com.appian.robot.core.template;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.novayre.jidoka.client.api.EJidokaParameterType;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.INano;
 import com.novayre.jidoka.client.api.JidokaFactory;
@@ -28,7 +30,6 @@ import com.novayre.jidoka.client.api.queue.ReleaseQueueParameters;
 import com.novayre.jidoka.client.api.queue.ReserveItemParameters;
 import com.novayre.jidoka.client.api.queue.ReserveQueueParameters;
 import com.novayre.jidoka.client.lowcode.IRobotVariable;
-
 
 /**
  * The Class RobotBlankTemplate.
@@ -61,12 +62,22 @@ public class QueueLibrary implements INano {
 	}
 
 	@JidokaMethod(name = "Sets the queue to process", description = "Sets the queue to process")
-	public void setQueue(
+	public void setQueue(@JidokaParameter(defaultValue = "", name = "Queue id to assign") String queueId,
 			@JidokaParameter(defaultValue = "", name = "Name of the variable to store current item") String itemVariable)
 			throws IOException, JidokaQueueException {
 
-		String pQueueId = queueManager.preselectedQueue();
+		String pQueueId = "";
 
+		if (!StringUtils.isBlank(queueId)) {
+			pQueueId = queueId;
+		} else {
+			pQueueId = queueManager.preselectedQueue();
+		}
+
+		if(StringUtils.isBlank(pQueueId)) {
+			throw new JidokaFatalException("The queue id is null or blank and there is no queue preselected.");
+		}
+		
 		FindQueuesParameters fqp = new FindQueuesParameters();
 		fqp.queueId(pQueueId);
 
@@ -115,8 +126,10 @@ public class QueueLibrary implements INano {
 		return true;
 	}
 
+	@SuppressWarnings("unchecked")
 	@JidokaMethod(name = "Updates current queue item", description = "Updates and release the current queue item. It should be WARN or OK.", iconClass = "jf-console")
-	public void updateItem(@JidokaParameter(name = "Item Result", defaultValue = "OK") String itemResult) throws IOException, JidokaQueueException {
+	public void updateItem(@JidokaParameter(name = "Item Result", defaultValue = "OK") String itemResult)
+			throws IOException, JidokaQueueException {
 
 		ReleaseItemWithOptionalParameters riop = new ReleaseItemWithOptionalParameters();
 		riop.setProcess(EQueueItemReleaseProcess.SYSTEM);
