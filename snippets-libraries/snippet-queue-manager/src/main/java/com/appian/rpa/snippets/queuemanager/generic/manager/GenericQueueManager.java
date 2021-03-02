@@ -201,7 +201,7 @@ public class GenericQueueManager {
 	 */
 	public int getPendingItems() {
 		try {
-			if (queueManager.currentQueue()!=null) {
+			if (queueManager.currentQueue() != null) {
 				return queueManager.currentQueue().pendingItems();
 			} else {
 				return 0;
@@ -210,7 +210,7 @@ public class GenericQueueManager {
 			throw new JidokaFatalException("Error getting pending Items");
 		}
 	}
-	
+
 	/**
 	 * Reserves and closes the queue. Only one robot can close the queue.
 	 * 
@@ -256,7 +256,21 @@ public class GenericQueueManager {
 	 * @param object Object to map to a queue item
 	 *
 	 */
-	public <T> void addItem(T object) {
+	public <T> String addItem(T object) {
+
+		return addItemWithState(object, null);
+		
+	}
+	
+	/**
+	 * Adds the given {@code object} to the queue, mapping it to a queue item. If
+	 * the model contains fields of type Path or File, the files pointed by these
+	 * paths or saved on this File objects are going to be added to the item.
+	 * 
+	 * @param object Object to map to a queue item
+	 *
+	 */
+	public <T> String addItemWithState(T object, EQueueItemCurrentState state) {
 
 		try {
 			CreateItemParameters cip = new CreateItemParameters();
@@ -270,7 +284,11 @@ public class GenericQueueManager {
 			cip.setKey(keyValue);
 			cip.setPriority(EPriority.NORMAL);
 			cip.setQueueId(currentQueueId);
-
+			
+			if (state != null) {
+				cip.setState(state);
+			}
+			
 			Map<String, String> map = ConversionUtils.object2Map(object);
 
 			// Gets the fields with annotation @AItemField
@@ -305,12 +323,16 @@ public class GenericQueueManager {
 			if (StringUtils.isBlank(itemId)) {
 				throw new JidokaFatalException("The item " + keyValue + " was not created correctly");
 			}
-
+			
 			server.debug(String.format("Added item to queue %s with id %s", cip.getQueueId(), cip.getKey()));
+			
+			return itemId;
 		} catch (IOException | JidokaQueueException e) {
 			throw new JidokaFatalException("Error adding the given item to the queue", e);
 		}
+		
 	}
+	
 
 	/**
 	 * Saves the given {@link Object} {@code object} as a queue item. By default, it
@@ -437,6 +459,31 @@ public class GenericQueueManager {
 	}
 
 	/**
+	 * Returns items whose key matches the given regular expression {@code keyRegex}
+	 * and are on one of the given states {@code states}
+	 * 
+	 * @param key    key to search for
+	 * @param states List of queue item states to filter by
+	 * @return The list of T objects resulting from the search
+	 * 
+	 */
+	public <T> IQueueItem findQueueItemById(String itemId) {
+
+		try {
+			DownloadQueueParameters dqp = new DownloadQueueParameters().queueId(currentQueueId.trim());
+			IDownloadedQueue downloadedQueue = queueManager.downloadQueue(dqp);
+
+			IQueueItem filteredItem = downloadedQueue.items().stream()
+					.filter(i -> i.queueItemId().equals(itemId)).collect(Collectors.toList()).get(0);
+
+			return filteredItem;
+			
+		} catch (IOException | JidokaQueueException e) {
+			throw new JidokaFatalException("Error finding the given item", e);
+		}
+	}
+
+	/**
 	 * Gets the queue next item, mapping the item functional data to an object with
 	 * the model type.
 	 * 
@@ -454,7 +501,7 @@ public class GenericQueueManager {
 
 			ReserveItemParameters reserveItemsParameters = new ReserveItemParameters();
 			reserveItemsParameters.setUseOnlyCurrentQueue(true);
-
+			
 			IQueueItem currentQueueItem = queueManager.reserveItem(reserveItemsParameters);
 
 			if (currentQueueItem == null || currentQueueItem.state().equals(EQueueItemCurrentState.FINISHED_OK)
