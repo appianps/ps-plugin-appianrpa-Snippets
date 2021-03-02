@@ -21,7 +21,7 @@ Snippet IBM3270 Manager is distributed using Maven:
 <dependency>
 	<groupId>com.appian.rpa.snippets</groupId>
 	<artifactId>snippet-3270-manager</artifactId>
-	<version>1.0.0</version>
+	<version>7.5.0</version>
 </dependency>
 ```
 

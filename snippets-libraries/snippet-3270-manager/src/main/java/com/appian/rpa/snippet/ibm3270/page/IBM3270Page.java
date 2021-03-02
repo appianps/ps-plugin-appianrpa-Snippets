@@ -1,7 +1,7 @@
-package com.appian.rpa.snippet.page;
+package com.appian.rpa.snippet.ibm3270.page;
 
-import com.appian.rpa.snippet.ConstantsWaits;
-import com.appian.rpa.snippet.IBM3270Commons;
+import com.appian.rpa.snippet.ibm3270.ConstantsWaits;
+import com.appian.rpa.snippet.ibm3270.IBM3270Commons;
 import com.novayre.jidoka.client.api.exceptions.JidokaException;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 
