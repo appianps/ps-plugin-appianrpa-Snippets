@@ -10,6 +10,9 @@ import org.apache.commons.lang.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.INano;
+import com.novayre.jidoka.client.api.ItemData;
+import com.novayre.jidoka.client.api.ItemData.EResult;
+import com.novayre.jidoka.client.api.ItemData.ESubResult;
 import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.JidokaMethod;
 import com.novayre.jidoka.client.api.JidokaParameter;
@@ -46,6 +49,9 @@ public class QueueLibrary implements INano {
 	/** Selected queue */
 	private IQueue queue;
 
+	/** Current queue item */
+	private IQueueItem currentQueueItem;
+	
 	/** Workflow variable to store current item */
 	private IRobotVariable wVariable;
 
@@ -62,7 +68,7 @@ public class QueueLibrary implements INano {
 	}
 
 	@JidokaMethod(name = "Sets the queue to process", description = "Sets the queue to process")
-	public void setQueue(@JidokaParameter(defaultValue = "", name = "Queue id to assign") String queueId,
+	public void setQueue(@JidokaParameter(defaultValue = "", name = "Queue id to assign (Optional)") String queueId,
 			@JidokaParameter(defaultValue = "", name = "Name of the variable to store current item") String itemVariable)
 			throws IOException, JidokaQueueException {
 
@@ -109,7 +115,7 @@ public class QueueLibrary implements INano {
 		ReserveItemParameters reserveItemsParameters = new ReserveItemParameters();
 		reserveItemsParameters.setUseOnlyCurrentQueue(true);
 
-		IQueueItem currentQueueItem = queueManager.reserveItem(reserveItemsParameters);
+		currentQueueItem = queueManager.reserveItem(reserveItemsParameters);
 
 		if (currentQueueItem == null) {
 			return false;
@@ -125,22 +131,40 @@ public class QueueLibrary implements INano {
 
 		return true;
 	}
+	
+	@JidokaMethod(name = "Gets queue item id", description = "Gets the current queue item id")
+	public void getCurrentItemId(@JidokaParameter(defaultValue = "", name = "Name of the variable to store current item id") String queueItemId) {
+		
+		server.getWorkflowVariables().get(queueItemId).setValue(currentQueueItem.queueItemId());
+	}
 
 	@SuppressWarnings("unchecked")
 	@JidokaMethod(name = "Updates current queue item", description = "Updates and release the current queue item. It should be WARN or OK.", iconClass = "jf-console")
-	public void updateItem(@JidokaParameter(name = "Item Result", defaultValue = "OK") String itemResult)
+	public void updateItem(@JidokaParameter(name = "Item Result", defaultValue = "OK") String itemResult,
+			@JidokaParameter(name = "Item Sub-Result", defaultValue = "") String itemSubResult,
+			@JidokaParameter(name = "Result Detail", defaultValue = "") String resultDetail)
 			throws IOException, JidokaQueueException {
 
 		ReleaseItemWithOptionalParameters riop = new ReleaseItemWithOptionalParameters();
 		riop.setProcess(EQueueItemReleaseProcess.SYSTEM);
 		riop.setRetry(EQueueItemReleaseRetry.DECREMENT_BY_1);
 
+		
+		ItemData itemData;
+		
 		if (itemResult.equals("OK")) {
-			server.setCurrentItemResultToOK();
+			itemData = new ItemData().result(EResult.OK).detail(resultDetail);
 			riop.functionalData(new ObjectMapper().readValue(wVariable.getValue().toString(), HashMap.class));
 		} else {
-			server.setCurrentItemResultToWarn();
+			itemData = new ItemData().result(EResult.WARN).detail(resultDetail);
 		}
+			
+		if(!StringUtils.isBlank(itemSubResult)) {
+			
+			itemData.setSubResult(ESubResult.valueOf(itemSubResult));
+		}
+		
+		server.setCurrentItemResult(itemData);
 
 		queueManager.releaseItem(riop);
 	}

@@ -312,7 +312,7 @@ public class ExcelQueueManager<T> {
 	 * @return The created queue
 	 * 
 	 */
-	private IQueue createQueueFromFile(File inputFile) {
+	public IQueue createQueueFromFile(File inputFile) {
 
 		if (inputFile == null || !inputFile.exists()) {
 			throw new JidokaFatalException("An input file is needed");
