@@ -81,7 +81,7 @@ public class Instruction {
 		this.required = required;
 		this.validatePredicate = validatePredicate;
 
-		this.parameter = server.getParameters().get(name);
+		this.parameter = server.getWorkflowVariables().get(name).getValue().toString();
 	}
 
 	/**
