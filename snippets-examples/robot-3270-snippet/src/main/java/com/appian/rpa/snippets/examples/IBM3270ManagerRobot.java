@@ -1,31 +1,28 @@
 package com.appian.rpa.snippets.examples;
 
+import java.awt.Point;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Arrays;
 
+import com.novayre.jidoka.client.api.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import com.appian.rpa.snippets.ibm3270.IBM3270AppManager;
-import com.novayre.jidoka.client.api.IJidokaServer;
-import com.novayre.jidoka.client.api.IRobot;
-import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.annotations.Robot;
 import com.novayre.jidoka.client.api.exceptions.JidokaException;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.client.api.multios.IClient;
 
-/**
- * IBM3270 Manager Robot provides a complete usage example from all the
- * correspondent snippet methods. It opens an IBM3270 terminal using the
- * emulator indicated as the robot's parameter, goes to a menu page and tries to
- * change the user's password.
- * 
- * Finally the robot closes the emulator.
- */
 @Robot
 public class IBM3270ManagerRobot implements IRobot {
 
+	private static final String TEXT_TO_LOCATE = "Text to Locate";
+	private static final String INSTALL_PATH = "Install Path";
+	private static final String WINDOW_TITLE_XPATH = "Window Title Xpath";
+	private static final String EMULATOR_TYPE = "Emulator Type";
 	/** Jidoka server instance */
 	private IJidokaServer<Serializable> server;
 
@@ -33,7 +30,7 @@ public class IBM3270ManagerRobot implements IRobot {
 	protected IClient client;
 
 	IBM3270AppManager intanceIBM3270AppManager;
-	
+
 
 	/**
 	 * Startup method. This <code>startUp</code> method is called prior to calling
@@ -55,11 +52,10 @@ public class IBM3270ManagerRobot implements IRobot {
 	 * Initializes Jidoka modules. Instances of the emulator type passed as a
 	 * parameter are loaded
 	 */
-	public void init() {
-
+	public void init(
+	) {
 		try {
 			server.debug("Robot initialized");
-			
 		} catch (Exception e) {
 			throw new JidokaFatalException("Error initializing");
 		}
@@ -68,69 +64,82 @@ public class IBM3270ManagerRobot implements IRobot {
 	/**
 	 * Action 'Open 3270' terminal
 	 */
-	public void open3270() {
+	@JidokaMethod(name = "Open IBM Terminal", description ="Opens 3270/pcomm terminal")
+	public void open3270(
+			@JidokaParameter(
+					name = "Nested parameters",
+					type = EJidokaParameterType.NESTED,
+					nestedParameters = {
+							@JidokaNestedParameter(
+									name = INSTALL_PATH,
+									id = INSTALL_PATH
+							),
+							@JidokaNestedParameter(
+									name = WINDOW_TITLE_XPATH,
+									id = WINDOW_TITLE_XPATH
+							),
+							@JidokaNestedParameter(
+									name = EMULATOR_TYPE,
+									id = EMULATOR_TYPE
+							)
+					}
+			) SDKParameterMap parameters) {
 		server.info("Opening 3270 terminal");
-		intanceIBM3270AppManager = IBM3270AppManager.openIBM3270("C:\\Program Files (x86)\\IBM\\Personal Communications\\private\\GSO1tls-MAI.ws", ".*Session.*" , this, "PCOMM");
-		client.pause(1000);
-		server.sendScreen("Screenshot after opening the terminal");
+		intanceIBM3270AppManager = IBM3270AppManager.openIBM3270(parameters.get(INSTALL_PATH).toString(), parameters.get(WINDOW_TITLE_XPATH).toString(), this, parameters.get(EMULATOR_TYPE).toString());
+		client.pause(2000);
+//		server.sendScreen("Screenshot after opening the terminal");
 	}
 
 	/**
-	 * Go to the page indicated as parameter
-	 * 
-	 * @param page Name of the page in the menu
-	 * @throws JidokaException
+	 * Action 'Find Text'
 	 */
-	public void login() throws JidokaException {
-
-		intanceIBM3270AppManager.write("==>", 4, 0, "M", 3);		
-		intanceIBM3270AppManager.control();
-		client.pause(1000);
-		server.sendScreen("Screenshot Access Menu");
-		intanceIBM3270AppManager.write("==>", 4, 0, "3", 3);		
-		intanceIBM3270AppManager.control();
-		server.sendScreen("Screenshot Login");
-		client.pause(10000);
-		server.debug("Existe texto? " + intanceIBM3270AppManager.existText("TSO DE SAQS"));
-	}
-	
-	/**
-	 * Action 'Go to NetView' page.
-	 * 
-	 * @throws JidokaException
-	 */
-	public void goToNetView() throws JidokaException {
-
-		server.sendScreen("Screenshot before moving to NetView page");
-
-		//currentPage = ((WelcomePage) currentPage).goToPage("NETVIEW");
-
-		server.sendScreen("Moved to NetView page");
+	@JidokaMethod(name = "Find Text", description = "Takes in a text string and returns the xy location (integer array) in the emulator")
+	public List<Integer> findText(
+			@JidokaParameter(
+			name = "Nested parameters",
+			type = EJidokaParameterType.NESTED,
+			nestedParameters = {
+					@JidokaNestedParameter(
+							name = TEXT_TO_LOCATE,
+							id = TEXT_TO_LOCATE
+					)
+			}
+			) SDKParameterMap parameters) throws JidokaException {
+//		Point textLocation = intanceIBM3270AppManager.getTextPosition(server.getWorkflowVariables().get("textToLocate").getValue().toString());
+		Point textLocation = intanceIBM3270AppManager.getTextPosition(parameters.get(TEXT_TO_LOCATE).toString());
+		if (textLocation==null) {
+			return null;
+		}
+		List<Integer> result = Arrays.asList(textLocation.getLocation().x, textLocation.getLocation().y);
+		return result;
 	}
 
 	/**
-	 * Action 'Change password'.
-	 * 
+	 * Action 'Go to Text Position'.
+	 *
 	 * @throws JidokaException
 	 */
-	public void changePassword() throws JidokaException {
-
-		server.info("Change NetView Password");
-
-	/*	ChangePwdPage changePwd = ((NetViewPage) currentPage).goToChangePasswordPage();
-
-		currentPage = changePwd.changeOperatorPassword();
-		*/
+	@JidokaMethod(name = "Go to Text Position", description ="Takes in a text string and goes to that position in emulator")
+	public void goToTextPosition(
+			@JidokaParameter(
+			name = "Nested parameters",
+			type = EJidokaParameterType.NESTED,
+			nestedParameters = {
+					@JidokaNestedParameter(
+							name = TEXT_TO_LOCATE,
+							id = TEXT_TO_LOCATE
+					)
+			}
+	) SDKParameterMap parameters) throws JidokaException {
+		intanceIBM3270AppManager.write(parameters.get(TEXT_TO_LOCATE).toString(), 0, 0, "", 3);
 	}
 
 	/**
 	 * Action 'Close 3270'.
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public void close3270() throws IOException {
-
 		server.info("Closing IBM3270 terminal");
-
 		intanceIBM3270AppManager.close();
 	}
 
@@ -138,7 +147,6 @@ public class IBM3270ManagerRobot implements IRobot {
 	 * Action 'End'.
 	 */
 	public void end() {
-
 		// continue the process, here the robot ends its execution
 	}
 
