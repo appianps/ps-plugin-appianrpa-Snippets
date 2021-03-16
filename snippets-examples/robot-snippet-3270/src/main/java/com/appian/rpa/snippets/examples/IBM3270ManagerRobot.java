@@ -5,10 +5,10 @@ import java.io.Serializable;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import com.appian.rpa.snippet.IBM3270Commons;
-import com.appian.rpa.snippet.clients.PCOMMEmulatorManager;
-import com.appian.rpa.snippet.clients.WC3270EmulatorManager;
-import com.appian.rpa.snippet.page.IBM3270Page;
+import com.appian.rpa.snippets.ibm3270.IBM3270Commons;
+import com.appian.rpa.snippets.ibm3270.clients.PCOMMEmulatorCommons;
+import com.appian.rpa.snippets.ibm3270.clients.WC3270EmulatorCommons;
+import com.appian.rpa.snippets.ibm3270.page.IBM3270Page;
 import com.appian.rpa.snippets.examples.commons.IBM3270AppManager;
 import com.appian.rpa.snippets.examples.pages.ChangePwdPage;
 import com.appian.rpa.snippets.examples.pages.NetViewPage;
@@ -75,9 +75,9 @@ public class IBM3270ManagerRobot implements IRobot {
 			String emulator = server.getParameters().get("Emulator");
 
 			if (emulator.equals("wc3270")) {
-				commons = new WC3270EmulatorManager(this);
+				commons = new WC3270EmulatorCommons(this);
 			} else {
-				commons = new PCOMMEmulatorManager(this);
+				commons = new PCOMMEmulatorCommons(this);
 			}
 
 			appManager = new IBM3270AppManager(commons);

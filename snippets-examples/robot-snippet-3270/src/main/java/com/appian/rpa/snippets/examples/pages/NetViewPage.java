@@ -1,8 +1,8 @@
 package com.appian.rpa.snippets.examples.pages;
 
-import com.appian.rpa.snippet.IBM3270Commons;
-import com.appian.rpa.snippet.TextInScreen;
-import com.appian.rpa.snippet.page.IBM3270Page;
+import com.appian.rpa.snippets.ibm3270.IBM3270Commons;
+import com.appian.rpa.snippets.ibm3270.TextInScreen;
+import com.appian.rpa.snippets.ibm3270.page.IBM3270Page;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.exceptions.JidokaException;

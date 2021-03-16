@@ -6,8 +6,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.appian.rpa.snippet.IBM3270Commons;
-import com.appian.rpa.snippet.page.IBM3270Page;
+import com.appian.rpa.snippets.ibm3270.IBM3270Commons;
+import com.appian.rpa.snippets.ibm3270.page.IBM3270Page;
 import com.appian.rpa.snippets.examples.pages.WelcomePage;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IWaitFor;
