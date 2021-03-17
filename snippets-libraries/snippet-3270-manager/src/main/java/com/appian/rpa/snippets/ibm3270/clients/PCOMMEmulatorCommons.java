@@ -170,7 +170,7 @@ public class PCOMMEmulatorCommons extends IBM3270Commons {
 			server.debug("test 2");
 				
 		} catch (IndexOutOfBoundsException e) {
-			server.sendScreen("OIA is not visible, restoring.");
+			server.info("OIA is not visible, restoring.");
 			keyboard.alt("v").pause(500).type("o");
 		}
 		

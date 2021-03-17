@@ -1,16 +1,19 @@
 package com.appian.rpa.snippets.examples;
 
 import java.awt.Point;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Arrays;
+
+import com.appian.rpa.snippets.ibm3270.IBM3270Commons;
+import com.appian.rpa.snippets.ibm3270.TextInScreen;
+import com.appian.rpa.snippets.ibm3270.clients.PCOMMEmulatorCommons;
+import com.appian.rpa.snippets.ibm3270.clients.WC3270EmulatorCommons;
 
 import com.novayre.jidoka.client.api.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import com.appian.rpa.snippets.ibm3270.IBM3270AppManager;
 import com.novayre.jidoka.client.api.annotations.Robot;
 import com.novayre.jidoka.client.api.exceptions.JidokaException;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
@@ -20,17 +23,21 @@ import com.novayre.jidoka.client.api.multios.IClient;
 public class IBM3270ManagerRobot implements IRobot {
 
 	private static final String TEXT_TO_LOCATE = "Text to Locate";
-	private static final String INSTALL_PATH = "Install Path";
 	private static final String WINDOW_TITLE_XPATH = "Window Title Xpath";
 	private static final String EMULATOR_TYPE = "Emulator Type";
-	/** Jidoka server instance */
-	private IJidokaServer<Serializable> server;
+	private static final String X_COORDINATE = "X Coordinate";
+	private static final String Y_COORDINATE = "Y Coordinate";
+	private static final String TEXT_TO_WRITE = "Text to Write";
+	private static final String FIELD_LABEL = "Field Label";
+	private static final String X_OFFSET = "X Offset";
+	private static final String Y_OFFSET = "Y Offset";
 
+	/** Server instance */
+	private IJidokaServer<Serializable> server;
 	/** Client Module instance */
 	protected IClient client;
 
-	IBM3270AppManager intanceIBM3270AppManager;
-
+	IBM3270Commons ibm3270Commons;
 
 	/**
 	 * Startup method. This <code>startUp</code> method is called prior to calling
@@ -62,18 +69,14 @@ public class IBM3270ManagerRobot implements IRobot {
 	}
 
 	/**
-	 * Action 'Open 3270' terminal
+	 * Set emulator (PCOMM or W3270)
 	 */
-	@JidokaMethod(name = "Open IBM Terminal", description ="Opens 3270/pcomm terminal")
-	public void open3270(
+	@JidokaMethod(name = "Set Emulator", description ="Sets the correct emulator type (PCOMM or W3270)")
+	public void setEmulator(
 			@JidokaParameter(
 					name = "Nested parameters",
 					type = EJidokaParameterType.NESTED,
 					nestedParameters = {
-							@JidokaNestedParameter(
-									name = INSTALL_PATH,
-									id = INSTALL_PATH
-							),
 							@JidokaNestedParameter(
 									name = WINDOW_TITLE_XPATH,
 									id = WINDOW_TITLE_XPATH
@@ -84,10 +87,13 @@ public class IBM3270ManagerRobot implements IRobot {
 							)
 					}
 			) SDKParameterMap parameters) {
-		server.info("Opening 3270 terminal");
-		intanceIBM3270AppManager = IBM3270AppManager.openIBM3270(parameters.get(INSTALL_PATH).toString(), parameters.get(WINDOW_TITLE_XPATH).toString(), this, parameters.get(EMULATOR_TYPE).toString());
-		client.pause(2000);
-//		server.sendScreen("Screenshot after opening the terminal");
+		if (parameters.get(EMULATOR_TYPE).toString().toUpperCase().equals("WC3270")) {
+			ibm3270Commons = new WC3270EmulatorCommons(this, parameters.get(WINDOW_TITLE_XPATH).toString());
+		} else if (parameters.get(EMULATOR_TYPE).toString().toUpperCase().equals("PCOMM")) {
+			ibm3270Commons = new PCOMMEmulatorCommons(this, parameters.get(WINDOW_TITLE_XPATH).toString());
+		} else {
+			throw new JidokaFatalException("Only [WC3270] , [PCOMM] or [PARTENON] emulTypes are valid");
+		}
 	}
 
 	/**
@@ -105,14 +111,14 @@ public class IBM3270ManagerRobot implements IRobot {
 					)
 			}
 			) SDKParameterMap parameters) throws JidokaException {
-//		Point textLocation = intanceIBM3270AppManager.getTextPosition(server.getWorkflowVariables().get("textToLocate").getValue().toString());
-		Point textLocation = intanceIBM3270AppManager.getTextPosition(parameters.get(TEXT_TO_LOCATE).toString());
-		if (textLocation==null) {
+			TextInScreen displayedText = ibm3270Commons.locateText(1, false, null, parameters.get(TEXT_TO_LOCATE).toString());
+			if (displayedText != null) {
+				Point textLocation = displayedText.getPointInScreen();
+				List<Integer> result = Arrays.asList(textLocation.getLocation().x, textLocation.getLocation().y);
+				return result;
+			}
 			return null;
 		}
-		List<Integer> result = Arrays.asList(textLocation.getLocation().x, textLocation.getLocation().y);
-		return result;
-	}
 
 	/**
 	 * Action 'Go to Text Position'.
@@ -131,16 +137,113 @@ public class IBM3270ManagerRobot implements IRobot {
 					)
 			}
 	) SDKParameterMap parameters) throws JidokaException {
-		intanceIBM3270AppManager.write(parameters.get(TEXT_TO_LOCATE).toString(), 0, 0, "", 3);
+		ibm3270Commons.moveToCoordinates(parameters.get(TEXT_TO_LOCATE).toString(), 0, 0, 3);
 	}
 
 	/**
-	 * Action 'Close 3270'.
-	 * @throws IOException
+	 * Action 'Go to Text Position'.
+	 *
+	 * @throws JidokaException
 	 */
-	public void close3270() throws IOException {
-		server.info("Closing IBM3270 terminal");
-		intanceIBM3270AppManager.close();
+	@JidokaMethod(name = "Go to Coordinates", description ="Takes in a x y int list coordinates and goes to that position in emulator")
+	public void goToCoordinates(
+			@JidokaParameter(
+					name = "Nested parameters",
+					type = EJidokaParameterType.NESTED,
+					nestedParameters = {
+							@JidokaNestedParameter(
+									name = X_COORDINATE,
+									id = X_COORDINATE
+							),
+							@JidokaNestedParameter(
+									name = Y_COORDINATE,
+									id = Y_COORDINATE
+							)
+					}
+			) SDKParameterMap parameters) throws JidokaException {
+		ibm3270Commons.moveToCoordinates(Integer.valueOf(parameters.get(X_COORDINATE).toString()),Integer.valueOf(parameters.get(Y_COORDINATE).toString()));
+	}
+
+	/**
+	 * Action 'Write Here'.
+	 *
+	 * @throws JidokaException
+	 */
+	@JidokaMethod(name = "Write Here", description ="Writes text in emulator at current location (handles slow typing & special characters")
+	public void writeHere(
+			@JidokaParameter(
+					name = "Nested parameters",
+					type = EJidokaParameterType.NESTED,
+					nestedParameters = {
+							@JidokaNestedParameter(
+									name = TEXT_TO_WRITE,
+									id = TEXT_TO_WRITE
+							)
+					}
+			) SDKParameterMap parameters) throws JidokaException {
+		ibm3270Commons.write(parameters.get(TEXT_TO_WRITE).toString());
+	}
+
+	/**
+	 * Action 'Write at Coordinates'.
+	 *
+	 * @throws JidokaException
+	 */
+	@JidokaMethod(name = "Write at Coordinates", description ="Writes text in emulator at specified location (handles slow typing & special characters")
+	public void writeAtCoordinates(
+			@JidokaParameter(
+					name = "Nested parameters",
+					type = EJidokaParameterType.NESTED,
+					nestedParameters = {
+							@JidokaNestedParameter(
+									name = X_COORDINATE,
+									id = X_COORDINATE
+							),
+							@JidokaNestedParameter(
+									name = Y_COORDINATE,
+									id = Y_COORDINATE
+							),
+									@JidokaNestedParameter(
+									name = TEXT_TO_WRITE,
+									id = TEXT_TO_WRITE
+							)
+					}
+			) SDKParameterMap parameters) throws JidokaException {
+		ibm3270Commons.moveToCoordinates(Integer.valueOf(parameters.get(X_COORDINATE).toString()),Integer.valueOf(parameters.get(Y_COORDINATE).toString()));
+		ibm3270Commons.write(parameters.get(TEXT_TO_WRITE).toString());
+	}
+
+	/**
+	 * Action 'Write at Label'.
+	 *
+	 * @throws JidokaException
+	 */
+	@JidokaMethod(name = "Write at Label", description ="Writes text in emulator at specified label with optional offset (handles slow typing & special characters")
+	public void writeAtLabel(
+			@JidokaParameter(
+					name = "Nested parameters",
+					type = EJidokaParameterType.NESTED,
+					nestedParameters = {
+							@JidokaNestedParameter(
+									name = FIELD_LABEL,
+									id = FIELD_LABEL
+							),
+							@JidokaNestedParameter(
+									name = X_OFFSET,
+									id = X_OFFSET
+							),
+							@JidokaNestedParameter(
+									name = Y_OFFSET,
+									id = Y_OFFSET
+							),
+							@JidokaNestedParameter(
+									name = TEXT_TO_WRITE,
+									id = TEXT_TO_WRITE
+							)
+					}
+			) SDKParameterMap parameters) throws JidokaException {
+		ibm3270Commons.moveToCoordinates(parameters.get(FIELD_LABEL).toString(),Integer.valueOf(parameters.get(X_OFFSET).toString()),Integer.valueOf(parameters.get(Y_OFFSET).toString()),3);
+		ibm3270Commons.write(parameters.get(TEXT_TO_WRITE).toString());
 	}
 
 	/**
@@ -159,8 +262,8 @@ public class IBM3270ManagerRobot implements IRobot {
 	 */
 	@Override
 	public String[] cleanUp() throws Exception {
-		if (intanceIBM3270AppManager!=null) {
-			intanceIBM3270AppManager.close();
+		if (ibm3270Commons!=null) {
+			ibm3270Commons.close();
 		}
 		return IRobot.super.cleanUp();
 	}

@@ -9,3 +9,5 @@ target/
 .sonarlint
 *.iml
 *.xml
+snippets-examples/robot-snippet-3270/.idea/.name
+snippets-examples/robot-3270-snippet/.idea/.name
