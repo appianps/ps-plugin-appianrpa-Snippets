@@ -18,6 +18,7 @@ import java.util.List;
 public class IBM3270Library implements INano {
 
 	private static final String TEXT_TO_LOCATE = "Text to Locate";
+	private static final String LINE_NUMBER = "Line Number";
 	private static final String WINDOW_TITLE_XPATH = "Window Title Xpath";
 	private static final String EMULATOR_TYPE = "Emulator Type";
 	private static final String X_COORDINATE = "X Coordinate";
@@ -101,6 +102,27 @@ public class IBM3270Library implements INano {
 		}
 
 	/**
+	 * Action 'Get Text at Line'
+	 */
+	@JidokaMethod(name = "Get Text at Line", description = "IBM3270Library:v1.0.0: Takes in a line number (emulator y coordinate starting at 1) and returns the text at that line")
+	public String getTextAtLine(
+			@JidokaParameter(
+					name = "Nested parameters",
+					type = EJidokaParameterType.NESTED,
+					nestedParameters = {
+							@JidokaNestedParameter(
+									name = LINE_NUMBER,
+									id = LINE_NUMBER
+							)
+					}
+			) SDKParameterMap parameters) throws JidokaException {
+		List<String> screen;
+		screen = ibm3270Commons.scrapScreen();
+		String rowText = screen.get(Integer.valueOf(parameters.get(LINE_NUMBER).toString())-1);
+		return rowText;
+	}
+
+	/**
 	 * Action 'Go to Text Position'.
 	 *
 	 * @throws JidokaException
@@ -121,7 +143,7 @@ public class IBM3270Library implements INano {
 	}
 
 	/**
-	 * Action 'Go to Text Position'.
+	 * Action 'Go to Coordinates'.
 	 *
 	 * @throws JidokaException
 	 */

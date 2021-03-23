@@ -221,7 +221,7 @@ public abstract class IBM3270Commons {
 
 							Matcher m = p.matcher(screen.get(y));
 							if (m.find()) {
-								server.warn("Texto Match " + screen.get(y));
+								server.warn("Text Match " + screen.get(y));
 								int x = screen.get(y).indexOf(t);
 
 								TextInScreen res = new TextInScreen();
