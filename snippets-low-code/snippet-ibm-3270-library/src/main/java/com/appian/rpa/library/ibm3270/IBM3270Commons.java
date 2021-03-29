@@ -2,6 +2,7 @@ package com.appian.rpa.library.ibm3270;
 
 import java.awt.Point;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -9,13 +10,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.novayre.jidoka.client.api.*;
 import org.apache.commons.lang3.StringUtils;
 
-import com.novayre.jidoka.client.api.IJidokaServer;
-import com.novayre.jidoka.client.api.IKeyboard;
-import com.novayre.jidoka.client.api.IRobot;
-import com.novayre.jidoka.client.api.IWaitFor;
-import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.client.api.exceptions.JidokaUnsatisfiedConditionException;
 import com.novayre.jidoka.windows.api.IWindows;
@@ -39,6 +36,7 @@ public abstract class IBM3270Commons {
 
 	/** IRobot instance */
 	private IRobot robot;
+	private IJidokaRobot jrobot;
 
 	/** WaitFor instance */
 	private IWaitFor waitFor;
@@ -57,6 +55,7 @@ public abstract class IBM3270Commons {
 
 	/** Keyboard module instance */
 	protected IKeyboard keyboard;
+	protected IKeyboardSequence sequence;
 
 	protected String windowsTitle3270;
 
@@ -71,8 +70,12 @@ public abstract class IBM3270Commons {
 		this.server = JidokaFactory.getServer();
 		this.windows = IWindows.getInstance(robot);
 		this.robot = robot;
+		this.jrobot = IJidokaRobot.getInstance(robot);
+//		jrobot.setVariant(EKeyboardVariant.valueOf("ALT"));
 		waitFor = windows.waitFor(robot);
-		keyboard = windows.keyboard();
+//		keyboard = windows.keyboard();
+		keyboard = jrobot.getKeyboard();
+		sequence = jrobot.getKeyboardSequence();
 	}
 
 	/**
@@ -439,10 +442,20 @@ public abstract class IBM3270Commons {
 			if (toPressString.matches("[A-Za-z0-9]")) {
 				keyboard.type(toPressString);
 			} else {
-				windows.keyboardSequence().press(toPressChar).release(toPressChar).apply();
+				if (log) {
+					server.debug(String.format("Writing special character %s with variant %s", toPressChar, jrobot.getVariant()));
+				}
+				if (toPressChar=='!'){
+					if (log) {
+						server.debug(String.format("Found !, trying to type it"));
+					}
+					sequence.pressShift().press(KeyEvent.VK_1).release(KeyEvent.VK_1).releaseShift().apply();
+				} else{
+					windows.keyboardSequence().press(toPressChar).release(toPressChar).apply();
+				}
 			}
 
-			windows.pause(200);
+			windows.pause(100);
 		}
 
 		return this;
@@ -462,7 +475,7 @@ public abstract class IBM3270Commons {
 
 		if (pf > 12) {
 
-			windows.keyboardSequence().pressShift().typeFunction(pf - 12).releaseShift().apply();
+			sequence.pressShift().typeFunction(pf - 12).releaseShift().apply();
 
 		} else {
 
