@@ -36,7 +36,7 @@ public abstract class IBM3270Commons {
 
 	/** IRobot instance */
 	private IRobot robot;
-	private IJidokaRobot jrobot;
+//	private IJidokaRobot jrobot;
 
 	/** WaitFor instance */
 	private IWaitFor waitFor;
@@ -55,7 +55,6 @@ public abstract class IBM3270Commons {
 
 	/** Keyboard module instance */
 	protected IKeyboard keyboard;
-	protected IKeyboardSequence sequence;
 
 	protected String windowsTitle3270;
 
@@ -70,12 +69,15 @@ public abstract class IBM3270Commons {
 		this.server = JidokaFactory.getServer();
 		this.windows = IWindows.getInstance(robot);
 		this.robot = robot;
-		this.jrobot = IJidokaRobot.getInstance(robot);
-//		jrobot.setVariant(EKeyboardVariant.valueOf("ALT"));
 		waitFor = windows.waitFor(robot);
-//		keyboard = windows.keyboard();
-		keyboard = jrobot.getKeyboard();
-		sequence = jrobot.getKeyboardSequence();
+		keyboard = windows.keyboard();
+
+//		tried below out for typing special characters without success
+//		this.jrobot = IJidokaRobot.getInstance(robot);
+//		jrobot.setVariant(EKeyboardVariant.valueOf("ALT"));
+//		keyboard = jrobot.getKeyboard();
+//		sequence = jrobot.getKeyboardSequence();
+
 	}
 
 	/**
@@ -443,29 +445,70 @@ public abstract class IBM3270Commons {
 				keyboard.type(toPressString);
 			} else {
 				if (log) {
-					server.debug(String.format("Writing special character %s with variant %s", toPressChar, jrobot.getVariant()));
+					server.debug(String.format("Writing special character %s", toPressChar));
 				}
-				if (toPressChar=='!'){
-					if (log) {
-						server.debug(String.format("Found !, trying to type it"));
-					}
-					sequence.pressShift().press(KeyEvent.VK_1).release(KeyEvent.VK_1).releaseShift().apply();
-				} else{
-					windows.keyboardSequence().press(toPressChar).release(toPressChar).apply();
-				}
+				writeSpecial(toPressChar);
 			}
 
-			windows.pause(100);
+			windows.pause(200);
 		}
 
 		return this;
 	}
 
 	/**
+	 * Write Special Character
+	 *
+	 * @param toPressChar
+	 * @return IBM3270Commons instance
+	 */
+	public void writeSpecial(char toPressChar) {
+		switch (toPressChar) {
+
+			//	require shift key held down
+			case '~': windows.keyboardSequence().pressShift().press(KeyEvent.VK_BACK_QUOTE).release(KeyEvent.VK_BACK_QUOTE).releaseShift().apply(); break;
+			case '!': windows.keyboardSequence().pressShift().press(KeyEvent.VK_1).release(KeyEvent.VK_1).releaseShift().apply(); break;
+			case '@': windows.keyboardSequence().pressShift().press(KeyEvent.VK_2).release(KeyEvent.VK_2).releaseShift().apply(); break;
+			case '#': windows.keyboardSequence().pressShift().press(KeyEvent.VK_3).release(KeyEvent.VK_3).releaseShift().apply(); break;
+			case '$': windows.keyboardSequence().pressShift().press(KeyEvent.VK_4).release(KeyEvent.VK_4).releaseShift().apply(); break;
+			case '%': windows.keyboardSequence().pressShift().press(KeyEvent.VK_5).release(KeyEvent.VK_5).releaseShift().apply(); break;
+			case '^': windows.keyboardSequence().pressShift().press(KeyEvent.VK_6).release(KeyEvent.VK_6).releaseShift().apply(); break;
+			case '&': windows.keyboardSequence().pressShift().press(KeyEvent.VK_7).release(KeyEvent.VK_7).releaseShift().apply(); break;
+			case '*': windows.keyboardSequence().pressShift().press(KeyEvent.VK_8).release(KeyEvent.VK_8).releaseShift().apply(); break;
+			case '(': windows.keyboardSequence().pressShift().press(KeyEvent.VK_9).release(KeyEvent.VK_9).releaseShift().apply(); break;
+			case ')': windows.keyboardSequence().pressShift().press(KeyEvent.VK_0).release(KeyEvent.VK_0).releaseShift().apply(); break;
+			case '_': windows.keyboardSequence().pressShift().press(KeyEvent.VK_MINUS).release(KeyEvent.VK_MINUS).releaseShift().apply(); break;
+			case '+': windows.keyboardSequence().pressShift().press(KeyEvent.VK_EQUALS).release(KeyEvent.VK_EQUALS).releaseShift().apply(); break;
+			case '{': windows.keyboardSequence().pressShift().press(KeyEvent.VK_OPEN_BRACKET).release(KeyEvent.VK_OPEN_BRACKET).releaseShift().apply(); break;
+			case '}': windows.keyboardSequence().pressShift().press(KeyEvent.VK_CLOSE_BRACKET).release(KeyEvent.VK_CLOSE_BRACKET).releaseShift().apply(); break;
+			case '|': windows.keyboardSequence().pressShift().press(KeyEvent.VK_BACK_SLASH).release(KeyEvent.VK_BACK_SLASH).releaseShift().apply(); break;
+			case ':': windows.keyboardSequence().pressShift().press(KeyEvent.VK_SEMICOLON).release(KeyEvent.VK_SEMICOLON).releaseShift().apply(); break;
+			case '"': windows.keyboardSequence().pressShift().press(KeyEvent.VK_QUOTE).release(KeyEvent.VK_QUOTE).releaseShift().apply(); break;
+			case '<': windows.keyboardSequence().pressShift().press(KeyEvent.VK_COMMA).release(KeyEvent.VK_COMMA).releaseShift().apply(); break;
+			case '>': windows.keyboardSequence().pressShift().press(KeyEvent.VK_PERIOD).release(KeyEvent.VK_PERIOD).releaseShift().apply(); break;
+			case '?': windows.keyboardSequence().pressShift().press(KeyEvent.VK_SLASH).release(KeyEvent.VK_SLASH).releaseShift().apply(); break;
+
+			//	do not require shift key held down
+			case '-': windows.keyboardSequence().press(KeyEvent.VK_MINUS).release(KeyEvent.VK_MINUS).apply(); break;
+			case '=': windows.keyboardSequence().press(KeyEvent.VK_EQUALS).release(KeyEvent.VK_EQUALS).apply(); break;
+			case '`': windows.keyboardSequence().press(KeyEvent.VK_BACK_QUOTE).release(KeyEvent.VK_BACK_QUOTE).apply(); break;
+			case '[': windows.keyboardSequence().press(KeyEvent.VK_OPEN_BRACKET).release(KeyEvent.VK_OPEN_BRACKET).apply(); break;
+			case ']': windows.keyboardSequence().press(KeyEvent.VK_CLOSE_BRACKET).release(KeyEvent.VK_CLOSE_BRACKET).apply(); break;
+			case '\\': windows.keyboardSequence().press(KeyEvent.VK_BACK_SLASH).release(KeyEvent.VK_BACK_SLASH).apply(); break;
+			case ';': windows.keyboardSequence().press(KeyEvent.VK_SEMICOLON).release(KeyEvent.VK_SEMICOLON).apply(); break;
+			case '\'': windows.keyboardSequence().press(KeyEvent.VK_QUOTE).release(KeyEvent.VK_QUOTE).apply(); break;
+			case ',': windows.keyboardSequence().press(KeyEvent.VK_COMMA).release(KeyEvent.VK_COMMA).apply(); break;
+			case '.': windows.keyboardSequence().press(KeyEvent.VK_PERIOD).release(KeyEvent.VK_PERIOD).apply(); break;
+			case '/': windows.keyboardSequence().press(KeyEvent.VK_SLASH).release(KeyEvent.VK_SLASH).apply(); break;
+			case ' ': windows.keyboardSequence().press(KeyEvent.VK_SPACE).release(KeyEvent.VK_SPACE).apply(); break;
+			}
+		}
+
+	/**
 	 * Press PF
 	 * 
 	 * @param pf
-	 * @return IBM3270Commons instance
+	 * @return IWindows instance
 	 */
 	public IWindows pressPF(int pf) {
 
@@ -475,7 +518,7 @@ public abstract class IBM3270Commons {
 
 		if (pf > 12) {
 
-			sequence.pressShift().typeFunction(pf - 12).releaseShift().apply();
+			windows.keyboardSequence().pressShift().typeFunction(pf - 12).releaseShift().apply();
 
 		} else {
 
