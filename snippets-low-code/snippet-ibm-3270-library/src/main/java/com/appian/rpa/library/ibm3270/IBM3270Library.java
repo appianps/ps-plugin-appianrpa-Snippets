@@ -7,12 +7,16 @@ import com.novayre.jidoka.client.api.annotations.FieldLink;
 import com.novayre.jidoka.client.api.annotations.Nano;
 import com.novayre.jidoka.client.api.exceptions.JidokaException;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
+import com.novayre.jidoka.client.api.execution.IUsernamePassword;
 import com.novayre.jidoka.client.api.multios.IClient;
+import com.novayre.jidoka.client.lowcode.IRobotVariable;
+import jodd.util.StringUtil;
 
 import java.awt.*;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Nano
 public class IBM3270Library implements INano {
@@ -27,6 +31,9 @@ public class IBM3270Library implements INano {
 	private static final String FIELD_LABEL = "Field Label";
 	private static final String X_OFFSET = "X Offset";
 	private static final String Y_OFFSET = "Y Offset";
+	private static final String CREDS_APPLICATION = "Application Name for Credentials";
+	private static final String CREDS_USERNAME = "Username for Credentials";
+	private static final String CREDS_TYPE_IS_USERNAME = "Is Username? Otherwise Password";
 
 	/** Server instance */
 	private IJidokaServer<Serializable> server;
@@ -77,6 +84,68 @@ public class IBM3270Library implements INano {
 		}
 	}
 
+	/**
+	 * Enters credentials for an application with specific username
+	 * handling special character entry
+	 *
+	 */
+	@JidokaMethod(name = "Enter Credential", description = "IBM3270Library:v1.0.0: Enters credentials into emulator")
+	public void enterCredentialByUsername(
+			@JidokaParameter(
+					name = "Nested parameters",
+					type = EJidokaParameterType.NESTED,
+					nestedParameters = {
+							@JidokaNestedParameter(
+									name = CREDS_APPLICATION,
+									id = CREDS_APPLICATION
+							),
+							@JidokaNestedParameter(
+									name = CREDS_USERNAME,
+									id = CREDS_USERNAME
+							),
+							@JidokaNestedParameter(
+									name = CREDS_TYPE_IS_USERNAME,
+									id = CREDS_TYPE_IS_USERNAME,
+									clazz = "com.novayre.jidoka.client.api.EJidokaParameterBoolean",
+									type = EJidokaParameterType.ENUMERATOR,
+									rendition = {EJidokaParameterRendition.OPTIONS_EXPAND_HORIZONTALLY},
+									optionsService = EOptionsService.JIDOKA_PARAMETER_BOOLEAN
+							)
+					}
+			) SDKParameterMap parameters) throws JidokaFatalException {
+
+		CredentialsUtils credentialUtils = CredentialsUtils.getInstance();
+		EJidokaParameterBoolean isUsername = (EJidokaParameterBoolean) parameters.get(CREDS_TYPE_IS_USERNAME);
+		String application = parameters.get(CREDS_APPLICATION).toString();
+		String username = parameters.get(CREDS_USERNAME).toString();
+		IUsernamePassword credential = null;
+		Boolean reserveBool = false;
+//		Boolean reserveBool = (reserve == null || !reserve.equals("true")) ? false : true;
+
+		if (StringUtil.isBlank(username)) {
+
+			credential = credentialUtils.getCredentials(application, reserveBool, ECredentialSearch.DISTRIBUTED, 5);
+		} else {
+
+			credential = credentialUtils.getCredentialsByUser(application, username, reserveBool, 5);
+		}
+
+		if (credential == null) {
+			server.warn("Haven't found a credential for application " + application);
+			return;
+		}
+
+		server.debug("Found a credential for application " + application);
+
+		if(isUsername == EJidokaParameterBoolean.YES) {
+			ibm3270Commons.write(credential.getUsername(),false);
+		} else {
+			ibm3270Commons.write(credential.getPassword(),false);
+		}
+
+		credentialUtils.releaseCredentials(application,username);
+
+		}
 	/**
 	 * Action 'Find Text'
 	 */
