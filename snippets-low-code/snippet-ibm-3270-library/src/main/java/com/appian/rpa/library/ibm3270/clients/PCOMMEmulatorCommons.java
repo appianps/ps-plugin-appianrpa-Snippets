@@ -42,10 +42,9 @@ public class PCOMMEmulatorCommons extends IBM3270Commons {
 
 	/**
 	 * Default constructor
-	 * 
-	 * @param server
-	 * @param client
+	 *
 	 * @param robot
+	 * @param windowsTitle3270
 	 */
 	public PCOMMEmulatorCommons(IRobot robot, String windowsTitle3270) {
 
@@ -70,28 +69,40 @@ public class PCOMMEmulatorCommons extends IBM3270Commons {
 	 * Move the cursor to the designated coordinates
 	 */
 	@Override
-	public void moveToCoordinates(int targetXCoodinate, int targetYCoodinate) {
-		server.debug(String.format("We're moving to the coordinates (%d, %d)", targetXCoodinate, targetYCoodinate));
+	public void moveToCoordinates(int targetXCoodinate, int targetYCoodinate, boolean log) {
+		if (log) {
+			server.debug(String.format("We're moving to the coordinates (%d, %d)", targetXCoodinate, targetYCoodinate));
+		}
 		activateWindow();
 		Point cursorPos = getCursorCoordinates();
 		
 		if (cursorPos.x > targetXCoodinate) {
-			server.debug("Moving " + (cursorPos.x - targetXCoodinate) + " left.");
+			if (log) {
+				server.debug("Moving " + (cursorPos.x - targetXCoodinate) + " left.");
+			}
 			pressLeft(cursorPos.x - targetXCoodinate);
 		} else {
-			server.debug("Moving " + (targetXCoodinate - cursorPos.x) + " right.");
+			if (log) {
+				server.debug("Moving " + (targetXCoodinate - cursorPos.x) + " right.");
+			}
 			pressRight(targetXCoodinate - cursorPos.x);
 		}
 		
 		if (cursorPos.y > targetYCoodinate) {
-			server.debug("Moving " + (cursorPos.y - targetYCoodinate) + " up.");
+			if (log) {
+				server.debug("Moving " + (cursorPos.y - targetYCoodinate) + " up.");
+			}
 			pressUp(cursorPos.y - targetYCoodinate);
 		} else {
-			server.debug("Moving " + (targetYCoodinate - cursorPos.y) + " down.");
+			if (log) {
+				server.debug("Moving " + (targetYCoodinate - cursorPos.y) + " down.");
+			}
 			pressDown(targetYCoodinate - cursorPos.y);
 		}
 		cursorPos = getCursorCoordinates();
-		server.debug(String.format("Coordinates (%s, %s) reached.", cursorPos.x, cursorPos.y));
+		if (log) {
+			server.debug(String.format("Coordinates (%s, %s) reached.", cursorPos.x, cursorPos.y));
+		}
 	}
 
 	/**
@@ -129,7 +140,7 @@ public class PCOMMEmulatorCommons extends IBM3270Commons {
 			List<ListItem> components = getOIALines();
 			for (ListItem li : components) {
 
-				server.debug(li.getName());
+//				server.debug(li.getName());
 				int cursorX = 0, cursorY = 0;
 				if (StringUtils.isNotBlank(li.getName()) && li.getName().matches(CURSOR_INFO_REGEXP)) {
 					
@@ -158,16 +169,11 @@ public class PCOMMEmulatorCommons extends IBM3270Commons {
 	}
 	
 	private List<ListItem> getOIALines() throws AutomationException {
-		
-		server.debug("test 0");
+
 		Window window = automation.getDesktopWindow(Pattern.compile(windowsTitle3270));
-		
-		server.debug("test 1");
 		
 		try {
 			window.getList(0);
-			
-			server.debug("test 2");
 				
 		} catch (IndexOutOfBoundsException e) {
 			server.info("OIA is not visible, restoring.");
@@ -175,8 +181,6 @@ public class PCOMMEmulatorCommons extends IBM3270Commons {
 		}
 		
 		window = automation.getDesktopWindow(Pattern.compile(windowsTitle3270));
-		
-		server.debug("test 3");
 		
 		try {
 			window.getList(0); 
@@ -186,8 +190,6 @@ public class PCOMMEmulatorCommons extends IBM3270Commons {
 		}
 		
 		List<ListItem> components = window.getList(0).getItems();
-		
-		server.debug("test 4");
 		
 		return components;
 	}

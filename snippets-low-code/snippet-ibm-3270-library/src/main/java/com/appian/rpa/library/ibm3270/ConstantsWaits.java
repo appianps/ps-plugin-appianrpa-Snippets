@@ -8,22 +8,22 @@ public class ConstantsWaits {
 	/**
 	 * Default pause - to imitate human behavior
 	 */
-	public static final long DEFAULT_PAUSE = 500;
+	public static final long DEFAULT_PAUSE = 20;
 
 	/**
 	 * One second pause after Ctrl-G
 	 */
-	public static final long PAUSE_AFTER_CONTROL_G = 1000;
+	public static final long PAUSE_AFTER_CONTROL_G = 50;
 
 	/**
 	 * Pause typing - to imitate human behavior
 	 */
-	public static final long PAUSE_MENU_COPY = 100;
+	public static final long PAUSE_MENU_COPY = 15;
 
 	/**
 	 * Pause writing - to imitate human behavior
 	 */
-	public static final long DEFAULT_CHARACTER_PAUSE = 50;
+	public static final long DEFAULT_CHARACTER_PAUSE = 20;
 
 	/**
 	 * Default number of retries tying to locate a text

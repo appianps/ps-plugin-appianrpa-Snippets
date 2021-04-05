@@ -9,14 +9,12 @@ import com.novayre.jidoka.client.api.exceptions.JidokaException;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.client.api.execution.IUsernamePassword;
 import com.novayre.jidoka.client.api.multios.IClient;
-import com.novayre.jidoka.client.lowcode.IRobotVariable;
 import jodd.util.StringUtil;
 
 import java.awt.*;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @Nano
 public class IBM3270Library implements INano {
@@ -232,7 +230,7 @@ public class IBM3270Library implements INano {
 							)
 					}
 			) SDKParameterMap parameters) throws JidokaException {
-		ibm3270Commons.moveToCoordinates(Integer.valueOf(parameters.get(X_COORDINATE).toString()),Integer.valueOf(parameters.get(Y_COORDINATE).toString()));
+		ibm3270Commons.moveToCoordinates(Integer.valueOf(parameters.get(X_COORDINATE).toString()),Integer.valueOf(parameters.get(Y_COORDINATE).toString()),false);
 	}
 
 	/**
@@ -252,7 +250,7 @@ public class IBM3270Library implements INano {
 							)
 					}
 			) SDKParameterMap parameters) throws JidokaException {
-		ibm3270Commons.write(parameters.get(TEXT_TO_WRITE).toString());
+		ibm3270Commons.write(parameters.get(TEXT_TO_WRITE).toString(),true);
 	}
 
 	/**
@@ -280,8 +278,8 @@ public class IBM3270Library implements INano {
 							)
 					}
 			) SDKParameterMap parameters) throws JidokaException {
-		ibm3270Commons.moveToCoordinates(Integer.valueOf(parameters.get(X_COORDINATE).toString()),Integer.valueOf(parameters.get(Y_COORDINATE).toString()));
-		ibm3270Commons.write(parameters.get(TEXT_TO_WRITE).toString());
+		ibm3270Commons.moveToCoordinates(Integer.valueOf(parameters.get(X_COORDINATE).toString()),Integer.valueOf(parameters.get(Y_COORDINATE).toString()),false);
+		ibm3270Commons.write(parameters.get(TEXT_TO_WRITE).toString(),true);
 	}
 
 	/**
@@ -314,7 +312,6 @@ public class IBM3270Library implements INano {
 					}
 			) SDKParameterMap parameters) throws JidokaException {
 		ibm3270Commons.moveToCoordinates(parameters.get(FIELD_LABEL).toString(),Integer.valueOf(parameters.get(X_OFFSET).toString()),Integer.valueOf(parameters.get(Y_OFFSET).toString()),3);
-		ibm3270Commons.write(parameters.get(TEXT_TO_WRITE).toString());
+		ibm3270Commons.write(parameters.get(TEXT_TO_WRITE).toString(),false);
 	}
-
 }

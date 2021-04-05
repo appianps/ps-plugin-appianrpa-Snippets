@@ -91,7 +91,7 @@ public abstract class IBM3270Commons {
 	public void activateWindow() {
 
 		windows.activateWindow(windowsTitle3270);
-		windows.pause();
+		windows.pause(50);
 	}
 
 	public void close() throws IOException {
@@ -113,7 +113,7 @@ public abstract class IBM3270Commons {
 					Runtime.getRuntime().exec(cmd);
 					server.info("Emul 3270 process ended.");
 
-					windows.pause(2000);
+					windows.pause(1000);
 				} else {
 					server.warn("Error closing Emul 3270");
 				}
@@ -124,7 +124,7 @@ public abstract class IBM3270Commons {
 	/**
 	 * Abstract method to move the cursor to the bottom right corner of the screen
 	 */
-	public abstract void moveToCoordinates(int targetXCoodinate, int targetYCoodinate);
+	public abstract void moveToCoordinates(int targetXCoodinate, int targetYCoodinate, boolean log);
 
 	/**
 	 * Abstract method to split the lines of text on the screen
@@ -242,7 +242,7 @@ public abstract class IBM3270Commons {
 
 				} while (!samePage);
 
-				windows.pause(1000);
+				windows.pause(500);
 				return false;
 			});
 
@@ -281,9 +281,9 @@ public abstract class IBM3270Commons {
 
 			activateWindow();
 
-			server.debug("Getting all the text on the active screen");
+//			server.debug("Getting all the text on the active screen");
 
-			windows.characterPause(500);
+			windows.characterPause(300);
 
 			selectAllText();
 
@@ -295,7 +295,7 @@ public abstract class IBM3270Commons {
 
 				throw new JidokaFatalException("Unable to read the screen");
 			}
-			server.warn("Text " + screen);
+//			server.warn("Text " + screen);
 
 			String[] lines = splitScreenLines(screen);
 
@@ -309,7 +309,8 @@ public abstract class IBM3270Commons {
 
 		} catch (Exception e) {
 			throw new JidokaFatalException(e.getMessage(), e);
-		} finally {
+		}
+		finally {
 			windows.characterPause(0);
 		}
 
@@ -403,7 +404,7 @@ public abstract class IBM3270Commons {
 
 		int targetXCoodinate = (int) (pointOnScreen.getX() + offsetX);
 		int targetYCoodinate = (int) (pointOnScreen.getY() + offsetY);
-		moveToCoordinates(targetXCoodinate, targetYCoodinate);
+		moveToCoordinates(targetXCoodinate, targetYCoodinate,false);
 	}
 
 	/**
@@ -435,24 +436,34 @@ public abstract class IBM3270Commons {
 		if (log) {
 			server.debug(String.format("Writing text %s", text));
 		}
-
-		for (int i = 0; i < text.length(); i++) {
-			String toPressString = text.substring(i, i + 1);
-
-			char toPressChar = toPressString.charAt(0);
-
-			if (toPressString.matches("[A-Za-z0-9]")) {
-				keyboard.type(toPressString);
-			} else {
-				if (log) {
-					server.debug(String.format("Writing special character %s", toPressChar));
-				}
-				writeSpecial(toPressChar);
+		if(text.matches("^[A-Za-z0-9]*$")){
+			windows.characterPause(25);
+			keyboard.type(text);
+			if (log) {
+				server.debug("Typing all text "+ text + " with pause " + windows.getCharacterPause());
 			}
+			windows.characterPause(0);
+		} else{
+			if (log) {
+				server.debug("Typing single characters "+ text);
+			}
+			for (int i = 0; i < text.length(); i++) {
+				String toPressString = text.substring(i, i + 1);
 
-			windows.pause(200);
+				char toPressChar = toPressString.charAt(0);
+
+				if (toPressString.matches("[A-Za-z0-9]")) {
+					keyboard.type(toPressString);
+				} else {
+					if (log) {
+						server.debug(String.format("Writing special character %s", toPressChar));
+					}
+					writeSpecial(toPressChar);
+				}
+
+				windows.pause(25);
+			}
 		}
-
 		return this;
 	}
 
@@ -525,7 +536,7 @@ public abstract class IBM3270Commons {
 			keyboard.function(pf);
 		}
 
-		windows.pause();
+		windows.pause(5);
 
 		return windows;
 	}
@@ -541,7 +552,7 @@ public abstract class IBM3270Commons {
 
 		server.debug("Pressing enter");
 
-		keyboard.enter().pause();
+		keyboard.enter();
 
 		return this;
 	}
@@ -568,7 +579,7 @@ public abstract class IBM3270Commons {
 
 		server.debug("Pressing tab");
 
-		keyboard.tab().pause();
+		keyboard.tab();
 
 		return this;
 	}
@@ -593,7 +604,7 @@ public abstract class IBM3270Commons {
 
 		activateWindow();
 
-		keyboard.left(repetition).pause();
+		keyboard.left(repetition);
 
 		return this;
 	}
@@ -618,7 +629,7 @@ public abstract class IBM3270Commons {
 
 		activateWindow();
 
-		keyboard.right(repetition).pause();
+		keyboard.right(repetition);
 
 		return this;
 	}
@@ -643,7 +654,7 @@ public abstract class IBM3270Commons {
 
 		activateWindow();
 
-		keyboard.down(repetition).pause();
+		keyboard.down(repetition);
 
 		return this;
 	}
@@ -668,7 +679,7 @@ public abstract class IBM3270Commons {
 
 		activateWindow();
 
-		keyboard.up(repetition).pause();
+		keyboard.up(repetition);
 
 		return this;
 	}

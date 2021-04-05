@@ -48,15 +48,15 @@ public class WC3270EmulatorCommons extends IBM3270Commons {
 	 * Move the cursor to the designated coordinates
 	 */
 	@Override
-	public void moveToCoordinates(int targetXCoodinate, int targetYCoodinate) {
+	public void moveToCoordinates(int targetXCoodinate, int targetYCoodinate, boolean log) {
 		server.debug(String.format("We're moving to the coordinates (%d, %d)", targetYCoodinate, targetXCoodinate));
 		activateWindow();
 		keyboard.down().pause();
 		moveToBottomRightCorner();
-		windows.characterPause(10);
+		windows.characterPause(15);
 		keyboard.left(getMaxCoordX() - targetXCoodinate);
 		keyboard.up(getMaxCoordY() - targetYCoodinate);
-		windows.characterPause(ConstantsWaits.DEFAULT_CHARACTER_PAUSE);
+		windows.characterPause(15);
 	}
 
 	/**
