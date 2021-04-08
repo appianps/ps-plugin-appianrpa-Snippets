@@ -2,6 +2,8 @@ package com.appian.rpa.library.ibm3270;
 
 import com.appian.rpa.library.ibm3270.clients.PCOMMEmulatorCommons;
 import com.appian.rpa.library.ibm3270.clients.WC3270EmulatorCommons;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.novayre.jidoka.client.api.*;
 import com.novayre.jidoka.client.api.annotations.FieldLink;
 import com.novayre.jidoka.client.api.annotations.Nano;
@@ -12,8 +14,9 @@ import com.novayre.jidoka.client.api.multios.IClient;
 import jodd.util.StringUtil;
 
 import java.awt.*;
+import java.io.IOException;
 import java.io.Serializable;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
 
 @Nano
@@ -32,6 +35,10 @@ public class IBM3270Library implements INano {
 	private static final String CREDS_APPLICATION = "Application Name for Credentials";
 	private static final String CREDS_USERNAME = "Username for Credentials";
 	private static final String CREDS_TYPE_IS_USERNAME = "Is Username? Otherwise Password";
+	private static final String BULK_X_COORDINATES = "Bulk X Coordinates (list)";
+	private static final String BULK_Y_COORDINATES = "Bulk Y Coordinates (list)";
+	private static final String BULK_TEXT_TO_WRITE = "Bulk Text to Write (list)";
+	private static final String BULK_TEXT_AND_COORDINATES = "Bulk Test & XY Coordinates (JSON)";
 
 	/** Server instance */
 	private IJidokaServer<Serializable> server;
@@ -250,7 +257,7 @@ public class IBM3270Library implements INano {
 							)
 					}
 			) SDKParameterMap parameters) throws JidokaException {
-		ibm3270Commons.write(parameters.get(TEXT_TO_WRITE).toString(),true);
+		ibm3270Commons.write(parameters.get(TEXT_TO_WRITE).toString(),false);
 	}
 
 	/**
@@ -279,7 +286,36 @@ public class IBM3270Library implements INano {
 					}
 			) SDKParameterMap parameters) throws JidokaException {
 		ibm3270Commons.moveToCoordinates(Integer.valueOf(parameters.get(X_COORDINATE).toString()),Integer.valueOf(parameters.get(Y_COORDINATE).toString()),false);
-		ibm3270Commons.write(parameters.get(TEXT_TO_WRITE).toString(),true);
+		ibm3270Commons.write(parameters.get(TEXT_TO_WRITE).toString(),false);
+	}
+
+	/**
+	 * Action 'Bulk Write at Coordinates'.
+	 *
+	 * @throws JidokaException
+	 */
+	@JidokaMethod(name = "Bulk Write at Coordinates", description ="IBM3270Library:v1.0.0: Writes text in bulk at specified locations (handles slow typing & special characters")
+	public void bulkWriteAtCoordinates(
+			@JidokaParameter(
+					name = "Nested parameters",
+					type = EJidokaParameterType.NESTED,
+					nestedParameters = {
+							@JidokaNestedParameter(
+									name = BULK_TEXT_AND_COORDINATES,
+									id = BULK_TEXT_AND_COORDINATES,
+									instructionalText = "Expects JSON list object with fields 'text', 'x', and 'y' - for example a!toJson({{text:\"test1\",x:1,y:1},{text:\"test2\",x:5,y:5}})"
+							)
+					}
+			) SDKParameterMap parameters) throws JidokaException, IOException {
+		String json = parameters.get(BULK_TEXT_AND_COORDINATES).toString();
+		ObjectMapper objectMapper = new ObjectMapper();
+		List<HashMap> hmap = objectMapper.readValue(json, List.class);
+//		server.debug("Map is: "+hmap);
+		for (int i = 0; i < hmap.size(); i++) {
+//			server.debug("begin loop, Key: "+hmap.get(i).keySet() + " & Value: " + hmap.get(i).entrySet());
+			ibm3270Commons.moveToCoordinates(Integer.valueOf((int)hmap.get(i).get("x")),Integer.valueOf((int)hmap.get(i).get("y")),false);
+			ibm3270Commons.write(hmap.get(i).get("text").toString(),false);
+		}
 	}
 
 	/**

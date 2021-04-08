@@ -283,7 +283,7 @@ public abstract class IBM3270Commons {
 
 //			server.debug("Getting all the text on the active screen");
 
-			windows.characterPause(300);
+			windows.characterPause(100);
 
 			selectAllText();
 
