@@ -3,54 +3,66 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.appian.rpa.snippets</groupId>
+	<groupId>com.appian.rpa.grifols.snippets</groupId>
 	<artifactId>snippet-credentials</artifactId>
-	<version>2.2.0-SNAPSHOT</version>
+	<version>7.4.0</version>
 	<packaging>jar</packaging>
 
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>
 		<artifactId>jidoka-robot-parent</artifactId>
-		<version>7.2.0</version>
+		<version>7.4.0</version>
 	</parent>
-	
+
 	<properties>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
 	</properties>
 	<profiles>
-
 		<profile>
-			<id>rpa-coe-lab</id>
+			<id>grifols-dev</id>
+
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
-			<distributionManagement>
-				<repository>
-					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
-				</repository>
-			</distributionManagement>
+
 			<repositories>
 				<repository>
-					<releases />
-					<snapshots />
-					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
+					<id>grifols-dev</id>
+					<url>https://grifols-dev.appiancloud.com/rpa/repo/</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
 				</repository>
+
 			</repositories>
+
 			<pluginRepositories>
 				<pluginRepository>
-					<releases />
-					<snapshots />
-					<id>rpa-coe-lab</id>
-					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
+					<id>grifols-dev</id>
+					<url>https://grifols-dev.appiancloud.com/rpa/repo/</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
 				</pluginRepository>
 			</pluginRepositories>
+			<distributionManagement>
+				<repository>
+					<id>grifols-dev</id>
+					<url>https://grifols-dev.appiancloud.com/rpa/repo/</url>
+					<layout>default</layout>
+				</repository>
+			</distributionManagement>
 		</profile>
 	</profiles>
-	
-		<build>
+
+	<build>
 		<plugins>
 			<!-- we want JDK 1.8 source and binary compatiblility -->
 			<plugin>
