@@ -2,7 +2,6 @@ package com.appian.rpa.library.ibm3270;
 
 import com.appian.rpa.library.ibm3270.clients.PCOMMEmulatorCommons;
 import com.appian.rpa.library.ibm3270.clients.WC3270EmulatorCommons;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.novayre.jidoka.client.api.*;
 import com.novayre.jidoka.client.api.annotations.FieldLink;
@@ -124,8 +123,7 @@ public class IBM3270Library implements INano {
 		String application = parameters.get(CREDS_APPLICATION).toString();
 		String username = parameters.get(CREDS_USERNAME).toString();
 		IUsernamePassword credential = null;
-		Boolean reserveBool = false;
-//		Boolean reserveBool = (reserve == null || !reserve.equals("true")) ? false : true;
+		Boolean reserveBool = true;
 
 		if (StringUtil.isBlank(username)) {
 
@@ -147,9 +145,6 @@ public class IBM3270Library implements INano {
 		} else {
 			ibm3270Commons.write(credential.getPassword(),false);
 		}
-
-		credentialUtils.releaseCredentials(application,username);
-
 		}
 	/**
 	 * Action 'Find Text'

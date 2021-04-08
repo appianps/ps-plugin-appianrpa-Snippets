@@ -460,7 +460,6 @@ public abstract class IBM3270Commons {
 					}
 					writeSpecial(toPressChar);
 				}
-
 				windows.pause(25);
 			}
 		}
