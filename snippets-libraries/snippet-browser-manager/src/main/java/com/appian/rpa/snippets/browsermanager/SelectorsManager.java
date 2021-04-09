@@ -17,7 +17,7 @@ import com.novayre.jidoka.browser.api.IWebBrowserSupport;
 import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
-import com.novayre.jidoka.client.api.multios.IClient;
+import com.novayre.jidoka.windows.api.IWindows;
 
 /**
  * Most of the web elements from a website (checkboxes, text, buttons) are
@@ -34,7 +34,7 @@ public class SelectorsManager {
 	protected IWebBrowserSupport browser;
 
 	/** Client module instance */
-	private IClient client;
+	private IWindows windows;
 
 	/** Selectors map */
 	private Map<String, String> selectorsMapper = new HashMap<>();
@@ -50,6 +50,9 @@ public class SelectorsManager {
 
 	/** Id selector suffix */
 	private static final String ID_SUFFIX = "id";
+	
+	/** Name selector suffix */
+	private static final String NAME_SUFFIX = "name";
 
 	/**
 	 * SelectorsManager Constructor
@@ -82,8 +85,8 @@ public class SelectorsManager {
 			throw new JidokaFatalException("Error reading the selectors file", ex);
 		}
 
-		this.client = IClient.getInstance(robot);
-		this.browser = IWebBrowserSupport.getInstance(robot, client);
+		this.windows = IWindows.getInstance(robot);
+		this.browser = IWebBrowserSupport.getInstance(robot, windows);
 	}
 
 	/**
@@ -100,7 +103,7 @@ public class SelectorsManager {
 	 * Finds the {@link WebElement} object using the selector saved in the selectors
 	 * file, which is found filtering by the given {@code key}. The selector key
 	 * must end in: {@link #XPATH_SUFFIX}, {@link #CSS_SUFFIX},
-	 * {@link #CLASSNAME_SUFFIX} or {@link #ID_SUFFIX}. If the key does not end in
+	 * {@link #CLASSNAME_SUFFIX}, {@link #ID_SUFFIX} or {@link #NAME_SUFFIX}. If the key does not end in
 	 * one of these suffixes, it is returned null.
 	 * 
 	 * @param key Selector key from selectors.properties file (String)
@@ -143,8 +146,10 @@ public class SelectorsManager {
 			return By.className(getSelector(key));
 		} else if (key.endsWith(ID_SUFFIX)) {
 			return By.id(getSelector(key));
+		} else if (key.endsWith(NAME_SUFFIX)) {
+			return By.name(getSelector(key));
 		} else {
-			return null;
+			throw new JidokaFatalException("Key: " + key + " is not correct or null");
 		}
 	}
 
@@ -152,7 +157,7 @@ public class SelectorsManager {
 	 * Find all {@link WebElement} objects using the selector saved in the selectors
 	 * file, which can be found searching by the given {@code key}. The selector key
 	 * must ends with {@link #XPATH_SUFFIX}, {@link #CSS_SUFFIX},
-	 * {@link #CLASSNAME_SUFFIX} or {@link #ID_SUFFIX}. If the key does not end with
+	 * {@link #CLASSNAME_SUFFIX}, {@link #ID_SUFFIX} or {@link#NAME_SUFFIX}. If the key does not end with
 	 * one of these suffixes, the function will return an empty list.
 	 * 
 	 * @param key Selector key on the selectors file
@@ -201,8 +206,7 @@ public class SelectorsManager {
 	
 	/**
 	 * Check if the {@link WebElement} exists in the DOM using the given {@link By}
-	 * @param by
-	 * @return
+	 * @param by By of the element to check
 	 */
 	public Boolean existsElement(By by) {
 
@@ -213,4 +217,5 @@ public class SelectorsManager {
 
 		return false;
 	}
+
 }

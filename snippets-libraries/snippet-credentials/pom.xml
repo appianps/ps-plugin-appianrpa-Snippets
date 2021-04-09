@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>
 		<artifactId>jidoka-robot-parent</artifactId>
-		<version>7.2.0</version>
+		<version>7.6.0</version>
 	</parent>
 	
 	<properties>
@@ -23,7 +23,7 @@
 		<profile>
 			<id>rpa-coe-lab</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<activeByDefault>false</activeByDefault>
 			</activation>
 			<distributionManagement>
 				<repository>
@@ -47,6 +47,48 @@
 					<url>https://rpa-coe-lab.appiancloud.com/rpa/repo/</url>
 				</pluginRepository>
 			</pluginRepositories>
+		</profile>
+		
+		<profile>
+			<id>grifols-dev</id>
+
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+
+			<repositories>
+				<repository>
+					<id>grifols-dev</id>
+					<url>https://grifols-dev.appiancloud.com/rpa/repo/</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</repository>
+
+			</repositories>
+
+			<pluginRepositories>
+				<pluginRepository>
+					<id>grifols-dev</id>
+					<url>https://grifols-dev.appiancloud.com/rpa/repo/</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</pluginRepository>
+			</pluginRepositories>
+			<distributionManagement>
+				<repository>
+					<id>grifols-dev</id>
+					<url>https://grifols-dev.appiancloud.com/rpa/repo/</url>
+					<layout>default</layout>
+				</repository>
+			</distributionManagement>
 		</profile>
 	</profiles>
 	
