@@ -3,7 +3,7 @@ package com.appian.rpa.snippets.browsermanager;
 import java.io.IOException;
 import java.io.Serializable;
 
-import org.openqa.selenium.NoSuchSessionException;
+import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -19,8 +19,8 @@ import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.client.api.exceptions.JidokaItemException;
 import com.novayre.jidoka.client.api.exceptions.JidokaUnsatisfiedConditionException;
-import com.novayre.jidoka.client.api.multios.EClientShowWindowType;
-import com.novayre.jidoka.client.api.multios.IClient;
+import com.novayre.jidoka.windows.api.EShowWindowState;
+import com.novayre.jidoka.windows.api.IWindows;
 
 /**
  * This utility let the robot manage a web browser (Chrome, Firefox and
@@ -33,7 +33,7 @@ public class BrowserManager {
 	protected IWebBrowserSupport browser;
 
 	/** Client module instance */
-	private IClient client;
+	private IWindows windows;
 
 	/** WaitFor instance */
 	private IWaitFor waitFor;
@@ -57,10 +57,10 @@ public class BrowserManager {
 
 		IRobot robot = IRobot.getDummyInstance();
 
-		client = IClient.getInstance(robot);
-		waitFor = client.waitFor(robot);
+		windows = IWindows.getInstance(robot);
+		waitFor = windows.waitFor(robot);
 
-		browser = IWebBrowserSupport.getInstance(robot, client);
+		browser = IWebBrowserSupport.getInstance(robot, windows);
 		browser.setTimeoutSeconds(120);
 		selectorsManager = new SelectorsManager();
 		screenShotsManager = new ScreenshotsManager();
@@ -70,6 +70,9 @@ public class BrowserManager {
 		}
 
 		this.selectedBrowser = selectedBrowser;
+		
+		// Sets the browser type
+		browser.setBrowserType(this.selectedBrowser);
 		
 	}
 
@@ -90,9 +93,6 @@ public class BrowserManager {
 	public void openBrowser() {
 
 		try {
-
-			// Sets the browser type
-			browser.setBrowserType(this.selectedBrowser);
 
 			if (selectedBrowser.equals(EBrowsers.CHROME)) {
 				ChromeOptions options = new ChromeOptions();
@@ -137,9 +137,9 @@ public class BrowserManager {
 
 		try {
 			// Focus on app and activate the window on client module
-			client.activateWindow(getBrowserWindowTitle());
+			windows.activateWindow(getBrowserWindowTitle());
 
-			client.showWindow(client.getWindow(getBrowserWindowTitle()).getId(), EClientShowWindowType.MAXIMIZE);
+			windows.showWindow(windows.getWindow(getBrowserWindowTitle()).gethWnd(), EShowWindowState.SW_MAXIMIZE);
 
 			// Navigate to URL
 			browser.navigate(url);
@@ -162,26 +162,28 @@ public class BrowserManager {
 	 * 
 	 * @param url         as String contains the target website
 	 * @param selectorKey Selector key on the selectors.properties file
+	 * @param message Console message
+	 * @param seconds Waiting time in seconds
 	 * @return True if the element has been loaded
 	 * 
 	 */
-	public boolean navigateTo(String url, String selectorKey) {
+	public boolean navigateTo(String url, String selectorKey, String message, Integer seconds) {
 
 		navigateTo(url);
 
-		return waitForElement(selectorKey, 60);
+		return waitForElement(selectorKey, message, seconds);
 	}
 
 
 	/**
-	 * Waits for the given {@code selectorKey} element to load.
+	 * Waits for the given {@code selectorKey} element to load 10 seconds by default.
 	 * 
 	 * @param selectorKey Selector key on the selectors.properties file
 	 * @return True if the element has been loaded
 	 */
-	public boolean waitForElement(String selectorKey) {
+	public boolean waitForElement(String selectorKey, String message) {
 
-		return waitForElement(selectorKey, 10);
+		return waitForElement(selectorKey, message, 10);
 	}
 	
 	
@@ -189,13 +191,14 @@ public class BrowserManager {
 	 * Waits for the given {@code selectorKey} element to load.
 	 * 
 	 * @param selectorKey Selector key on the selectors.properties file
+	 * @param message Console message
 	 * @param seconds Waiting time in seconds
 	 * @return True if the element has been loaded
 	 */
-	public boolean waitForElement(String selectorKey, Integer seconds) {
+	public boolean waitForElement(String selectorKey, String message, Integer seconds) {
 
 		try {
-			return waitFor.wait(seconds, "Waiting for the web element to load", false, () -> {
+			return waitFor.wait(seconds, message, false, () -> {
 				try {
 
 					return selectorsManager.getElement(selectorKey) != null;
@@ -244,7 +247,7 @@ public class BrowserManager {
 
 			browser = null;
 
-		} catch (NoSuchSessionException | IOException e) {
+		} catch (Exception e) {
 			// Ignore exception
 		}
 	}
@@ -260,14 +263,14 @@ public class BrowserManager {
 		JidokaFactory.getServer().info("Killing webdriver process from windows module");
 		switch (selectedBrowser) {
 		case CHROME:
-			client.killAllProcesses("chromedriver.exe", 1000);
+			windows.killAllProcesses("chromedriver.exe", 1000);
 			break;
 		case INTERNET_EXPLORER:
-			client.killAllProcesses("IEDriverServer.exe", 1000);
-			client.killAllProcesses("iexplore.exe", 1000);
+			windows.killAllProcesses("IEDriverServer.exe", 1000);
+			windows.killAllProcesses("iexplore.exe", 1000);
 			break;
 		case FIREFOX:
-			client.killAllProcesses("geckodriver.exe", 1000);
+			windows.killAllProcesses("geckodriver.exe", 1000);
 			break;
 		default:
 			break;
@@ -293,20 +296,31 @@ public class BrowserManager {
 	}
 	
 	/**
-	 * Click on the given element 
-	 * @param selectorKey
-	 * @return
+	 * Click on the given element
+	 * @param selectorKey Selector key on the selectors.properties file
+	 * @return True if click was success
 	 */
 	public boolean clickOnElement(String selectorKeyClick) {
-		return clickOnElement(selectorKeyClick, null, 0);
+		
+		WebElement ele = selectorsManager.getElement(selectorKeyClick);
+		
+		try {	
+			ele.click();	
+		} catch (Exception e) {
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**
 	 * Click on the given element and wait until find another element
-	 * @param selectorKey
-	 * @return
+	 * @param selectorKey Selector key on the selectors.properties file
+	 * @param message Console message
+	 * @param seconds Waiting time in seconds
+	 * @return True if click was success
 	 */
-	public boolean clickOnElement(String selectorKeyClick, String selectorKeyWait, int waitTime) {
+	public boolean clickOnElement(String selectorKeyClick, String selectorKeyWait, String message, int seconds) {
 		
 		WebElement ele = selectorsManager.getElement(selectorKeyClick);
 		
@@ -318,21 +332,51 @@ public class BrowserManager {
 		
 		if (selectorKeyWait != null) {
 			
-			return waitForElement(selectorKeyWait, waitTime);
+			return waitForElement(selectorKeyWait, message, seconds);
 		}
 		
 		return true;
 	}
 	
 	/**
-	 * Send a string into the element
-	 * @param stringToSend
-	 * @param selectorKey
-	 * @return
+	 * Sets the given non-mandatory {@link WebElement} text
+	 * @param key Selector key on the selectors file
+	 * @param text Text to set on the given element
+	 * @param clear If true clears the found text field before setting the new value
 	 */
-	public void sendKeysOnElement(String stringToSend, String selectorKey) throws Exception {
+	public void setElementText(String key, String text, Boolean clear) {
 		
-		selectorsManager.getElement(selectorKey).sendKeys(stringToSend);
+		setElementText(key, text, clear, false);
+	}
+	
+	/**
+	 * Sets the given {@link WebElement} text
+	 * @param key Selector key on the selectors file
+	 * @param text Text to set on the given element
+	 * @param clear If true clears the found text field before setting the new value
+	 * @param mandatory True if the field is mandatory
+	 */
+	public void setElementText(String key, String text, Boolean clear, Boolean mandatory) {
+		if(!mandatory) {
+			if(!StringUtils.isEmpty(text)) {
+				browser.textFieldSet(selectorsManager.getBy(key), text, clear);
+			}
+		} else {
+			if(StringUtils.isEmpty(text)) {
+				throw new JidokaItemException("A mandatory field can't be null or empty");
+			} else {
+				browser.textFieldSet(selectorsManager.getBy(key), text, clear);	
+			}
+		}
+		
+	}
+	
+	/**
+	 * Moves to the given element
+	 * @param key Selector key on the selectors file
+	 */
+	public void moveToElement(String key) {
+		browser.moveTo(selectorsManager.getElement(key));
 	}
 	
 	/**

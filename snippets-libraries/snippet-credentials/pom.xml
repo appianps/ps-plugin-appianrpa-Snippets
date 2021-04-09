@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>com.novayre.jidoka.robot</groupId>
 		<artifactId>jidoka-robot-parent</artifactId>
-		<version>7.4.0</version>
+		<version>7.6.0</version>
 	</parent>
 
 	<properties>
@@ -19,6 +19,48 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 	</properties>
 	<profiles>
+		<profile>
+			<id>grifols-dev</id>
+
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+
+			<repositories>
+				<repository>
+					<id>grifols-dev</id>
+					<url>https://grifols-dev.appiancloud.com/rpa/repo/</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</repository>
+
+			</repositories>
+
+			<pluginRepositories>
+				<pluginRepository>
+					<id>grifols-dev</id>
+					<url>https://grifols-dev.appiancloud.com/rpa/repo/</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</pluginRepository>
+			</pluginRepositories>
+			<distributionManagement>
+				<repository>
+					<id>grifols-dev</id>
+					<url>https://grifols-dev.appiancloud.com/rpa/repo/</url>
+					<layout>default</layout>
+				</repository>
+			</distributionManagement>
+		</profile>
+		
 		<profile>
 			<id>grifols-dev</id>
 
