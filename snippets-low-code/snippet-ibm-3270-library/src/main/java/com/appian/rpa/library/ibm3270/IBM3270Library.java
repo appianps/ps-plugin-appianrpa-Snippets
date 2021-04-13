@@ -27,6 +27,7 @@ public class IBM3270Library implements INano {
 	private static final String EMULATOR_TYPE = "Emulator Type";
 	private static final String X_COORDINATE = "X Coordinate";
 	private static final String Y_COORDINATE = "Y Coordinate";
+	private static final String TEXT_LENGTH = "Text Length to Read";
 	private static final String TEXT_TO_WRITE = "Text to Write";
 	private static final String FIELD_LABEL = "Field Label";
 	private static final String X_OFFSET = "X Offset";
@@ -34,9 +35,6 @@ public class IBM3270Library implements INano {
 	private static final String CREDS_APPLICATION = "Application Name for Credentials";
 	private static final String CREDS_USERNAME = "Username for Credentials";
 	private static final String CREDS_TYPE_IS_USERNAME = "Is Username? Otherwise Password";
-	private static final String BULK_X_COORDINATES = "Bulk X Coordinates (list)";
-	private static final String BULK_Y_COORDINATES = "Bulk Y Coordinates (list)";
-	private static final String BULK_TEXT_TO_WRITE = "Bulk Text to Write (list)";
 	private static final String BULK_TEXT_AND_COORDINATES = "Bulk Test & XY Coordinates (JSON)";
 
 	/** Server instance */
@@ -63,7 +61,7 @@ public class IBM3270Library implements INano {
 	/**
 	 * Set emulator (PCOMM or W3270)
 	 */
-	@JidokaMethod(name = "Set Emulator", description ="IBM3270Library:v1.0.0: Sets the correct emulator type (PCOMM or W3270)")
+	@JidokaMethod(name = "IBM Set Emulator", description ="IBM3270Library:v1.0.0: Sets the correct emulator type (PCOMM or W3270)")
 	public void setEmulator(
 			@JidokaParameter(
 					name = "Nested parameters",
@@ -84,7 +82,7 @@ public class IBM3270Library implements INano {
 		} else if (parameters.get(EMULATOR_TYPE).toString().toUpperCase().equals("PCOMM")) {
 			ibm3270Commons = new PCOMMEmulatorCommons(robot, parameters.get(WINDOW_TITLE_XPATH).toString());
 		} else {
-			throw new JidokaFatalException("Only [WC3270] , [PCOMM] or [PARTENON] emulTypes are valid");
+			throw new JidokaFatalException("Only [WC3270] or [PCOMM] emulTypes are valid");
 		}
 	}
 
@@ -93,7 +91,7 @@ public class IBM3270Library implements INano {
 	 * handling special character entry
 	 *
 	 */
-	@JidokaMethod(name = "Enter Credential", description = "IBM3270Library:v1.0.0: Enters credentials into emulator")
+	@JidokaMethod(name = "IBM Enter Credential", description = "IBM3270Library:v1.0.0: Enters credentials into emulator")
 	public void enterCredentialByUsername(
 			@JidokaParameter(
 					name = "Nested parameters",
@@ -126,10 +124,8 @@ public class IBM3270Library implements INano {
 		Boolean reserveBool = true;
 
 		if (StringUtil.isBlank(username)) {
-
 			credential = credentialUtils.getCredentials(application, reserveBool, ECredentialSearch.DISTRIBUTED, 5);
 		} else {
-
 			credential = credentialUtils.getCredentialsByUser(application, username, reserveBool, 5);
 		}
 
@@ -149,7 +145,7 @@ public class IBM3270Library implements INano {
 	/**
 	 * Action 'Find Text'
 	 */
-	@JidokaMethod(name = "Find Text", description = "IBM3270Library:v1.0.0: Takes in a text string and returns the xy location (integer array) in the emulator")
+	@JidokaMethod(name = "IBM Find Text", description = "IBM3270Library:v1.0.0: Takes in a text string and returns the xy location (integer array) in the emulator")
 	public List<Integer> findText(
 			@JidokaParameter(
 			name = "Nested parameters",
@@ -173,7 +169,7 @@ public class IBM3270Library implements INano {
 	/**
 	 * Action 'Get Text at Line'
 	 */
-	@JidokaMethod(name = "Get Text at Line", description = "IBM3270Library:v1.0.0: Takes in a line number (emulator y coordinate starting at 1) and returns the text at that line")
+	@JidokaMethod(name = "IBM Get Text at Line", description = "IBM3270Library:v1.0.0: Takes in a line number (emulator y coordinate starting at 1) and returns the text at that line")
 	public String getTextAtLine(
 			@JidokaParameter(
 					name = "Nested parameters",
@@ -186,9 +182,47 @@ public class IBM3270Library implements INano {
 					}
 			) SDKParameterMap parameters) throws JidokaException {
 		List<String> screen;
-		screen = ibm3270Commons.scrapScreen();
+		screen = ibm3270Commons.scrapeScreen();
 		String rowText = screen.get(Integer.valueOf(parameters.get(LINE_NUMBER).toString())-1);
 		return rowText;
+	}
+
+	/**
+	 * Action 'Get Text at Coordinate'
+	 */
+	@JidokaMethod(name = "IBM Get Text at Coordinate", description = "IBM3270Library:v1.0.0: Takes in a coordinate(emulator x y coordinate starting at 1) and length of text to return from that line, then returns the text located there")
+	public String getTextAtCoordinate(
+			@JidokaParameter(
+					name = "Nested parameters",
+					type = EJidokaParameterType.NESTED,
+					nestedParameters = {
+							@JidokaNestedParameter(
+									name = X_COORDINATE,
+									id = X_COORDINATE
+							),
+							@JidokaNestedParameter(
+									name = Y_COORDINATE,
+									id = Y_COORDINATE
+							),
+							@JidokaNestedParameter(
+									name = TEXT_LENGTH,
+									id = TEXT_LENGTH
+							)
+					}
+			) SDKParameterMap parameters) throws JidokaException {
+		List<String> screen;
+		screen = ibm3270Commons.scrapeScreen();
+		Integer y = Integer.valueOf(parameters.get(Y_COORDINATE).toString());
+		Integer x = Integer.valueOf(parameters.get(X_COORDINATE).toString());
+		Integer length = Integer.valueOf(parameters.get(TEXT_LENGTH).toString());
+		String rowText = screen.get(y-1);
+		Integer min = x-1;
+		Integer max = x-1+length;
+		if(max>rowText.length()){
+			max = rowText.length();
+		}
+		String coordinateText = rowText.substring(min,max);
+		return coordinateText;
 	}
 
 	/**
@@ -196,7 +230,7 @@ public class IBM3270Library implements INano {
 	 *
 	 * @throws JidokaException
 	 */
-	@JidokaMethod(name = "Go to Text Position", description ="IBM3270Library:v1.0.0: Takes in a text string and goes to that position in emulator")
+	@JidokaMethod(name = "IBM Go to Text Position", description ="IBM3270Library:v1.0.0: Takes in a text string and goes to that position in emulator")
 	public void goToTextPosition(
 			@JidokaParameter(
 			name = "Nested parameters",
@@ -216,7 +250,7 @@ public class IBM3270Library implements INano {
 	 *
 	 * @throws JidokaException
 	 */
-	@JidokaMethod(name = "Go to Coordinates", description ="IBM3270Library:v1.0.0: Takes in a x y int list coordinates and goes to that position in emulator")
+	@JidokaMethod(name = "IBM Go to Coordinates", description ="IBM3270Library:v1.0.0: Takes in a x y int list coordinates and goes to that position in emulator")
 	public void goToCoordinates(
 			@JidokaParameter(
 					name = "Nested parameters",
@@ -240,7 +274,7 @@ public class IBM3270Library implements INano {
 	 *
 	 * @throws JidokaException
 	 */
-	@JidokaMethod(name = "Write Here", description ="IBM3270Library:v1.0.0: Writes text in emulator at current location (handles slow typing & special characters")
+	@JidokaMethod(name = "IBM Write Here", description ="IBM3270Library:v1.0.0: Writes text in emulator at current location (handles slow typing & special characters")
 	public void writeHere(
 			@JidokaParameter(
 					name = "Nested parameters",
@@ -260,7 +294,7 @@ public class IBM3270Library implements INano {
 	 *
 	 * @throws JidokaException
 	 */
-	@JidokaMethod(name = "Write at Coordinates", description ="IBM3270Library:v1.0.0: Writes text in emulator at specified location (handles slow typing & special characters")
+	@JidokaMethod(name = "IBM Write at Coordinates", description ="IBM3270Library:v1.0.0: Writes text in emulator at specified location (handles slow typing & special characters")
 	public void writeAtCoordinates(
 			@JidokaParameter(
 					name = "Nested parameters",
@@ -289,7 +323,7 @@ public class IBM3270Library implements INano {
 	 *
 	 * @throws JidokaException
 	 */
-	@JidokaMethod(name = "Bulk Write at Coordinates", description ="IBM3270Library:v1.0.0: Writes text in bulk at specified locations (handles slow typing & special characters")
+	@JidokaMethod(name = "IBM Bulk Write at Coordinates", description ="IBM3270Library:v1.0.0: Writes text in bulk at specified locations (handles slow typing & special characters")
 	public void bulkWriteAtCoordinates(
 			@JidokaParameter(
 					name = "Nested parameters",
@@ -318,7 +352,7 @@ public class IBM3270Library implements INano {
 	 *
 	 * @throws JidokaException
 	 */
-	@JidokaMethod(name = "Write at Label", description ="IBM3270Library:v1.0.0: Writes text in emulator at specified label with optional offset (handles slow typing & special characters")
+	@JidokaMethod(name = "IBM Write at Label", description ="IBM3270Library:v1.0.0: Writes text in emulator at specified label with optional offset (handles slow typing & special characters")
 	public void writeAtLabel(
 			@JidokaParameter(
 					name = "Nested parameters",

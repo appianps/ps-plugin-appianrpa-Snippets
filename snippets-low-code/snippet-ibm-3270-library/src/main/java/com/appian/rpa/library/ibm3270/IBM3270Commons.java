@@ -207,7 +207,7 @@ public abstract class IBM3270Commons {
 				List<String> screen;
 
 				if (cachedScreen == null) {
-					screen = scrapScreen();
+					screen = scrapeScreen();
 				} else {
 					screen = cachedScreen;
 				}
@@ -272,7 +272,7 @@ public abstract class IBM3270Commons {
 	 * 
 	 * @return List of lines on screen
 	 */
-	public List<String> scrapScreen() {
+	public List<String> scrapeScreen() {
 
 		List<String> res = null;
 		String screen = null;
