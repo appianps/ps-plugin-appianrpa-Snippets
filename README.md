@@ -25,7 +25,7 @@ An implementation can be found [here](https://github.com/appianps/ps-plugin-appi
 
 #### 2. [3270 Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-low-code/snippet-ibm-3270-library).
 
-The Snippet IBM3270 Manager covers some methods to ease the IBM3270 terminal management. USE THE LOW CODE WORKFLOW LIBRARY.
+The Snippet IBM3270 Manager covers some methods to ease the IBM3270 terminal management. Use the low code workflow library and NOT the java snippet / example.
 
 #### 3. [Credentials Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-credentials).
 
