@@ -3,13 +3,15 @@
 Snippet IBM3270 Manager Library is a low code workflow library to ease the management of an IBM3270 terminal using Appian RPA.
 # Main functions
 
-  - Set Emulator 
-  - Find Text
-  - Go to Text Position
-  - Go to Coordinates
-  - Write Here
-  - Write at Coordinates
-  - Write at Label (with Offset)
+  - IBM Set Emulator 
+  - IBM Find Text
+  - IBM Get Text at Line
+  - IBM Get Text at Coordinate
+  - IBM Go to Text Position
+  - IBM Go to Coordinates
+  - IBM Write Here
+  - IBM Write at Coordinates
+  - IBM Write at Label (with Offset)
   
 
 You can also:
@@ -17,4 +19,4 @@ You can also:
 
 ### Installation
 
-Snippet IBM3270 Manager Library is deployed using Maven
+Snippet IBM3270 Manager Library is deployed as a workflow library
