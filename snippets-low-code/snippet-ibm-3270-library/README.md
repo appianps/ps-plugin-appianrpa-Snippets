@@ -25,6 +25,8 @@ Snippet IBM3270 Manager Library is a low code workflow library to ease the manag
   - The X coordinate in these methods corresponds to the column number, starting at 1 and incrementing by 1 moving from left to right
   - The Y coordinate in these methids corresponds to the row number, starting at 1 and incrementing by 1 moving from top to bottom
   - The emulator will show the coordinate position (y,x) in the bottom right of the app and inside the OIA info bar if shown (View > Expanded OIA)
+  - To consolidate actions, use IBM Write at Coordinates instead of IBM Go to Coordinates then IBM Write Here
+  - To consolidate actions, use IBM Bulk Write at Coordinates when entering lots of data on the same screen
 
 # Method Details
 
@@ -72,4 +74,7 @@ Snippet IBM3270 Manager Library is a low code workflow library to ease the manag
   - Example is a!toJson({{text:"test1",x:1,y:1},{text:"test2",x:5,y:5}}
 
 ## IBM Write at Label (with Offset)
-  - Writes text at
+  - Writes text at the location of the first character of the search string
+  - Accepts offset for writing the text to the right of the label (x offset of len(pv!searchString)+1)
+  - Case sensitive
+  - Errors if text is not found
