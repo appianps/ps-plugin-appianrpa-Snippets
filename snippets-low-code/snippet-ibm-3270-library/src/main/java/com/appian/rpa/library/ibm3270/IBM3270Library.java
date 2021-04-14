@@ -87,6 +87,15 @@ public class IBM3270Library implements INano {
 	}
 
 	/**
+	 * Maximize Window
+	 */
+	@JidokaMethod(name = "IBM Maximize Window", description = "IBM3270Library:v1.0.0: Maximizes the window")
+	public void maximizeWindow()
+			throws JidokaFatalException {
+				ibm3270Commons.maximizeWindow();
+	}
+
+	/**
 	 * Enters credentials for an application with specific username
 	 * handling special character entry
 	 *
@@ -239,10 +248,18 @@ public class IBM3270Library implements INano {
 					@JidokaNestedParameter(
 							name = TEXT_TO_LOCATE,
 							id = TEXT_TO_LOCATE
+					),
+					@JidokaNestedParameter(
+							name = X_OFFSET,
+							id = X_OFFSET
+					),
+					@JidokaNestedParameter(
+							name = Y_OFFSET,
+							id = Y_OFFSET
 					)
 			}
 	) SDKParameterMap parameters) throws JidokaException {
-		ibm3270Commons.moveToCoordinates(parameters.get(TEXT_TO_LOCATE).toString(), 0, 0, 3);
+		ibm3270Commons.moveToCoordinates(parameters.get(TEXT_TO_LOCATE).toString(),Integer.valueOf(parameters.get(X_OFFSET).toString()),Integer.valueOf(parameters.get(Y_OFFSET).toString()),3);
 	}
 
 	/**
@@ -250,7 +267,7 @@ public class IBM3270Library implements INano {
 	 *
 	 * @throws JidokaException
 	 */
-	@JidokaMethod(name = "IBM Go to Coordinates", description ="IBM3270Library:v1.0.0: Takes in a x y int list coordinates and goes to that position in emulator")
+	@JidokaMethod(name = "IBM Go to Coordinates", description ="IBM3270Library:v1.0.0: Takes in a x y int list coordinates and goes to that position in emulator with an offset")
 	public void goToCoordinates(
 			@JidokaParameter(
 					name = "Nested parameters",

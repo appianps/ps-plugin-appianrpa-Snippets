@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.novayre.jidoka.client.api.*;
+import com.novayre.jidoka.windows.api.EShowWindowState;
 import org.apache.commons.lang3.StringUtils;
 
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
@@ -91,6 +92,15 @@ public abstract class IBM3270Commons {
 	public void activateWindow() {
 
 		windows.activateWindow(windowsTitle3270);
+		windows.pause(50);
+	}
+
+	/**
+	 * Maximize a window by title
+	 */
+	public void maximizeWindow() {
+
+		windows.showWindow(windows.getWindow(windowsTitle3270).gethWnd(), EShowWindowState.SW_MAXIMIZE);
 		windows.pause(50);
 	}
 
