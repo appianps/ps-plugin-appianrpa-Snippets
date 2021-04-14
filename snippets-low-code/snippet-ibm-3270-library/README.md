@@ -9,11 +9,12 @@ Snippet IBM3270 Manager Library is a low code workflow library to ease the manag
 # Main Methods
 
   - IBM Set Emulator
+  - IBM Maximize Window
   - IBM Enter Credential 
   - IBM Find Text
   - IBM Get Text at Line
   - IBM Get Text at Coordinate
-  - IBM Go to Text Position
+  - IBM Go to Text Position (with Offset)
   - IBM Go to Coordinates
   - IBM Write Here
   - IBM Write at Coordinates
@@ -22,6 +23,8 @@ Snippet IBM3270 Manager Library is a low code workflow library to ease the manag
 
 # Tips
 
+  - Use Appian keyboard low-code module method 'Types windows key + letter' (R) to start the application
+  - Use Appian low-code methods 'Activate Winow' and 'Types alt + function key' (4) to close the application
   - The X coordinate in these methods corresponds to the column number, starting at 1 and incrementing by 1 moving from left to right
   - The Y coordinate in these methids corresponds to the row number, starting at 1 and incrementing by 1 moving from top to bottom
   - The emulator will show the coordinate position (y,x) in the bottom right of the app and inside the OIA info bar if shown (View > Expanded OIA)
@@ -35,6 +38,9 @@ Snippet IBM3270 Manager Library is a low code workflow library to ease the manag
   - The emulator type (PCOMM or WC3270) must be passed because different logic is used by the workflow library depending on the emulator.
   - The window xpath for the emulator window title (example: .\*Session.\*) must be passed because the workflow library activates the window before every interaction
 
+## IBM Maximize Window
+  - Maximizes the emulator window
+  
 ## IBM Enter Credential
   - This method will get credentials from the Appian RPA Console and enter them into the emulator at the current cursor position, hanlding for special characters.
   - This method will reserve the credentials and release them once the robotic execution is complete (same as the OOTB credentials methods), which only matters if the credentials have a "max use" value set in the Appian RPA Console
@@ -49,10 +55,11 @@ Snippet IBM3270 Manager Library is a low code workflow library to ease the manag
   - Returns the text string of specified length starting at the speciified coordinate
   - This only returns text on the same line as the coordinate (stops at the end of the row)
 
-## IBM Go to Text Position
+## IBM Go to Text Position (with Offset)
   - Navigates to the location of the first character of the search string
+  - Accepts offset for moving to the right of the search string (x offset of len(pv!searchString)+1)
   - Case sensitive
-  - Errors if text is not found
+  - Designed to retry search 3 times, then exception if text not found (use IBM Find Text to check if text exists on screen as it handles nulls)
 
 ## IBM Go to Coordinates
   - Navigates to the specified XY location
@@ -77,4 +84,4 @@ Snippet IBM3270 Manager Library is a low code workflow library to ease the manag
   - Writes text at the location of the first character of the search string
   - Accepts offset for writing the text to the right of the label (x offset of len(pv!searchString)+1)
   - Case sensitive
-  - Errors if text is not found
+  - Designed to retry search 3 times, then exception if label not found (use IBM Find Text to check if text exists on screen as it handles nulls)
