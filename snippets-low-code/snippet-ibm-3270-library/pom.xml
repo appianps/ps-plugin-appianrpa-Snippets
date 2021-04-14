@@ -8,7 +8,7 @@
   <parent>
     <groupId>com.novayre.jidoka.robot</groupId>
     <artifactId>jidoka-robot-parent</artifactId>
-    <version>7.6.0</version>
+    <version>7.7.0</version>
   </parent>
   <profiles>
     <profile>
@@ -20,7 +20,7 @@
         <repository>
           <id>jidoka</id>
           <name>jidoka</name>
-          <url>https://lincolndev.appiancloud.com/rpa/repo/</url>
+          <url>https://appian-site.com/rpa/repo/</url>
         </repository>
       </distributionManagement>
       <repositories>
@@ -32,7 +32,7 @@
             <enabled>true</enabled>
           </snapshots>
           <id>jidoka</id>
-          <url>https://lincolndev.appiancloud.com/rpa/repo/</url>
+          <url>https://appian-site.com/rpa/repo/</url>
         </repository>
       </repositories>
       <pluginRepositories>
@@ -44,7 +44,7 @@
             <enabled>true</enabled>
           </snapshots>
           <id>jidoka</id>
-          <url>https://lincolndev.appiancloud.com/rpa/repo/</url>
+          <url>https://appian-site.com/rpa/repo/</url>
         </pluginRepository>
       </pluginRepositories>
     </profile>
