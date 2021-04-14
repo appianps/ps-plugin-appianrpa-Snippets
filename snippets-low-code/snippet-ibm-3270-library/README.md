@@ -52,7 +52,7 @@ Snippet IBM3270 Manager Library is a low code workflow library to ease the manag
 ## IBM Go to Text Position
   - Navigates to the location of the first character of the search string
   - Case sensitive
-  - Errors if text is not found
+  - Designed to retry search 3 times, then exception if text not found (use IBM Find Text to check if text exists on screen as it handles nulls)
 
 ## IBM Go to Coordinates
   - Navigates to the specified XY location
@@ -77,4 +77,4 @@ Snippet IBM3270 Manager Library is a low code workflow library to ease the manag
   - Writes text at the location of the first character of the search string
   - Accepts offset for writing the text to the right of the label (x offset of len(pv!searchString)+1)
   - Case sensitive
-  - Errors if text is not found
+  - Designed to retry search 3 times, then exception if label not found (use IBM Find Text to check if text exists on screen as it handles nulls)
