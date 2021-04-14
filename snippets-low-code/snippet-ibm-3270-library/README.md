@@ -13,7 +13,7 @@ Snippet IBM3270 Manager Library is a low code workflow library to ease the manag
   - IBM Find Text
   - IBM Get Text at Line
   - IBM Get Text at Coordinate
-  - IBM Go to Text Position
+  - IBM Go to Text Position (with Offset)
   - IBM Go to Coordinates
   - IBM Write Here
   - IBM Write at Coordinates
@@ -49,8 +49,9 @@ Snippet IBM3270 Manager Library is a low code workflow library to ease the manag
   - Returns the text string of specified length starting at the speciified coordinate
   - This only returns text on the same line as the coordinate (stops at the end of the row)
 
-## IBM Go to Text Position
+## IBM Go to Text Position (with Offset)
   - Navigates to the location of the first character of the search string
+  - Accepts offset for moving to the right of the search string (x offset of len(pv!searchString)+1)
   - Case sensitive
   - Designed to retry search 3 times, then exception if text not found (use IBM Find Text to check if text exists on screen as it handles nulls)
 
