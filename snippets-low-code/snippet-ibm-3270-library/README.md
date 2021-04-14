@@ -23,6 +23,10 @@ Snippet IBM3270 Manager Library is a low code workflow library to ease the manag
 # Method Details
 
 ## IBM Set Emulator
-This method must be called at the beginning of the RPA workflow, before calling any other IBM methods in the workflow library.
-The emulator type (PCOMM or WC3270) must be passed because different logic is used by the workflow library depending on the emulator.
-The window xpath for the emulator window title (example: .\*Session.\*) must be passed because the workflow library activates the window before every interaction
+  - This method must be called at the beginning of the RPA workflow, before calling any other IBM methods in the workflow library.
+  - The emulator type (PCOMM or WC3270) must be passed because different logic is used by the workflow library depending on the emulator.
+  - The window xpath for the emulator window title (example: .\*Session.\*) must be passed because the workflow library activates the window before every interaction
+
+## IBM Enter Credential
+  - This method will get credentials from the Appian RPA Console and enter them into the emulator at the current cursor position, hanlding for special characters.
+  - This method will reserve the credentials and release them once the robotic execution is complete (same as the OOTB credentials methods), which only matters if the credentials have a "max use" value set in the Appian RPA Console
