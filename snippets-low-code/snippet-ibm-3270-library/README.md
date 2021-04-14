@@ -20,6 +20,12 @@ Snippet IBM3270 Manager Library is a low code workflow library to ease the manag
   - IBM Bulk Write at Coordinates
   - IBM Write at Label (with Offset)
 
+# Tips
+
+  - The X coordinate in these methods corresponds to the column number, starting at 1 and incrementing by 1 moving from left to right
+  - The Y coordinate in these methids corresponds to the row number, starting at 1 and incrementing by 1 moving from top to bottom
+  - The emulator will show the coordinate position (y,x) in the bottom right of the app and inside the OIA info bar if shown (View > Expanded OIA)
+
 # Method Details
 
 ## IBM Set Emulator
@@ -30,3 +36,40 @@ Snippet IBM3270 Manager Library is a low code workflow library to ease the manag
 ## IBM Enter Credential
   - This method will get credentials from the Appian RPA Console and enter them into the emulator at the current cursor position, hanlding for special characters.
   - This method will reserve the credentials and release them once the robotic execution is complete (same as the OOTB credentials methods), which only matters if the credentials have a "max use" value set in the Appian RPA Console
+
+## IBM Find Text
+  - Returns the XY coordinate location (Appian data type of multiple number integer) of the search string
+
+## IBM Get Text at Line
+  - Returns the full text string on the specificed line number
+
+## IBM Get Text at Coordinate
+  - Returns the text string of specified length starting at the speciified coordinate
+  - This only returns text on the same line as the coordinate (stops at the end of the row)
+
+## IBM Go to Text Position
+  - Navigates to the location of the first character of the search string
+  - Case sensitive
+  - Errors if text is not found
+
+## IBM Go to Coordinates
+  - Navigates to the specified XY location
+
+## IBM Write Here
+  - Writes text at the current cursor position
+  - Handles special character entry and character pauses
+
+## IBM Write at Coordinates
+  - Writes text at the specified XY location
+  - Handles special character entry and character pauses
+  - Combination of IBM Go to Coordinates and IBM Write Here
+
+## IBM Bulk Write at Coordinates
+  - Writes multiple text strings at the specified XY locations
+  - Handles special character entry and character pauses
+  - Useful when entering lots of data on the same page
+  - Expects fields: text, x, y
+  - Example is a!toJson({{text:"test1",x:1,y:1},{text:"test2",x:5,y:5}}
+
+## IBM Write at Label (with Offset)
+  - Writes text at
