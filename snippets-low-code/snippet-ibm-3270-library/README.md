@@ -1,4 +1,4 @@
-# Snippet IBM3270 Manager
+# Appian RPA - IBM 3270 Workflow Library
 
 Snippet IBM3270 Manager Library is a low code workflow library to ease the management of an IBM3270 terminal using Appian RPA. These low code methods handle:
   - Entering special characters into the emulator for both regular text and credentials
