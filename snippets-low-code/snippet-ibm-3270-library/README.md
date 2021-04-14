@@ -6,7 +6,7 @@ The IBM 3270 Workflow Library is a low code workflow library to ease the managem
   - Navigating to input fields using calculations and keystrokes
   - Extracting text on the current screen via various selection parameters
 
-# Main Methods
+# Methods
 
   - IBM Set Emulator
   - IBM Maximize Window
@@ -24,9 +24,9 @@ The IBM 3270 Workflow Library is a low code workflow library to ease the managem
 # Tips
 
   - Use Appian keyboard low-code module method 'Types windows key + letter' (R) to start the application
-  - Use Appian low-code methods 'Activate Winow' and 'Types alt + function key' (4) to close the application
+  - Use Appian low-code methods 'Activate Window' and 'Types alt + function key' (4) to close the application
   - The X coordinate in these methods corresponds to the column number, starting at 1 and incrementing by 1 moving from left to right
-  - The Y coordinate in these methids corresponds to the row number, starting at 1 and incrementing by 1 moving from top to bottom
+  - The Y coordinate in these methods corresponds to the row number, starting at 1 and incrementing by 1 moving from top to bottom
   - The emulator will show the coordinate position (y,x) in the bottom right of the app and inside the OIA info bar if shown (View > Expanded OIA)
   - To consolidate actions, use IBM Write at Coordinates instead of IBM Go to Coordinates then IBM Write Here
   - To consolidate actions, use IBM Bulk Write at Coordinates when entering lots of data on the same screen
