@@ -13,6 +13,7 @@ import com.novayre.jidoka.client.api.multios.IClient;
 import jodd.util.StringUtil;
 
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
@@ -407,22 +408,59 @@ public class IBM3270Library implements INano {
 	@JidokaMethod(name = "IBM Try HACL", description = "IBM3270Library:v1.0.0: Trying HACL")
 	public void tryHacl() throws JidokaException, ECLErr, InterruptedException {
 		Properties prop = new Properties();
-		prop.put(ECLSession.SESSION_HOST, "cnp2.jp.corp");
-		prop.put(ECLSession.SESSION_HOST_PORT, "992");
-		prop.put(ECLSession.SESSION_TYPE, ECLSession.SESSION_TYPE_3270); // session type 3270,5250 or VT
-		prop.put(ECLSession.SESSION_CODE_PAGE, ECLSession.SESSION_CODE_PAGE_US);
+		File f = new File("C:\\Program Files (x86)\\IBM\\Personal Communications\\private\\GSO1tls-MAI.ws");
+		server.debug("Print file exists: " + f.exists());
+		prop.put("SESSION_HOST", "C:\\Program Files (x86)\\IBM\\Personal Communications\\private\\GSO1tls-MAI.ws");
+//		prop.put("SESSION_HOST", "GSO1tls-MAI.ws");
+//		prop.put("SESSION_HOST", "c:\\program files (x86)\\ibm\\personal communications\\private\\gso1tls-mai.ws");
 		prop.put("SESSION_WIN_STATE", "MAX");
 		prop.put("SESSION_VT_KEYPAD ", "SESSION_VT_KEYPAD_APPL");
-		ECLSession session = new ECLSession(prop);
-		session.StartCommunication();
-		Thread.sleep(5000);
-		session.connect();
-		ECLOIA eclOIA = session.GetOIA();
-		ECLPS ps = session.GetPS();
-		ps.SetCursorPos(5, 5);
-		ps.SendKeys("ABC");
-		ps.SetCursorPos(10, 10);
-		ps.SendKeys("XYZ");
-		session.StopCommunication();
+		prop.put("SESSION_VT_LOCAL_ECHO", "SESSION_VT_LOCAL_ECHO_ON");
+//		prop.put(ECLSession.SESSION_HOST, "cnp2.jp.corp");
+//		prop.put(ECLSession.SESSION_HOST_PORT, "992");
+		try {
+			ECLSession session = new ECLSession(prop);
+			server.debug("Print prop session host: " + prop.get(ECLSession.SESSION_HOST));
+			server.debug("Print prop port: " + prop.get(ECLSession.SESSION_HOST_PORT));
+			server.debug("Print session label: " + session.getSessionLabel());
+			server.debug("Print session protocol: " + session.getSecurityProtocol());
+			server.debug("Print session properties: " + session.getProperties());
+			session.StartCommunication();
+			Thread.sleep(5000);
+			if (!(session).IsCommStarted()) {
+				// Sleep a bit to wait for error notification.
+				//
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					server.debug("Exception: " + e.getMessage());
+				}
+			}
+			server.debug("Print IsCommStarted: " + session.IsCommStarted());
+			server.debug("Print isConnected: " + session.isConnected());
+//			session.connect();
+//			Thread.sleep(10000);
+//			server.debug("Print2 IsCommStarted: " + session.IsCommStarted());
+//			server.debug("Print2 isConnected: " + session.isConnected());
+			ECLOIA eclOIA = session.GetOIA();
+			ECLPS ps = session.GetPS();
+			server.debug("Print oia insert mode: " + eclOIA.IsInsertMode());
+			server.debug("Print ps1 row: " + ps.GetCursorRow());
+			server.debug("Print ps1 col: " + ps.GetCursorCol());
+			session.GetPS().SetCursorPos(10,10);
+			server.debug("Print ps2 row: " + ps.GetCursorRow());
+			server.debug("Print ps2 col: " + ps.GetCursorCol());
+			session.GetPS().SendKeys("XYZ");
+			char[] temp = new char[1921]; // Screen size is assumed to be 24x80
+			ps.GetScreen(temp, 1920, 1, 1920, ps.TEXT_PLANE);
+			server.debug("Print screen: " + new String(temp));
+			ECLFieldList fieldList = session.GetPS().GetFieldList();
+			server.debug("Print field: " + fieldList.FindField(1,2).getString());
+		} catch(ECLErr e) { System.out.println(e.GetMsgText()); }
+//		ps.SetCursorPos(5, 5);
+//		ps.SendKeys("ABC");
+//		ps.SetCursorPos(10, 10);
+//		ps.SendKeys("XYZ");
+//		session.StopCommunication();
 	}
 }
