@@ -423,7 +423,9 @@ public class IBM3270Library implements INano {
 			server.debug("Print prop session host: " + prop.get(ECLSession.SESSION_HOST));
 			server.debug("Print prop port: " + prop.get(ECLSession.SESSION_HOST_PORT));
 			server.debug("Print session label: " + session.getSessionLabel());
-			server.debug("Print session protocol: " + session.getSecurityProtocol());
+			server.debug("Print session host1: " + session.getHost(0));
+			server.debug("Print session host2: " + session.GetHost());
+			server.debug("Print session hostid: " + session.GetHostid());
 			server.debug("Print session properties: " + session.getProperties());
 			session.StartCommunication();
 			Thread.sleep(5000);
@@ -438,7 +440,7 @@ public class IBM3270Library implements INano {
 			}
 			server.debug("Print IsCommStarted: " + session.IsCommStarted());
 			server.debug("Print isConnected: " + session.isConnected());
-//			session.connect();
+			session.connect();
 //			Thread.sleep(10000);
 //			server.debug("Print2 IsCommStarted: " + session.IsCommStarted());
 //			server.debug("Print2 isConnected: " + session.isConnected());
