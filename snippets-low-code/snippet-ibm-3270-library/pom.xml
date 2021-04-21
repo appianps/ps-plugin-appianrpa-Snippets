@@ -74,5 +74,15 @@
       <artifactId>hodmain</artifactId>
       <version>1.0</version>
     </dependency>
+      <dependency>
+        <groupId>com.ibm.enetwork</groupId>
+        <artifactId>pcseclj</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>com.autorumba</groupId>
+        <artifactId>AutoRumba</artifactId>
+        <version>1.0</version>
+      </dependency>
 	</dependencies>
 </project>

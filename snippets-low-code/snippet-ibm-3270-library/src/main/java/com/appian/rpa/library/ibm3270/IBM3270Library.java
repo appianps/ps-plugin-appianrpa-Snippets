@@ -20,6 +20,8 @@ import java.util.*;
 import java.util.List;
 
 import com.ibm.eNetwork.ECL.*;
+import org.autorumba.operation.RumbaOperation;
+
 import java.lang.*;
 
 @Nano
@@ -464,5 +466,10 @@ public class IBM3270Library implements INano {
 //		ps.SetCursorPos(10, 10);
 //		ps.SendKeys("XYZ");
 //		session.StopCommunication();
+	}
+	@JidokaMethod(name = "IBM Try EHLAPI", description = "IBM3270Library:v1.0.0: Trying EHLAPI")
+	public void tryEhlapi() throws JidokaException, ECLErr, InterruptedException {
+		RumbaOperation rn = new RumbaOperation(1,"A");
+		System.out.println(rn.ReadFromScreen(10, 1, 1));
 	}
 }
