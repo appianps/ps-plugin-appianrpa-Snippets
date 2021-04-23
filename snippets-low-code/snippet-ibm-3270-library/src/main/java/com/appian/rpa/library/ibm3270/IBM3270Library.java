@@ -13,16 +13,12 @@ import com.novayre.jidoka.client.api.exceptions.JidokaException;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.client.api.execution.IUsernamePassword;
 import com.novayre.jidoka.client.api.multios.IClient;
-import com.sun.jna.Memory;
 import com.sun.jna.Native;
-import com.sun.jna.Pointer;
-import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.win32.W32APIOptions;
 import jodd.util.StringUtil;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.List;
 
@@ -148,10 +144,23 @@ public class IBM3270Library implements INano {
 	 * Maximize Window
 	 */
 	@JidokaMethod(name = "IBM Maximize Window", description = "IBM3270Library:v2.0.0: Maximizes the window")
-	public void maximizeWindow()
-			throws JidokaFatalException {
+	public void maximizeWindow(@JidokaParameter(
+			name = "Nested parameters",
+			type = EJidokaParameterType.NESTED,
+			nestedParameters = {
+					@JidokaNestedParameter(
+							name = SESSION_LETTER,
+							id = SESSION_LETTER
+					)
+			}
+	) SDKParameterMap parameters)
+			throws JidokaFatalException, HllApiInvocationException {
+//		String sessionLetter = parameters.get(SESSION_LETTER).toString();
+//		char sessionChar = sessionLetter.charAt(0);
+//		ehll.maximizeWindow(sessionChar);
 		ibm3270Commons.maximizeWindow();
-	}
+
+		}
 
 	/**
 	 * Enters credentials for an application with specific username
@@ -232,7 +241,13 @@ public class IBM3270Library implements INano {
 
 		String text = parameters.get(TEXT_TO_LOCATE).toString();
 		int loc = ehll.search(text,true);
-		server.debug("Location is: "+loc);
+		server.debug("PS location is: "+loc);
+
+//		String sessionLetter = parameters.get(SESSION_LETTER).toString();
+//		char sessionChar = sessionLetter.charAt(0);
+//		EHll.RowColumn coords = ehll.convertPositionToRowCol(sessionChar,loc);
+//		List<Integer> result = Arrays.asList(coords.getRow(),coords.getCol());
+
 		List<Integer> result = Arrays.asList(loc);
 		return result;
 	}
@@ -402,6 +417,10 @@ public class IBM3270Library implements INano {
 							@JidokaNestedParameter(
 									name = TEXT_TO_WRITE,
 									id = TEXT_TO_WRITE
+							),
+							@JidokaNestedParameter(
+									name = SESSION_LETTER,
+									id = SESSION_LETTER
 							)
 					}
 			) SDKParameterMap parameters) throws JidokaException, HllApiInvocationException {
@@ -410,6 +429,11 @@ public class IBM3270Library implements INano {
 		Integer column = Integer.valueOf(parameters.get(COLUMN_NUMBER).toString());
 		Integer row = Integer.valueOf(parameters.get(ROW_NUMBER).toString());
 		Integer loc = ((row-1)*80)+column; // update once supports row col
+		server.debug("Old calc is: "+loc);
+//		String sessionLetter = parameters.get(SESSION_LETTER).toString();
+//		char sessionChar = sessionLetter.charAt(0);
+//		int loc2 = ehll.convertRowColToCursorPosition(sessionChar,row,column);
+//		server.debug("New calc is: "+loc2);
 		String text = parameters.get(TEXT_TO_WRITE).toString();
 		ehll.sendKeyAtCoordinates(text,loc);
 	}
