@@ -10,12 +10,18 @@ import com.novayre.jidoka.client.api.exceptions.JidokaException;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.client.api.execution.IUsernamePassword;
 import com.novayre.jidoka.client.api.multios.IClient;
+import com.sun.jna.Memory;
+import com.sun.jna.Native;
+import com.sun.jna.Pointer;
+import com.sun.jna.ptr.IntByReference;
+import com.sun.jna.win32.W32APIOptions;
 import jodd.util.StringUtil;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;
 
@@ -468,8 +474,77 @@ public class IBM3270Library implements INano {
 //		session.StopCommunication();
 	}
 	@JidokaMethod(name = "IBM Try EHLAPI", description = "IBM3270Library:v1.0.0: Trying EHLAPI")
-	public void tryEhlapi() throws JidokaException, ECLErr, InterruptedException {
-		RumbaOperation rn = new RumbaOperation(1,"A");
-		System.out.println(rn.ReadFromScreen(10, 1, 1));
+	public void tryEhlapi() throws JidokaException, ECLErr, InterruptedException, NoSuchFieldException, IllegalAccessException {
+//	1
+		System.setProperty("jna.library.path", "C:\\Program Files (x86)\\IBM\\Personal Communications");
+//	2
+//		System.setProperty("jna.library.path", "C:\\Program Files (x86)\\IBM\\Personal Communications");
+//		//set sys_paths to null
+//		final Field sysPathsField = ClassLoader.class.getDeclaredField("sys_paths");
+//		sysPathsField.setAccessible(true);
+//		sysPathsField.set(null, null);
+//	3
+//		String prop = System.getProperty("jna.library.path");
+//		if (prop == null || prop.isEmpty()) {
+//			prop = "C:/Program Files (x86)/IBM/Personal Communications";
+//		} else {
+//			prop += ";C:/Program Files (x86)/IBM/Personal Communications";
+//		}
+//		System.setProperty("jna.library.path", prop);
+		//Load the ehll api
+
+		EHllApi eHllApi = Native.loadLibrary("pcshll32", EHllApi.class, W32APIOptions.DEFAULT_OPTIONS);
+
+//		Hard-coding inputs for now
+
+		String example = "A";
+		byte[] dta = example.getBytes();
+		int func = EHllApi.HA_CONNECT_PS;
+		int pos = 0;
+
+		// object to return with results from call to hllApi
+		HllApiVal hav = new HllApiVal();
+		int inputDtaLength = dta.length;
+
+		Pointer dtaPtr = new Memory(inputDtaLength);
+		if (dta != null)
+			dtaPtr.write(0, dta, 0, inputDtaLength);
+		IntByReference funcIntPtr = new IntByReference(func);
+		IntByReference dtaLenPtr = new IntByReference(inputDtaLength);
+		IntByReference posIntPtr = new IntByReference(pos);
+		eHllApi.hllapi(funcIntPtr, dtaPtr, dtaLenPtr, posIntPtr);
+
+		hav.hllApiCod = posIntPtr.getValue();       // code returned by function call
+		hav.hllApiLen = dtaLenPtr.getValue();       // length of byte array returned
+		hav.hllApiDta = dtaPtr.getByteArray(0,inputDtaLength);      // byte array returned
+		hav.srcDataLen = inputDtaLength;            // length of input byteArray
+
+		server.debug("hav1 is: " + hav.hllApiDta);
+
+		//		Hard-coding inputs for now
+
+		String example2 = "steve rules";
+		byte[] dta2 = example2.getBytes();
+		int func2 = EHllApi.HA_SENDKEY;
+		int pos2 = 0;
+
+		// object to return with results from call to hllApi
+		HllApiVal hav2 = new HllApiVal();
+		int inputDtaLength2 = dta2.length;
+
+		Pointer dtaPtr2 = new Memory(inputDtaLength2);
+		if (dta2 != null)
+			dtaPtr2.write(0, dta2, 0, inputDtaLength2);
+		IntByReference funcIntPtr2 = new IntByReference(func2);
+		IntByReference dtaLenPtr2 = new IntByReference(inputDtaLength2);
+		IntByReference posIntPtr2 = new IntByReference(pos2);
+		eHllApi.hllapi(funcIntPtr2, dtaPtr2, dtaLenPtr2, posIntPtr2);
+
+		hav2.hllApiCod = posIntPtr2.getValue();       // code returned by function call
+		hav2.hllApiLen = dtaLenPtr2.getValue();       // length of byte array returned
+		hav2.hllApiDta = dtaPtr2.getByteArray(0,inputDtaLength2);      // byte array returned
+		hav2.srcDataLen = inputDtaLength2;            // length of input byteArray
+
+		server.debug("hav2 is: " + hav2.hllApiDta);
 	}
 }
