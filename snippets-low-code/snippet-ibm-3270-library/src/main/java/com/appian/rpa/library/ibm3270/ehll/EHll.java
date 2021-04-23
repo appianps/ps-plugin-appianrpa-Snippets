@@ -356,11 +356,11 @@ public interface EHll {
      * 24 The specified text was not found.
      * </p>
      * @param textToSearch - the text to search
-     * @param firstOccurrence - if true, search will find the first occurrence of the specified string from the cursorPosition
+     * @param searchForwards - if true, search will find the first occurrence of the specified string from the cursorPosition
      *                          if false, search will find the last occurrence of the specified string from the cursorPosition
      * @return
      */
-    int search(String textToSearch, boolean firstOccurrence) throws HllApiInvocationException;
+    int search(String textToSearch, boolean searchForwards) throws HllApiInvocationException;
 
 
     /**
@@ -374,10 +374,121 @@ public interface EHll {
      * 24 The specified text was not found.
      * </p>
      * @param textToSearch - the text to search
-     * @param firstOccurrence - if true, search will find the first occurrence of the specified string from the cursorPosition
+     * @param searchForwards - if true, search will find the first occurrence of the specified string from the cursorPosition
      *                         if false, search will find the last occurrence of the specified string from the cursorPosition
      * @param cursorPosition - single number representing the cursor position
      * @return
      */
-    int search(String textToSearch, boolean firstOccurrence, int cursorPosition) throws HllApiInvocationException;
+    int search(String textToSearch, boolean searchForwards, int cursorPosition) throws HllApiInvocationException;
+
+    /**
+     * Connects to the window, Maximizes the window and Disconnects from the window
+     *
+     * Byte Description
+     * <p>
+     * 1 A 1-character session short name.
+     * 2 X01 – Set status
+     * 3–4 The status set bits. The following codes are valid:
+     * • X’0001’ — Change window size
+     * • X’0002’ — Move window
+     * • X’0004’ — ZORDER window replacement
+     * • X’0008’ — Set window to visible
+     * • X’0010’ — Set window to invisible
+     * • X’0080’ — Activate window
+     * • X’0100’ — Deactivate window
+     * • X’0400’ — Minimize window
+     * • X’0800’ — Maximize window
+     * • X’1000’ — Restore window
+     * 5–6 The X-window position coordinate in pixels. (These bytes are ignored if
+     * the move option is not set).
+     * 7–8 The Y-window position coordinate in pixels. (These bytes are ignored if
+     * the move option is not set).
+     * 9–10 The X-window size in pixels. (These bytes are ignored if the size option is not set).
+     * 11–12 The Y-window size in pixels. (These bytes are ignored if the size option is not set).
+     * 13–16 The window handle for relative window placement. (These bytes are
+     * ignored if the ZORDER option is not set.)
+     * • X’00000003’ — Place window in front of siblings
+     * • X’00000004’ — Place window behind siblings
+     * </p>
+     *
+     * Return Codes
+     * <p>
+     * 0 The function was successful.
+     * 1 An invalid session short name was specified.
+     * 2 A parameter error was detected.
+     * 9 A system error occurred.
+     * 12 The host session was stopped.
+     * </p>
+     * @param shortSessionName - character name of the session
+     */
+    void maximizeWindow(char shortSessionName) throws HllApiInvocationException;
+
+    /**
+     * Converts an absolute cursor position on the presentation space to a RowColumn object
+     * Return codes are:
+     * <p>
+     *     * 0 An invalid PS position or column was specified.
+     *     * >0 The PS position or column number, depending on the type of
+     *          conversion being performed.
+     *     * 9998 An invalid session short name was specified.
+     *     * 9999 Second character in data string was not an uppercase “P” or “R.”
+     * </p>
+     *
+     * @param shortSessionName - short name of the session
+     * @param cursorPosition - current absolute cursor position
+     * @return absolute position as row, column
+     * @throws HllApiInvocationException - when api invocation returns invalid code
+     */
+    RowColumn convertPositionToRowCol(char shortSessionName, int cursorPosition) throws HllApiInvocationException;
+
+    /**
+     * Converts rows and columns to absolute cursor position on the presentation space
+     *
+     * Response Code
+     * <p>
+     *     0 An invalid PS position or column was specified.
+     *     >0 The PS position or column number, depending on the type of
+     *     conversion being performed.
+     *     9998 An invalid session short name was specified.
+     *     9999 Second character in data string was not an uppercase “P” or “R.”
+     * </p>
+     * @param shortSessionName - character session name
+     * @param row - row
+     * @param col - col
+     * @return absolute position
+     * @throws HllApiInvocationException - response code is invalid
+     */
+    int convertRowColToCursorPosition(char shortSessionName, int row, int col) throws HllApiInvocationException;
+
+    /**
+     * Used to invoke functions not defined in this API
+     *
+     * Prefer using functions defined in API. For functions not implemented here this generic invoke can be used
+     *
+     * @param function - function number to invoke
+     * @param data - value to send
+     * @param dataLength - most of the time will be length of data array, in some operations this can mean something else
+     * @param cursorPosition - position of cursor, in some operations this can mean something else
+     * @return All values returned by invoking dll
+     * @throws HllApiInvocationException - if response code is not 0
+     */
+    HllApiValue invoke(int function, byte[] data, int dataLength, int cursorPosition) throws HllApiInvocationException;
+
+    class RowColumn {
+        private final int row;
+        private final int col;
+
+        public RowColumn(int row, int col) {
+            this.row = row;
+            this.col = col;
+        }
+
+        public int getRow() {
+            return row;
+        }
+
+        public int getCol() {
+            return col;
+        }
+    }
 }
