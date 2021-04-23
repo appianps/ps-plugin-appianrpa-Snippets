@@ -21,17 +21,15 @@ public interface EHllApi extends StdCallLibrary {
 
     int HA_SET_SESSION_PARMS = 9;
 
-//    Search parameters
-//    The following session parameters affect all search functions.
-//    SRCHALL (default) - Scans the entire PS or field.
-//    SRCHFROM - Starts the scan from a specified location in the PS or field.
-//    SCRCHFRWD (default) - Performs the scan in an ascending direction.
-//    SRCHBKWD - Performs the scan in a descending direction through the PS or field.
-//    example is sending "SRCHFROM,SRCHFRWD" as dta
-
     int HA_SET_CURSOR = 40; /* set the cursor in the absolute position (row-1 * 80) + column). */
 
     int HA_CONVERT_POS_ROW_COL = 99;
+
+    int HA_CONNECT_WINDOW_SERVICES = 101;
+
+    int HA_DISCONNECT_WINDOW_SERVICES = 102;
+
+    int WINDOW_STATUS = 104;
 
 //    For data string "AP" means for "Session A" convert from PS position to row-column coordinates
 //    "BR" would mean for "Session B" convert from row-column coordinates to PS position
