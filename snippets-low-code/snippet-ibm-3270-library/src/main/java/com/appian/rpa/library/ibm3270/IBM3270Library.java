@@ -2,6 +2,9 @@ package com.appian.rpa.library.ibm3270;
 
 import com.appian.rpa.library.ibm3270.clients.PCOMMEmulatorCommons;
 import com.appian.rpa.library.ibm3270.clients.WC3270EmulatorCommons;
+import com.appian.rpa.library.ibm3270.ehll.EHll;
+import com.appian.rpa.library.ibm3270.ehll.EHllApi;
+import com.appian.rpa.library.ibm3270.ehll.HllApiInvocationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.novayre.jidoka.client.api.*;
 import com.novayre.jidoka.client.api.annotations.FieldLink;
@@ -17,7 +20,6 @@ import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.win32.W32APIOptions;
 import jodd.util.StringUtil;
 
-import java.awt.*;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
@@ -61,6 +63,7 @@ public class IBM3270Library implements INano {
 	private IRobot robot;
 
 	IBM3270Commons ibm3270Commons;
+	EHll ehll;
 	HllApiCommons apiCommons;
 	EHllApi eHllApi;
 
@@ -125,13 +128,20 @@ public class IBM3270Library implements INano {
 									id = SESSION_LETTER
 							)
 					}
-			) SDKParameterMap parameters) {
+			) SDKParameterMap parameters) throws HllApiInvocationException {
+		String path = parameters.get(DLL_FOLDER_PATH).toString();
+		String name = parameters.get(DLL_FILE_NAME).toString();
+		String sessionLetter = parameters.get(SESSION_LETTER).toString();
+		ehll = EHll.create(path,name);
+		ehll.connect(sessionLetter);
+//		ehll.setSessionParams("ATTRB,EAB");
+//		ehll.setSessionParams("EAB");
+//		ehll.setSessionParams("ATTRB");
+
+		apiCommons = new HllApiCommons();
 		System.setProperty("jna.library.path", parameters.get(DLL_FOLDER_PATH).toString());
 		eHllApi = Native.loadLibrary(parameters.get(DLL_FILE_NAME).toString(), EHllApi.class, W32APIOptions.DEFAULT_OPTIONS);
-		String sessionLetter = parameters.get(SESSION_LETTER).toString();
-		int pos = 0;
-		apiCommons = new HllApiCommons();
-		apiCommons.hllApi(eHllApi,EHllApi.HA_CONNECT_PS,sessionLetter.getBytes(StandardCharsets.UTF_8),sessionLetter.length(),pos);
+
 	}
 
 	/**
@@ -170,7 +180,7 @@ public class IBM3270Library implements INano {
 									optionsService = EOptionsService.JIDOKA_PARAMETER_BOOLEAN
 							)
 					}
-			) SDKParameterMap parameters) throws JidokaFatalException {
+			) SDKParameterMap parameters) throws JidokaFatalException, HllApiInvocationException {
 
 		CredentialsUtils credentialUtils = CredentialsUtils.getInstance();
 		EJidokaParameterBoolean isUsername = (EJidokaParameterBoolean) parameters.get(CREDS_TYPE_IS_USERNAME);
@@ -193,13 +203,10 @@ public class IBM3270Library implements INano {
 		server.debug("Found a credential for application " + application);
 
 		if (isUsername == EJidokaParameterBoolean.YES) {
-			String textToWrite = credential.getUsername();
-			int pos = 0;
-			apiCommons.hllApi(eHllApi,EHllApi.HA_SENDKEY,textToWrite.getBytes(StandardCharsets.UTF_8),textToWrite.length(),pos);
+			ehll.sendKey(credential.getUsername());
 		} else {
 			String textToWrite = credential.getPassword();
-			int pos = 0;
-			apiCommons.hllApi(eHllApi,EHllApi.HA_SENDKEY,textToWrite.getBytes(StandardCharsets.UTF_8),textToWrite.length(),pos);
+			ehll.sendKey(credential.getPassword());
 		}
 	}
 
@@ -221,45 +228,12 @@ public class IBM3270Library implements INano {
 									id = SESSION_LETTER
 							)
 					}
-			) SDKParameterMap parameters) throws JidokaException {
+			) SDKParameterMap parameters) throws JidokaException, HllApiInvocationException {
 
-//		set search params
-		String text = "SRCHALL,SRCHFRWD";
-		int func = EHllApi.HA_SET_SESSION_PARMS;
-		byte[] dta = text.getBytes(StandardCharsets.UTF_8);
-		int len = text.length();
-		int pos = 0;
-		HllApiVal hav = new HllApiVal();
-		hav = apiCommons.hllApi(eHllApi,func,dta,len,pos);
-
-//		search
-		String text2 = parameters.get(TEXT_TO_LOCATE).toString();
-		int func2 = EHllApi.HA_SEARCH_PS;
-		byte[] dta2 = text2.getBytes(StandardCharsets.UTF_8);
-		int len2 = text2.length();
-		int pos2 = 0;
-		HllApiVal hav2 = new HllApiVal();
-		hav2 = apiCommons.hllApi(eHllApi,func2,dta2,len2,pos2);
-		server.debug("Got PS Position value: " + hav2.hllApiLen);
-
-//		convert to row col
-//		String text3 = parameters.get(SESSION_LETTER).toString().concat("P");
-//		server.debug("Input string is: " + text3);
-//		int func3 = EHllApi.HA_CONVERT_POS_ROW_COL;
-//		byte[] dta3 = {'A','P'};
-//		int len3 = 0; // not used
-//		int pos3 = hav2.hllApiLen;
-//		HllApiVal hav3 = new HllApiVal();
-//		hav3 = apiCommons.hllApi(eHllApi,func3,dta3,len3,pos3);
-//		int row = hav3.hllApiLen;
-//		int column = hav3.hllApiCod;
-//		server.debug("Got row value: " + row);
-//		server.debug("Got column value: " + column);
-//		List<Integer> result = Arrays.asList(row, column);
-
-		List<Integer> result = Arrays.asList(hav2.hllApiLen);
-//		just returning ps position for now. If 0, not found
-
+		String text = parameters.get(TEXT_TO_LOCATE).toString();
+		int loc = ehll.search(text,true);
+		server.debug("Location is: "+loc);
+		List<Integer> result = Arrays.asList(loc);
 		return result;
 	}
 
@@ -277,20 +251,15 @@ public class IBM3270Library implements INano {
 									id = LINE_NUMBER
 							)
 					}
-			) SDKParameterMap parameters) throws JidokaException {
+			) SDKParameterMap parameters) throws JidokaException, HllApiInvocationException {
 		String screen;
-		int func = EHllApi.HA_COPY_PS;
-		byte[] dta = new byte[1920];
-		int len = 0;
-		int pos = 0;
-		HllApiVal hav = new HllApiVal();
-		hav = apiCommons.hllApi(eHllApi,func,dta,len,pos);
-		screen = new String(hav.hllApiDta, StandardCharsets.UTF_8);
+		screen = ehll.copyScreen(1920);
 		server.debug("Screen is: "+screen);
 		int line = Integer.valueOf(parameters.get(LINE_NUMBER).toString());
-		int begin = 1+(80*(line-1));
-		int end = 80+(80*(line-1));
+		int begin = 0+80*(line-1);
+		int end = 79+(80*(line-1));
 		String rowText = screen.substring(begin,end);
+		server.debug("Row text is : "+rowText);
 		return rowText;
 	}
 
@@ -356,8 +325,11 @@ public class IBM3270Library implements INano {
 									id = COLUMN_OFFSET
 							)
 					}
-			) SDKParameterMap parameters) throws JidokaException {
-		ibm3270Commons.moveToCoordinates(parameters.get(TEXT_TO_LOCATE).toString(), Integer.valueOf(parameters.get(COLUMN_OFFSET).toString()), Integer.valueOf(parameters.get(ROW_OFFSET).toString()), 3);
+			) SDKParameterMap parameters) throws JidokaException, HllApiInvocationException {
+		String text = parameters.get(TEXT_TO_LOCATE).toString();
+		Integer colOff = Integer.valueOf(parameters.get(COLUMN_OFFSET).toString());
+		Integer rowOff = Integer.valueOf(parameters.get(ROW_OFFSET).toString());
+		ehll.setCursorPosition(colOff); //update this once it supports row col
 	}
 
 	/**
@@ -380,15 +352,11 @@ public class IBM3270Library implements INano {
 									id = COLUMN_NUMBER
 							)
 					}
-			) SDKParameterMap parameters) throws JidokaException {
+			) SDKParameterMap parameters) throws JidokaException, HllApiInvocationException {
 		Integer column = Integer.valueOf(parameters.get(COLUMN_NUMBER).toString());
 		Integer row = Integer.valueOf(parameters.get(ROW_NUMBER).toString());
 		Integer loc = ((row-1)*80)+column;
-		int pos = ((int) loc); // 4th parameter is cursor position
-		String text = new String("not used");
-		byte[] dta = text.getBytes(StandardCharsets.UTF_8); //not used
-		int len = text.length(); //not used
-		apiCommons.hllApi(eHllApi,EHllApi.HA_SET_CURSOR,dta,len,pos);
+		ehll.setCursorPosition(loc); //update this once it supports row col
 	}
 
 	/**
@@ -407,13 +375,9 @@ public class IBM3270Library implements INano {
 									id = TEXT_TO_WRITE
 							)
 					}
-			) SDKParameterMap parameters) throws JidokaException {
+			) SDKParameterMap parameters) throws JidokaException, HllApiInvocationException {
 		String text = parameters.get(TEXT_TO_WRITE).toString();
-		int func = EHllApi.HA_SENDKEY;
-		byte[] dta = text.getBytes(StandardCharsets.UTF_8);
-		int len = text.length();
-		int pos = 0;
-		apiCommons.hllApi(eHllApi,func,dta,len,pos);
+		ehll.sendKey(text);
 	}
 
 	/**
@@ -440,26 +404,14 @@ public class IBM3270Library implements INano {
 									id = TEXT_TO_WRITE
 							)
 					}
-			) SDKParameterMap parameters) throws JidokaException {
+			) SDKParameterMap parameters) throws JidokaException, HllApiInvocationException {
 
 		//		move to coordinates
 		Integer column = Integer.valueOf(parameters.get(COLUMN_NUMBER).toString());
 		Integer row = Integer.valueOf(parameters.get(ROW_NUMBER).toString());
-		Integer loc = ((row-1)*80)+column;
-		int pos = ((int) loc); // 4th parameter is cursor position
-		int func = EHllApi.HA_SET_CURSOR;
-		String text = new String("not used");
-		byte[] dta = text.getBytes(StandardCharsets.UTF_8); //not used by SET_CURSOR
-		int len = text.length(); ////not used by SET_CURSOR
-		apiCommons.hllApi(eHllApi,func,dta,len,pos);
-
-		//		write here
-		String text2 = parameters.get(TEXT_TO_WRITE).toString();
-		int func2 = EHllApi.HA_SENDKEY;
-		byte[] dta2 = text2.getBytes(StandardCharsets.UTF_8);
-		int len2 = text2.length();
-		int pos2 = 0;
-		apiCommons.hllApi(eHllApi,func2,dta2,len2,pos2);
+		Integer loc = ((row-1)*80)+column; // update once supports row col
+		String text = parameters.get(TEXT_TO_WRITE).toString();
+		ehll.sendKeyAtCoordinates(text,loc);
 	}
 
 	/**
@@ -479,7 +431,7 @@ public class IBM3270Library implements INano {
 									instructionalText = "Expects JSON list object with fields 'text', 'row', and 'column' - for example a!toJson({{text:\"test1\",row:1,column:1},{text:\"test2\",row:5,column:5}})"
 							)
 					}
-			) SDKParameterMap parameters) throws JidokaException, IOException {
+			) SDKParameterMap parameters) throws JidokaException, IOException, HllApiInvocationException {
 		String json = parameters.get(BULK_TEXT_AND_COORDINATES).toString();
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<HashMap> hmap = objectMapper.readValue(json, List.class);
@@ -487,24 +439,11 @@ public class IBM3270Library implements INano {
 		for (int i = 0; i < hmap.size(); i++) {
 //			server.debug("begin loop, Key: "+hmap.get(i).keySet() + " & Value: " + hmap.get(i).entrySet());
 
-			//		move to coordinates
+			String text = hmap.get(i).get("text").toString();
 			Integer column = Integer.valueOf((int) hmap.get(i).get("column"));
 			Integer row = Integer.valueOf((int) hmap.get(i).get("row"));
-			Integer loc = ((row-1)*80)+column;
-			int pos = ((int) loc); // 4th parameter is cursor position
-			int func = EHllApi.HA_SET_CURSOR;
-			String text = new String("not used");
-			byte[] dta = text.getBytes(StandardCharsets.UTF_8); //not used by SET_CURSOR
-			int len = text.length(); ////not used by SET_CURSOR
-			apiCommons.hllApi(eHllApi,func,dta,len,pos);
-
-			//		write here
-			String text2 = hmap.get(i).get("text").toString();
-			int func2 = EHllApi.HA_SENDKEY;
-			byte[] dta2 = text2.getBytes(StandardCharsets.UTF_8);
-			int len2 = text2.length();
-			int pos2 = 0;
-			apiCommons.hllApi(eHllApi,func2,dta2,len2,pos2);
+			Integer loc = ((row-1)*80)+column; // update once supports row col
+			ehll.sendKeyAtCoordinates(text,loc);
 
 //			server.debug("end loop, Key: "+hmap.get(i).keySet() + " & Value: " + hmap.get(i).entrySet());
 		}
@@ -538,77 +477,13 @@ public class IBM3270Library implements INano {
 									id = TEXT_TO_WRITE
 							)
 					}
-			) SDKParameterMap parameters) throws JidokaException {
-		ibm3270Commons.moveToCoordinates(parameters.get(FIELD_LABEL).toString(), Integer.valueOf(parameters.get(COLUMN_OFFSET).toString()), Integer.valueOf(parameters.get(ROW_OFFSET).toString()), 3);
-		ibm3270Commons.write(parameters.get(TEXT_TO_WRITE).toString(), false);
-	}
-
-	@JidokaMethod(name = "IBM Try EHLAPI", description = "IBM3270Library:v2.0.0: Trying EHLAPI")
-	public void tryEhlapi() throws JidokaException, InterruptedException, NoSuchFieldException, IllegalAccessException {
-//	1
-		System.setProperty("jna.library.path", "C:\\Program Files (x86)\\IBM\\Personal Communications");
-
-//		String prop = System.getProperty("jna.library.path");
-//		if (prop == null || prop.isEmpty()) {
-//			prop = "C:/Program Files (x86)/IBM/Personal Communications";
-//		} else {
-//			prop += ";C:/Program Files (x86)/IBM/Personal Communications";
-//		}
-//		System.setProperty("jna.library.path", prop);
-
-		//Load the ehll api
-		EHllApi eHllApi = Native.loadLibrary("pcshll32", EHllApi.class, W32APIOptions.DEFAULT_OPTIONS);
-
-//		Hard-coding inputs for now
-
-		String example = "A";
-		byte[] dta = example.getBytes();
-		int func = EHllApi.HA_CONNECT_PS;
-		int pos = 0;
-
-		// object to return with results from call to hllApi
-		HllApiVal hav = new HllApiVal();
-		int inputDtaLength = dta.length;
-
-		Pointer dtaPtr = new Memory(inputDtaLength);
-		if (dta != null)
-			dtaPtr.write(0, dta, 0, inputDtaLength);
-		IntByReference funcIntPtr = new IntByReference(func);
-		IntByReference dtaLenPtr = new IntByReference(inputDtaLength);
-		IntByReference posIntPtr = new IntByReference(pos);
-		eHllApi.hllapi(funcIntPtr, dtaPtr, dtaLenPtr, posIntPtr);
-
-		hav.hllApiCod = posIntPtr.getValue();       // code returned by function call
-		hav.hllApiLen = dtaLenPtr.getValue();       // length of byte array returned
-		hav.hllApiDta = dtaPtr.getByteArray(0,inputDtaLength);      // byte array returned
-		hav.srcDataLen = inputDtaLength;            // length of input byteArray
-
-		server.debug("hav1 is: " + new String(hav.hllApiDta));
-
-		//		Hard-coding inputs for now
-
-		String example2 = "Entering Test Data";
-		byte[] dta2 = example2.getBytes();
-		int func2 = EHllApi.HA_SENDKEY;
-		int pos2 = 0;
-
-		// object to return with results from call to hllApi
-		HllApiVal hav2 = new HllApiVal();
-		int inputDtaLength2 = dta2.length;
-
-		Pointer dtaPtr2 = new Memory(inputDtaLength2);
-		if (dta2 != null)
-			dtaPtr2.write(0, dta2, 0, inputDtaLength2);
-		IntByReference funcIntPtr2 = new IntByReference(func2);
-		IntByReference dtaLenPtr2 = new IntByReference(inputDtaLength2);
-		IntByReference posIntPtr2 = new IntByReference(pos2);
-		eHllApi.hllapi(funcIntPtr2, dtaPtr2, dtaLenPtr2, posIntPtr2);
-
-		hav2.hllApiCod = posIntPtr2.getValue();       // code returned by function call
-		hav2.hllApiLen = dtaLenPtr2.getValue();       // length of byte array returned
-		hav2.hllApiDta = dtaPtr2.getByteArray(0,inputDtaLength2);      // byte array returned
-		hav2.srcDataLen = inputDtaLength2;            // length of input byteArray
-
-		server.debug("hav2 is: " + new String(hav2.hllApiDta));
+			) SDKParameterMap parameters) throws JidokaException, HllApiInvocationException {
+		String field = parameters.get(FIELD_LABEL).toString();
+		int loc = ehll.search(field,true);
+		server.debug("Location is: "+loc);
+		int colOff = Integer.valueOf(parameters.get(COLUMN_OFFSET).toString());
+		int rowOff = Integer.valueOf(parameters.get(ROW_OFFSET).toString());
+		String text = parameters.get(FIELD_LABEL).toString();
+		ehll.sendKeyAtCoordinates(text,loc); // update once supports row col
 	}
 }

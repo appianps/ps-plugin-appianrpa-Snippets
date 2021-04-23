@@ -1,6 +1,5 @@
 package com.appian.rpa.library.ibm3270.ehll;
 
-import com.appian.rpa.library.ibm3270.EHllApi;
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
@@ -101,7 +100,7 @@ class EHllImpl implements EHll {
 
     @Override
     public void setCursorPosition(int cursorPosition) throws HllApiInvocationException {
-        invokeHllApi(EHllApi.HA_SET_CURSOR, "", cursorPosition);
+        invokeHllApi(EHllApi.HA_SET_CURSOR, "ignored", cursorPosition);
     }
 
     /**
@@ -129,7 +128,7 @@ class EHllImpl implements EHll {
      * @throws HllApiInvocationException - when response code != 0 is returned
      */
     private HllApiValue invokeHllApi(int functionNumber, String input, int cursorPosition) throws HllApiInvocationException {
-        input = input == null ? "" : input;
+        input = input == null ? "ignored" : input;
         byte[] data = input.getBytes(StandardCharsets.UTF_8);
         return invokeHllApi(functionNumber, data, cursorPosition);
     }

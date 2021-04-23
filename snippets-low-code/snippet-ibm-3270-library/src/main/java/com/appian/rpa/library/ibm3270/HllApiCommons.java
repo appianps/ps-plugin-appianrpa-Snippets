@@ -1,5 +1,6 @@
 package com.appian.rpa.library.ibm3270;
 
+import com.appian.rpa.library.ibm3270.ehll.EHllApi;
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
