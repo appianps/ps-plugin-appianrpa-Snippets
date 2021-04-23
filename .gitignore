@@ -3,7 +3,10 @@
 *.classpath
 *.pmd
 *.project
+*.iml
 target/
 .settings/
 .metadata/
+.idea/
 .sonarlint
+*.bak

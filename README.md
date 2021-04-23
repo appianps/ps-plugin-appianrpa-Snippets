@@ -23,9 +23,9 @@ The snippets and examples of usage can be found in this repository. All the acti
 The Queue Manager provides some utilities to create, update and release a list of elements to be processed by the robot. You can find further information about a queue and its usage [here](https://docs.appian.com/suite/help/20.1/rpa/modules/process-queues-module.html).
 An implementation can be found [here](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-snippet-excel-queue-manager)
 
-#### 2. [3270 Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-3270-manager).
+#### 2. [3270 Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-low-code/snippet-ibm-3270-library).
 
-The Snippet IBM3270 Manager covers some methods to ease the IBM3270 terminal management. This [example](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-examples/robot-3270-snippet) shows its usage.
+The Snippet IBM3270 Manager covers some methods to ease the IBM3270 terminal management. Use the low code workflow library and NOT the java snippet / example.
 
 #### 3. [Credentials Snippet](https://github.com/appianps/ps-plugin-appianrpa-Snippets/tree/master/snippets-libraries/snippet-credentials).
 
