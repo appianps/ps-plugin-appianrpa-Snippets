@@ -46,7 +46,7 @@ public class IBM3270Library implements INano {
 	private static final String CREDS_APPLICATION = "Application Name for Credentials";
 	private static final String CREDS_USERNAME = "Username for Credentials";
 	private static final String CREDS_TYPE_IS_USERNAME = "Is Username? Otherwise Password";
-	private static final String BULK_TEXT_AND_COORDINATES = "Bulk Test & XY Coordinates (JSON)";
+	private static final String BULK_TEXT_AND_COORDINATES = "Bulk Text & Rol/Col Coordinates (JSON)";
 
 	/**
 	 * Server instance
@@ -206,7 +206,7 @@ public class IBM3270Library implements INano {
 	/**
 	 * Action 'Find Text'
 	 */
-	@JidokaMethod(name = "IBM Find Text", description = "IBM3270Library:v1.0.0: Takes in a text string and returns the xy location (integer array) in the emulator")
+	@JidokaMethod(name = "IBM Find Text", description = "IBM3270Library:v2.0.0: Takes in a text string and returns the row/col location (integer array) in the emulator")
 	public List<Integer> findText(
 			@JidokaParameter(
 					name = "Nested parameters",
@@ -215,22 +215,58 @@ public class IBM3270Library implements INano {
 							@JidokaNestedParameter(
 									name = TEXT_TO_LOCATE,
 									id = TEXT_TO_LOCATE
+							),
+							@JidokaNestedParameter(
+									name = SESSION_LETTER,
+									id = SESSION_LETTER
 							)
 					}
 			) SDKParameterMap parameters) throws JidokaException {
-		TextInScreen displayedText = ibm3270Commons.locateText(1, false, null, parameters.get(TEXT_TO_LOCATE).toString());
-		if (displayedText != null) {
-			Point textLocation = displayedText.getPointInScreen();
-			List<Integer> result = Arrays.asList(textLocation.getLocation().x, textLocation.getLocation().y);
-			return result;
-		}
-		return null;
+
+//		set search params
+		String text = "SRCHALL,SRCHFRWD";
+		int func = EHllApi.HA_SET_SESSION_PARMS;
+		byte[] dta = text.getBytes(StandardCharsets.UTF_8);
+		int len = text.length();
+		int pos = 0;
+		HllApiVal hav = new HllApiVal();
+		hav = apiCommons.hllApi(eHllApi,func,dta,len,pos);
+
+//		search
+		String text2 = parameters.get(TEXT_TO_LOCATE).toString();
+		int func2 = EHllApi.HA_SEARCH_PS;
+		byte[] dta2 = text2.getBytes(StandardCharsets.UTF_8);
+		int len2 = text2.length();
+		int pos2 = 0;
+		HllApiVal hav2 = new HllApiVal();
+		hav2 = apiCommons.hllApi(eHllApi,func2,dta2,len2,pos2);
+		server.debug("Got PS Position value: " + hav2.hllApiLen);
+
+//		convert to row col
+//		String text3 = parameters.get(SESSION_LETTER).toString().concat("P");
+//		server.debug("Input string is: " + text3);
+//		int func3 = EHllApi.HA_CONVERT_POS_ROW_COL;
+//		byte[] dta3 = {'A','P'};
+//		int len3 = 0; // not used
+//		int pos3 = hav2.hllApiLen;
+//		HllApiVal hav3 = new HllApiVal();
+//		hav3 = apiCommons.hllApi(eHllApi,func3,dta3,len3,pos3);
+//		int row = hav3.hllApiLen;
+//		int column = hav3.hllApiCod;
+//		server.debug("Got row value: " + row);
+//		server.debug("Got column value: " + column);
+//		List<Integer> result = Arrays.asList(row, column);
+
+		List<Integer> result = Arrays.asList(hav2.hllApiLen);
+//		just returning ps position for now. If 0, not found
+
+		return result;
 	}
 
 	/**
 	 * Action 'Get Text at Line'
 	 */
-	@JidokaMethod(name = "IBM Get Text at Line", description = "IBM3270Library:v1.0.0: Takes in a line number (emulator y coordinate starting at 1) and returns the text at that line")
+	@JidokaMethod(name = "IBM Get Text at Line", description = "IBM3270Library:v2.0.0: Takes in a line number (emulator row number, starts at 1) and returns the text at that line")
 	public String getTextAtLine(
 			@JidokaParameter(
 					name = "Nested parameters",
@@ -242,9 +278,19 @@ public class IBM3270Library implements INano {
 							)
 					}
 			) SDKParameterMap parameters) throws JidokaException {
-		List<String> screen;
-		screen = ibm3270Commons.scrapeScreen();
-		String rowText = screen.get(Integer.valueOf(parameters.get(LINE_NUMBER).toString()) - 1);
+		String screen;
+		int func = EHllApi.HA_COPY_PS;
+		byte[] dta = new byte[1920];
+		int len = 0;
+		int pos = 0;
+		HllApiVal hav = new HllApiVal();
+		hav = apiCommons.hllApi(eHllApi,func,dta,len,pos);
+		screen = new String(hav.hllApiDta, StandardCharsets.UTF_8);
+		server.debug("Screen is: "+screen);
+		int line = Integer.valueOf(parameters.get(LINE_NUMBER).toString());
+		int begin = 1+(80*(line-1));
+		int end = 80+(80*(line-1));
+		String rowText = screen.substring(begin,end);
 		return rowText;
 	}
 
@@ -335,9 +381,9 @@ public class IBM3270Library implements INano {
 							)
 					}
 			) SDKParameterMap parameters) throws JidokaException {
-		Integer columns = Integer.valueOf(parameters.get(COLUMN_NUMBER).toString());
-		Integer rows = Integer.valueOf(parameters.get(ROW_NUMBER).toString());
-		Integer loc = ((rows-1)*80)+columns;
+		Integer column = Integer.valueOf(parameters.get(COLUMN_NUMBER).toString());
+		Integer row = Integer.valueOf(parameters.get(ROW_NUMBER).toString());
+		Integer loc = ((row-1)*80)+column;
 		int pos = ((int) loc); // 4th parameter is cursor position
 		String text = new String("not used");
 		byte[] dta = text.getBytes(StandardCharsets.UTF_8); //not used
@@ -362,9 +408,12 @@ public class IBM3270Library implements INano {
 							)
 					}
 			) SDKParameterMap parameters) throws JidokaException {
-		String textToWrite = parameters.get(TEXT_TO_WRITE).toString();
+		String text = parameters.get(TEXT_TO_WRITE).toString();
+		int func = EHllApi.HA_SENDKEY;
+		byte[] dta = text.getBytes(StandardCharsets.UTF_8);
+		int len = text.length();
 		int pos = 0;
-		apiCommons.hllApi(eHllApi,EHllApi.HA_SENDKEY,textToWrite.getBytes(StandardCharsets.UTF_8),textToWrite.length(),pos);
+		apiCommons.hllApi(eHllApi,func,dta,len,pos);
 	}
 
 	/**
@@ -372,7 +421,7 @@ public class IBM3270Library implements INano {
 	 *
 	 * @throws JidokaException
 	 */
-	@JidokaMethod(name = "IBM Write at Coordinates", description = "IBM3270Library:v1.0.0: Writes text in emulator at specified location (handles slow typing & special characters")
+	@JidokaMethod(name = "IBM Write at Coordinates", description = "IBM3270Library:v2.0.0: Enters text in emulator at specified location")
 	public void writeAtCoordinates(
 			@JidokaParameter(
 					name = "Nested parameters",
@@ -392,8 +441,25 @@ public class IBM3270Library implements INano {
 							)
 					}
 			) SDKParameterMap parameters) throws JidokaException {
-		ibm3270Commons.moveToCoordinates(Integer.valueOf(parameters.get(COLUMN_NUMBER).toString()), Integer.valueOf(parameters.get(ROW_NUMBER).toString()), false);
-		ibm3270Commons.write(parameters.get(TEXT_TO_WRITE).toString(), false);
+
+		//		move to coordinates
+		Integer column = Integer.valueOf(parameters.get(COLUMN_NUMBER).toString());
+		Integer row = Integer.valueOf(parameters.get(ROW_NUMBER).toString());
+		Integer loc = ((row-1)*80)+column;
+		int pos = ((int) loc); // 4th parameter is cursor position
+		int func = EHllApi.HA_SET_CURSOR;
+		String text = new String("not used");
+		byte[] dta = text.getBytes(StandardCharsets.UTF_8); //not used by SET_CURSOR
+		int len = text.length(); ////not used by SET_CURSOR
+		apiCommons.hllApi(eHllApi,func,dta,len,pos);
+
+		//		write here
+		String text2 = parameters.get(TEXT_TO_WRITE).toString();
+		int func2 = EHllApi.HA_SENDKEY;
+		byte[] dta2 = text2.getBytes(StandardCharsets.UTF_8);
+		int len2 = text2.length();
+		int pos2 = 0;
+		apiCommons.hllApi(eHllApi,func2,dta2,len2,pos2);
 	}
 
 	/**
@@ -401,7 +467,7 @@ public class IBM3270Library implements INano {
 	 *
 	 * @throws JidokaException
 	 */
-	@JidokaMethod(name = "IBM Bulk Write at Coordinates", description = "IBM3270Library:v1.0.0: Writes text in bulk at specified locations (handles slow typing & special characters")
+	@JidokaMethod(name = "IBM Bulk Write at Coordinates", description = "IBM3270Library:v2.0.0: Enters text in bulk at specified locations.")
 	public void bulkWriteAtCoordinates(
 			@JidokaParameter(
 					name = "Nested parameters",
@@ -410,7 +476,7 @@ public class IBM3270Library implements INano {
 							@JidokaNestedParameter(
 									name = BULK_TEXT_AND_COORDINATES,
 									id = BULK_TEXT_AND_COORDINATES,
-									instructionalText = "Expects JSON list object with fields 'text', 'x', and 'y' - for example a!toJson({{text:\"test1\",x:1,y:1},{text:\"test2\",x:5,y:5}})"
+									instructionalText = "Expects JSON list object with fields 'text', 'row', and 'column' - for example a!toJson({{text:\"test1\",row:1,column:1},{text:\"test2\",row:5,column:5}})"
 							)
 					}
 			) SDKParameterMap parameters) throws JidokaException, IOException {
@@ -420,8 +486,27 @@ public class IBM3270Library implements INano {
 //		server.debug("Map is: "+hmap);
 		for (int i = 0; i < hmap.size(); i++) {
 //			server.debug("begin loop, Key: "+hmap.get(i).keySet() + " & Value: " + hmap.get(i).entrySet());
-			ibm3270Commons.moveToCoordinates(Integer.valueOf((int) hmap.get(i).get("x")), Integer.valueOf((int) hmap.get(i).get("y")), false);
-			ibm3270Commons.write(hmap.get(i).get("text").toString(), false);
+
+			//		move to coordinates
+			Integer column = Integer.valueOf((int) hmap.get(i).get("column"));
+			Integer row = Integer.valueOf((int) hmap.get(i).get("row"));
+			Integer loc = ((row-1)*80)+column;
+			int pos = ((int) loc); // 4th parameter is cursor position
+			int func = EHllApi.HA_SET_CURSOR;
+			String text = new String("not used");
+			byte[] dta = text.getBytes(StandardCharsets.UTF_8); //not used by SET_CURSOR
+			int len = text.length(); ////not used by SET_CURSOR
+			apiCommons.hllApi(eHllApi,func,dta,len,pos);
+
+			//		write here
+			String text2 = hmap.get(i).get("text").toString();
+			int func2 = EHllApi.HA_SENDKEY;
+			byte[] dta2 = text2.getBytes(StandardCharsets.UTF_8);
+			int len2 = text2.length();
+			int pos2 = 0;
+			apiCommons.hllApi(eHllApi,func2,dta2,len2,pos2);
+
+//			server.debug("end loop, Key: "+hmap.get(i).keySet() + " & Value: " + hmap.get(i).entrySet());
 		}
 	}
 
