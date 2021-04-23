@@ -19,6 +19,8 @@ public interface EHllApi extends StdCallLibrary {
 
     int HA_QUERY_CURSOR_LOC = 7;      /*  Query Cursor Location function */
 
+    int HA_SET_CURSOR = 40; /* set the cursor in the absolute position (rows * 80 (or 132) + cols). */
+
     long hllapi(IntByReference functionNbr, Pointer dataBuffer, IntByReference bufferLen, IntByReference posOrReturnCode );
 
 }

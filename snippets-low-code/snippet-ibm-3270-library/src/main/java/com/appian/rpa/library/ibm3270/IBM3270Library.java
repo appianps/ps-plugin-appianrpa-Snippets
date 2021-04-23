@@ -18,32 +18,31 @@ import com.sun.jna.win32.W32APIOptions;
 import jodd.util.StringUtil;
 
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.List;
-
-import com.ibm.eNetwork.ECL.*;
-import org.autorumba.operation.RumbaOperation;
 
 import java.lang.*;
 
 @Nano
 public class IBM3270Library implements INano {
 
-	private static final String TEXT_TO_LOCATE = "Text to Locate";
-	private static final String LINE_NUMBER = "Line Number";
 	private static final String WINDOW_TITLE_XPATH = "Window Title Xpath";
 	private static final String EMULATOR_TYPE = "Emulator Type";
-	private static final String X_COORDINATE = "X Coordinate";
-	private static final String Y_COORDINATE = "Y Coordinate";
+	private static final String SESSION_LETTER = "Session Letter (A for example)";
+	private static final String DLL_FOLDER_PATH = "Path to folder containing DLL file";
+	private static final String DLL_FILE_NAME = "Name of DLL file (extension NOT needed)";
+	private static final String TEXT_TO_LOCATE = "Text to Locate";
+	private static final String LINE_NUMBER = "Line Number";
+	private static final String ROW_NUMBER = "Row number (Starts with 1 at top of emulator)";
+	private static final String COLUMN_NUMBER = "Column number (Starts with 1 at left of emulator)";
 	private static final String TEXT_LENGTH = "Text Length to Read";
 	private static final String TEXT_TO_WRITE = "Text to Write";
 	private static final String FIELD_LABEL = "Field Label";
-	private static final String X_OFFSET = "X Offset";
-	private static final String Y_OFFSET = "Y Offset";
+	private static final String COLUMN_OFFSET = "Column Offset";
+	private static final String ROW_OFFSET = "Row Offset";
 	private static final String CREDS_APPLICATION = "Application Name for Credentials";
 	private static final String CREDS_USERNAME = "Username for Credentials";
 	private static final String CREDS_TYPE_IS_USERNAME = "Is Username? Otherwise Password";
@@ -62,6 +61,8 @@ public class IBM3270Library implements INano {
 	private IRobot robot;
 
 	IBM3270Commons ibm3270Commons;
+	HllApiCommons apiCommons;
+	EHllApi eHllApi;
 
 	/**
 	 * Initialization of the library. This method is called prior to any other
@@ -77,7 +78,7 @@ public class IBM3270Library implements INano {
 	/**
 	 * Set emulator (PCOMM or W3270)
 	 */
-	@JidokaMethod(name = "IBM Set Emulator", description = "IBM3270Library:v1.0.0: Sets the correct emulator type (PCOMM or W3270)")
+	@JidokaMethod(name = "IBM Set Emulator", description ="IBM3270Library:v2.0.0: Sets the correct emulator type (PCOMM or W3270)")
 	public void setEmulator(
 			@JidokaParameter(
 					name = "Nested parameters",
@@ -103,9 +104,40 @@ public class IBM3270Library implements INano {
 	}
 
 	/**
+	 * Connect to emulator
+	 */
+	@JidokaMethod(name = "IBM Connect to Emulator", description = "IBM3270Library:v2.0.0: Connects to a running emulator based on the session letter")
+	public void connectToEmulator(
+			@JidokaParameter(
+					name = "Nested parameters",
+					type = EJidokaParameterType.NESTED,
+					nestedParameters = {
+							@JidokaNestedParameter(
+									name = DLL_FOLDER_PATH,
+									id = DLL_FOLDER_PATH
+							),
+							@JidokaNestedParameter(
+									name = DLL_FILE_NAME,
+									id = DLL_FILE_NAME
+							),
+							@JidokaNestedParameter(
+									name = SESSION_LETTER,
+									id = SESSION_LETTER
+							)
+					}
+			) SDKParameterMap parameters) {
+		System.setProperty("jna.library.path", parameters.get(DLL_FOLDER_PATH).toString());
+		eHllApi = Native.loadLibrary(parameters.get(DLL_FILE_NAME).toString(), EHllApi.class, W32APIOptions.DEFAULT_OPTIONS);
+		String sessionLetter = parameters.get(SESSION_LETTER).toString();
+		int pos = 0;
+		apiCommons = new HllApiCommons();
+		apiCommons.hllApi(eHllApi,EHllApi.HA_CONNECT_PS,sessionLetter.getBytes(StandardCharsets.UTF_8),sessionLetter.length(),pos);
+	}
+
+	/**
 	 * Maximize Window
 	 */
-	@JidokaMethod(name = "IBM Maximize Window", description = "IBM3270Library:v1.0.0: Maximizes the window")
+	@JidokaMethod(name = "IBM Maximize Window", description = "IBM3270Library:v2.0.0: Maximizes the window")
 	public void maximizeWindow()
 			throws JidokaFatalException {
 		ibm3270Commons.maximizeWindow();
@@ -115,7 +147,7 @@ public class IBM3270Library implements INano {
 	 * Enters credentials for an application with specific username
 	 * handling special character entry
 	 */
-	@JidokaMethod(name = "IBM Enter Credential", description = "IBM3270Library:v1.0.0: Enters credentials into emulator")
+	@JidokaMethod(name = "IBM Enter Credential", description = "IBM3270Library:v2.0.0: Enters credentials into emulator")
 	public void enterCredentialByUsername(
 			@JidokaParameter(
 					name = "Nested parameters",
@@ -161,9 +193,13 @@ public class IBM3270Library implements INano {
 		server.debug("Found a credential for application " + application);
 
 		if (isUsername == EJidokaParameterBoolean.YES) {
-			ibm3270Commons.write(credential.getUsername(), false);
+			String textToWrite = credential.getUsername();
+			int pos = 0;
+			apiCommons.hllApi(eHllApi,EHllApi.HA_SENDKEY,textToWrite.getBytes(StandardCharsets.UTF_8),textToWrite.length(),pos);
 		} else {
-			ibm3270Commons.write(credential.getPassword(), false);
+			String textToWrite = credential.getPassword();
+			int pos = 0;
+			apiCommons.hllApi(eHllApi,EHllApi.HA_SENDKEY,textToWrite.getBytes(StandardCharsets.UTF_8),textToWrite.length(),pos);
 		}
 	}
 
@@ -222,12 +258,12 @@ public class IBM3270Library implements INano {
 					type = EJidokaParameterType.NESTED,
 					nestedParameters = {
 							@JidokaNestedParameter(
-									name = X_COORDINATE,
-									id = X_COORDINATE
+									name = ROW_NUMBER,
+									id = ROW_NUMBER
 							),
 							@JidokaNestedParameter(
-									name = Y_COORDINATE,
-									id = Y_COORDINATE
+									name = COLUMN_NUMBER,
+									id = COLUMN_NUMBER
 							),
 							@JidokaNestedParameter(
 									name = TEXT_LENGTH,
@@ -237,8 +273,8 @@ public class IBM3270Library implements INano {
 			) SDKParameterMap parameters) throws JidokaException {
 		List<String> screen;
 		screen = ibm3270Commons.scrapeScreen();
-		Integer y = Integer.valueOf(parameters.get(Y_COORDINATE).toString());
-		Integer x = Integer.valueOf(parameters.get(X_COORDINATE).toString());
+		Integer y = Integer.valueOf(parameters.get(ROW_NUMBER).toString());
+		Integer x = Integer.valueOf(parameters.get(COLUMN_NUMBER).toString());
 		Integer length = Integer.valueOf(parameters.get(TEXT_LENGTH).toString());
 		String rowText = screen.get(y - 1);
 		Integer min = x - 1;
@@ -266,16 +302,16 @@ public class IBM3270Library implements INano {
 									id = TEXT_TO_LOCATE
 							),
 							@JidokaNestedParameter(
-									name = X_OFFSET,
-									id = X_OFFSET
+									name = ROW_OFFSET,
+									id = ROW_OFFSET
 							),
 							@JidokaNestedParameter(
-									name = Y_OFFSET,
-									id = Y_OFFSET
+									name = COLUMN_OFFSET,
+									id = COLUMN_OFFSET
 							)
 					}
 			) SDKParameterMap parameters) throws JidokaException {
-		ibm3270Commons.moveToCoordinates(parameters.get(TEXT_TO_LOCATE).toString(), Integer.valueOf(parameters.get(X_OFFSET).toString()), Integer.valueOf(parameters.get(Y_OFFSET).toString()), 3);
+		ibm3270Commons.moveToCoordinates(parameters.get(TEXT_TO_LOCATE).toString(), Integer.valueOf(parameters.get(COLUMN_OFFSET).toString()), Integer.valueOf(parameters.get(ROW_OFFSET).toString()), 3);
 	}
 
 	/**
@@ -283,23 +319,30 @@ public class IBM3270Library implements INano {
 	 *
 	 * @throws JidokaException
 	 */
-	@JidokaMethod(name = "IBM Go to Coordinates", description = "IBM3270Library:v1.0.0: Takes in a x y int list coordinates and goes to that position in emulator with an offset")
+	@JidokaMethod(name = "IBM Go to Coordinates", description = "IBM3270Library:v2.0.0: Takes in a row and column then moves the cursor to that position in emulator")
 	public void goToCoordinates(
 			@JidokaParameter(
 					name = "Nested parameters",
 					type = EJidokaParameterType.NESTED,
 					nestedParameters = {
 							@JidokaNestedParameter(
-									name = X_COORDINATE,
-									id = X_COORDINATE
+									name = ROW_NUMBER,
+									id = ROW_NUMBER
 							),
 							@JidokaNestedParameter(
-									name = Y_COORDINATE,
-									id = Y_COORDINATE
+									name = COLUMN_NUMBER,
+									id = COLUMN_NUMBER
 							)
 					}
 			) SDKParameterMap parameters) throws JidokaException {
-		ibm3270Commons.moveToCoordinates(Integer.valueOf(parameters.get(X_COORDINATE).toString()), Integer.valueOf(parameters.get(Y_COORDINATE).toString()), false);
+		Integer columns = Integer.valueOf(parameters.get(COLUMN_NUMBER).toString());
+		Integer rows = Integer.valueOf(parameters.get(ROW_NUMBER).toString());
+		Integer loc = ((rows-1)*80)+columns;
+		int pos = ((int) loc); // 4th parameter is cursor position
+		String text = new String("not used");
+		byte[] dta = text.getBytes(StandardCharsets.UTF_8); //not used
+		int len = text.length(); //not used
+		apiCommons.hllApi(eHllApi,EHllApi.HA_SET_CURSOR,dta,len,pos);
 	}
 
 	/**
@@ -307,7 +350,7 @@ public class IBM3270Library implements INano {
 	 *
 	 * @throws JidokaException
 	 */
-	@JidokaMethod(name = "IBM Write Here", description = "IBM3270Library:v1.0.0: Writes text in emulator at current location (handles slow typing & special characters")
+	@JidokaMethod(name = "IBM Write Here", description = "IBM3270Library:v2.0.0: Enters text in emulator at current location")
 	public void writeHere(
 			@JidokaParameter(
 					name = "Nested parameters",
@@ -319,7 +362,9 @@ public class IBM3270Library implements INano {
 							)
 					}
 			) SDKParameterMap parameters) throws JidokaException {
-		ibm3270Commons.write(parameters.get(TEXT_TO_WRITE).toString(), false);
+		String textToWrite = parameters.get(TEXT_TO_WRITE).toString();
+		int pos = 0;
+		apiCommons.hllApi(eHllApi,EHllApi.HA_SENDKEY,textToWrite.getBytes(StandardCharsets.UTF_8),textToWrite.length(),pos);
 	}
 
 	/**
@@ -334,12 +379,12 @@ public class IBM3270Library implements INano {
 					type = EJidokaParameterType.NESTED,
 					nestedParameters = {
 							@JidokaNestedParameter(
-									name = X_COORDINATE,
-									id = X_COORDINATE
+									name = ROW_NUMBER,
+									id = ROW_NUMBER
 							),
 							@JidokaNestedParameter(
-									name = Y_COORDINATE,
-									id = Y_COORDINATE
+									name = COLUMN_NUMBER,
+									id = COLUMN_NUMBER
 							),
 							@JidokaNestedParameter(
 									name = TEXT_TO_WRITE,
@@ -347,7 +392,7 @@ public class IBM3270Library implements INano {
 							)
 					}
 			) SDKParameterMap parameters) throws JidokaException {
-		ibm3270Commons.moveToCoordinates(Integer.valueOf(parameters.get(X_COORDINATE).toString()), Integer.valueOf(parameters.get(Y_COORDINATE).toString()), false);
+		ibm3270Commons.moveToCoordinates(Integer.valueOf(parameters.get(COLUMN_NUMBER).toString()), Integer.valueOf(parameters.get(ROW_NUMBER).toString()), false);
 		ibm3270Commons.write(parameters.get(TEXT_TO_WRITE).toString(), false);
 	}
 
@@ -396,12 +441,12 @@ public class IBM3270Library implements INano {
 									id = FIELD_LABEL
 							),
 							@JidokaNestedParameter(
-									name = X_OFFSET,
-									id = X_OFFSET
+									name = ROW_OFFSET,
+									id = ROW_OFFSET
 							),
 							@JidokaNestedParameter(
-									name = Y_OFFSET,
-									id = Y_OFFSET
+									name = COLUMN_OFFSET,
+									id = COLUMN_OFFSET
 							),
 							@JidokaNestedParameter(
 									name = TEXT_TO_WRITE,
@@ -409,81 +454,15 @@ public class IBM3270Library implements INano {
 							)
 					}
 			) SDKParameterMap parameters) throws JidokaException {
-		ibm3270Commons.moveToCoordinates(parameters.get(FIELD_LABEL).toString(), Integer.valueOf(parameters.get(X_OFFSET).toString()), Integer.valueOf(parameters.get(Y_OFFSET).toString()), 3);
+		ibm3270Commons.moveToCoordinates(parameters.get(FIELD_LABEL).toString(), Integer.valueOf(parameters.get(COLUMN_OFFSET).toString()), Integer.valueOf(parameters.get(ROW_OFFSET).toString()), 3);
 		ibm3270Commons.write(parameters.get(TEXT_TO_WRITE).toString(), false);
 	}
 
-	@JidokaMethod(name = "IBM Try HACL", description = "IBM3270Library:v1.0.0: Trying HACL")
-	public void tryHacl() throws JidokaException, ECLErr, InterruptedException {
-		Properties prop = new Properties();
-		File f = new File("C:\\Program Files (x86)\\IBM\\Personal Communications\\private\\GSO1tls-MAI.ws");
-		server.debug("Print file exists: " + f.exists());
-		prop.put("SESSION_HOST", "C:\\Program Files (x86)\\IBM\\Personal Communications\\private\\GSO1tls-MAI.ws");
-//		prop.put("SESSION_HOST", "GSO1tls-MAI.ws");
-//		prop.put("SESSION_HOST", "c:\\program files (x86)\\ibm\\personal communications\\private\\gso1tls-mai.ws");
-		prop.put("SESSION_WIN_STATE", "MAX");
-		prop.put("SESSION_VT_KEYPAD ", "SESSION_VT_KEYPAD_APPL");
-		prop.put("SESSION_VT_LOCAL_ECHO", "SESSION_VT_LOCAL_ECHO_ON");
-//		prop.put(ECLSession.SESSION_HOST, "cnp2.jp.corp");
-//		prop.put(ECLSession.SESSION_HOST_PORT, "992");
-		try {
-			ECLSession session = new ECLSession(prop);
-			server.debug("Print prop session host: " + prop.get(ECLSession.SESSION_HOST));
-			server.debug("Print prop port: " + prop.get(ECLSession.SESSION_HOST_PORT));
-			server.debug("Print session label: " + session.getSessionLabel());
-			server.debug("Print session host1: " + session.getHost(0));
-			server.debug("Print session host2: " + session.GetHost());
-			server.debug("Print session hostid: " + session.GetHostid());
-			server.debug("Print session properties: " + session.getProperties());
-			session.StartCommunication();
-			Thread.sleep(5000);
-			if (!(session).IsCommStarted()) {
-				// Sleep a bit to wait for error notification.
-				//
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
-					server.debug("Exception: " + e.getMessage());
-				}
-			}
-			server.debug("Print IsCommStarted: " + session.IsCommStarted());
-			server.debug("Print isConnected: " + session.isConnected());
-			session.connect();
-//			Thread.sleep(10000);
-//			server.debug("Print2 IsCommStarted: " + session.IsCommStarted());
-//			server.debug("Print2 isConnected: " + session.isConnected());
-			ECLOIA eclOIA = session.GetOIA();
-			ECLPS ps = session.GetPS();
-			server.debug("Print oia insert mode: " + eclOIA.IsInsertMode());
-			server.debug("Print ps1 row: " + ps.GetCursorRow());
-			server.debug("Print ps1 col: " + ps.GetCursorCol());
-			session.GetPS().SetCursorPos(10,10);
-			server.debug("Print ps2 row: " + ps.GetCursorRow());
-			server.debug("Print ps2 col: " + ps.GetCursorCol());
-			session.GetPS().SendKeys("XYZ");
-			char[] temp = new char[1921]; // Screen size is assumed to be 24x80
-			ps.GetScreen(temp, 1920, 1, 1920, ps.TEXT_PLANE);
-			server.debug("Print screen: " + new String(temp));
-			ECLFieldList fieldList = session.GetPS().GetFieldList();
-			server.debug("Print field: " + fieldList.FindField(1,2).getString());
-		} catch(ECLErr e) { System.out.println(e.GetMsgText()); }
-//		ps.SetCursorPos(5, 5);
-//		ps.SendKeys("ABC");
-//		ps.SetCursorPos(10, 10);
-//		ps.SendKeys("XYZ");
-//		session.StopCommunication();
-	}
-	@JidokaMethod(name = "IBM Try EHLAPI", description = "IBM3270Library:v1.0.0: Trying EHLAPI")
-	public void tryEhlapi() throws JidokaException, ECLErr, InterruptedException, NoSuchFieldException, IllegalAccessException {
+	@JidokaMethod(name = "IBM Try EHLAPI", description = "IBM3270Library:v2.0.0: Trying EHLAPI")
+	public void tryEhlapi() throws JidokaException, InterruptedException, NoSuchFieldException, IllegalAccessException {
 //	1
 		System.setProperty("jna.library.path", "C:\\Program Files (x86)\\IBM\\Personal Communications");
-//	2
-//		System.setProperty("jna.library.path", "C:\\Program Files (x86)\\IBM\\Personal Communications");
-//		//set sys_paths to null
-//		final Field sysPathsField = ClassLoader.class.getDeclaredField("sys_paths");
-//		sysPathsField.setAccessible(true);
-//		sysPathsField.set(null, null);
-//	3
+
 //		String prop = System.getProperty("jna.library.path");
 //		if (prop == null || prop.isEmpty()) {
 //			prop = "C:/Program Files (x86)/IBM/Personal Communications";
@@ -491,8 +470,8 @@ public class IBM3270Library implements INano {
 //			prop += ";C:/Program Files (x86)/IBM/Personal Communications";
 //		}
 //		System.setProperty("jna.library.path", prop);
-		//Load the ehll api
 
+		//Load the ehll api
 		EHllApi eHllApi = Native.loadLibrary("pcshll32", EHllApi.class, W32APIOptions.DEFAULT_OPTIONS);
 
 //		Hard-coding inputs for now
@@ -519,11 +498,11 @@ public class IBM3270Library implements INano {
 		hav.hllApiDta = dtaPtr.getByteArray(0,inputDtaLength);      // byte array returned
 		hav.srcDataLen = inputDtaLength;            // length of input byteArray
 
-		server.debug("hav1 is: " + hav.hllApiDta);
+		server.debug("hav1 is: " + new String(hav.hllApiDta));
 
 		//		Hard-coding inputs for now
 
-		String example2 = "steve rules";
+		String example2 = "Entering Test Data";
 		byte[] dta2 = example2.getBytes();
 		int func2 = EHllApi.HA_SENDKEY;
 		int pos2 = 0;
@@ -545,6 +524,6 @@ public class IBM3270Library implements INano {
 		hav2.hllApiDta = dtaPtr2.getByteArray(0,inputDtaLength2);      // byte array returned
 		hav2.srcDataLen = inputDtaLength2;            // length of input byteArray
 
-		server.debug("hav2 is: " + hav2.hllApiDta);
+		server.debug("hav2 is: " + new String(hav2.hllApiDta));
 	}
 }
