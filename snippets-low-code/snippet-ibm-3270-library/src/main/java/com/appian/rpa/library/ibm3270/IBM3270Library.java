@@ -159,8 +159,7 @@ public class IBM3270Library implements INano {
 	) SDKParameterMap parameters)
 			throws JidokaFatalException, HllApiInvocationException {
 		String sessionLetter = parameters.get(SESSION_LETTER).toString();
-		char sessionChar = sessionLetter.charAt(0);
-		ehll.maximizeWindow(sessionChar);
+		ehll.maximizeWindow(sessionLetter);
 //		ibm3270Commons.maximizeWindow();
 
 		}
@@ -247,8 +246,7 @@ public class IBM3270Library implements INano {
 		server.debug("PS location is: "+loc);
 
 		String sessionLetter = parameters.get(SESSION_LETTER).toString();
-		char sessionChar = sessionLetter.charAt(0);
-		EHll.RowColumn coords = ehll.convertPositionToRowCol(sessionChar,loc);
+		EHll.RowColumn coords = ehll.convertPositionToRowCol(sessionLetter,loc);
 		List<Integer> result = Arrays.asList(coords.getRow(),coords.getCol());
 
 //		List<Integer> result = Arrays.asList(loc);
@@ -439,7 +437,7 @@ public class IBM3270Library implements INano {
 		Integer row = Integer.valueOf(parameters.get(ROW_NUMBER).toString());
 		String sessionLetter = parameters.get(SESSION_LETTER).toString();
 		char sessionChar = sessionLetter.charAt(0);
-		int loc = ehll.convertRowColToCursorPosition(sessionChar,row,column);
+		int loc = ehll.convertRowColToCursorPosition("" +sessionChar,row,column);
 //		server.debug("PS position is: "+loc);
 		String text = parameters.get(TEXT_TO_WRITE).toString();
 		ehll.sendKeyAtCoordinates(text,loc);

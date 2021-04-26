@@ -5,8 +5,11 @@ import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.win32.W32APIOptions;
+import jdk.internal.joptsimple.internal.Strings;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -113,7 +116,7 @@ class EHllImpl implements EHll {
     }
 
     @Override
-    public void maximizeWindow(char shortSessionName) throws HllApiInvocationException {
+    public void maximizeWindow(String shortSessionName) throws HllApiInvocationException {
         //Connect to window service
         invokeHllApi(EHllApi.HA_CONNECT_WINDOW_SERVICES, String.valueOf(shortSessionName), 0);
 
@@ -123,7 +126,7 @@ class EHllImpl implements EHll {
         data[1] = (byte) (x >>> 8);
 
         byte[] command = new byte[]{
-                (byte) shortSessionName,       //short session name
+                getSessionNameAsByte(shortSessionName),       //short session name
                 EMPTY,
                 EMPTY,
                 EMPTY,
@@ -161,9 +164,9 @@ class EHllImpl implements EHll {
     }
 
     @Override
-    public RowColumn convertPositionToRowCol(char shortSessionName, int cursorPosition) throws HllApiInvocationException {
+    public RowColumn convertPositionToRowCol(String shortSessionName, int cursorPosition) throws HllApiInvocationException {
         byte[] command = new byte[] {
-                (byte) shortSessionName,
+                getSessionNameAsByte(shortSessionName),
                 0x00,
                 0x00,
                 0x00,
@@ -178,9 +181,9 @@ class EHllImpl implements EHll {
     }
 
     @Override
-    public int convertRowColToCursorPosition(char shortSessionName, int row, int col) throws HllApiInvocationException {
+    public int convertRowColToCursorPosition(String shortSessionName, int row, int col) throws HllApiInvocationException {
         byte[] command = new byte[] {
-                (byte) shortSessionName,
+                getSessionNameAsByte(shortSessionName),
                 0x00,
                 0x00,
                 0x00,
@@ -194,6 +197,34 @@ class EHllImpl implements EHll {
         HllApiValue hllApiValue = invokeHllApi(EHllApi.HA_CONVERT_POS_ROW_COL, command, row, col, INVALID_POSITION_CONVERSION_CODES, false);
 
         return hllApiValue.getResponseCode();
+    }
+
+    @Override
+    public SessionStatus querySessionStatus() throws HllApiInvocationException {
+        HllApiValue hllApiValue = invokeHllApi(22, new byte[20], 0);
+        byte[] sessionBytes;
+        try {
+            sessionBytes = hllApiValue.getDataString().getBytes(Native.getDefaultStringEncoding());
+        } catch (UnsupportedEncodingException e) {
+            sessionBytes = hllApiValue.getDataString().getBytes(StandardCharsets.UTF_8);
+        }
+        char sessionChar = (char)sessionBytes[0];
+        String string =  new String(Arrays.copyOfRange(sessionBytes,4,11));
+        char sessionType = (char)sessionBytes[12];
+        byte booleanByte = sessionBytes[13];
+        boolean isExtended = isBitTrue(booleanByte, 0);
+        boolean doesSupportSymbols = isBitTrue(booleanByte, 1);
+        int row = sessionBytes[14] ^ sessionBytes[15] << 8;
+        int col = sessionBytes[16] ^ sessionBytes[17] << 8;
+        int page = sessionBytes[18] ^ sessionBytes[19] << 8;
+        return new SessionStatus(sessionChar, string, sessionType, isExtended, doesSupportSymbols, row, col, page);
+    }
+
+    /**
+     * Utility for checking bit status
+     */
+    private static boolean isBitTrue(byte b, int position) {
+        return ((b >> position) & 1) != 0;
     }
 
     @Override
@@ -283,5 +314,18 @@ class EHllImpl implements EHll {
                 throw new HllApiInvocationException(responseCode);
             }
         }
+    }
+
+    /**
+     * Returns a single character representation of a session name
+     *
+     * @param sessionName - string representation of session name
+     * @return short session name represented as a single byte
+     */
+    private byte getSessionNameAsByte(String sessionName) throws HllApiInvocationException {
+        if(Strings.isNullOrEmpty(sessionName)) {
+            throw new HllApiInvocationException("Session name must be provided");
+        }
+        return (byte) sessionName.charAt(0);
     }
 }

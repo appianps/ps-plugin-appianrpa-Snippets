@@ -1,5 +1,7 @@
 package com.appian.rpa.library.ibm3270.ehll;
 
+import java.util.Arrays;
+
 /**
  * Interact with mainframe application through ehll dll
  */
@@ -419,9 +421,9 @@ public interface EHll {
      * 9 A system error occurred.
      * 12 The host session was stopped.
      * </p>
-     * @param shortSessionName - character name of the session
+     * @param shortSessionName - String representing the shortSessionName
      */
-    void maximizeWindow(char shortSessionName) throws HllApiInvocationException;
+    void maximizeWindow(String shortSessionName) throws HllApiInvocationException;
 
     /**
      * Converts an absolute cursor position on the presentation space to a RowColumn object
@@ -434,12 +436,12 @@ public interface EHll {
      *     * 9999 Second character in data string was not an uppercase “P” or “R.”
      * </p>
      *
-     * @param shortSessionName - short name of the session
+     * @param shortSessionName - single character short name of the session
      * @param cursorPosition - current absolute cursor position
      * @return absolute position as row, column
      * @throws HllApiInvocationException - when api invocation returns invalid code
      */
-    RowColumn convertPositionToRowCol(char shortSessionName, int cursorPosition) throws HllApiInvocationException;
+    RowColumn convertPositionToRowCol(String shortSessionName, int cursorPosition) throws HllApiInvocationException;
 
     /**
      * Converts rows and columns to absolute cursor position on the presentation space
@@ -452,15 +454,23 @@ public interface EHll {
      *     9998 An invalid session short name was specified.
      *     9999 Second character in data string was not an uppercase “P” or “R.”
      * </p>
-     * @param shortSessionName - character session name
+     * @param shortSessionName- single character short name of the session
      * @param row - row
      * @param col - col
      * @return absolute position
      * @throws HllApiInvocationException - response code is invalid
      */
-    int convertRowColToCursorPosition(char shortSessionName, int row, int col) throws HllApiInvocationException;
+    int convertRowColToCursorPosition(String shortSessionName, int row, int col) throws HllApiInvocationException;
 
     /**
+     * Queries the session status and parses to recognizable format
+     *
+     * @return session status
+     * @throws HllApiInvocationException - if response code is not zero
+     */
+	SessionStatus querySessionStatus() throws HllApiInvocationException;
+
+	/**
      * Used to invoke functions not defined in this API
      *
      * Prefer using functions defined in API. For functions not implemented here this generic invoke can be used
@@ -489,6 +499,29 @@ public interface EHll {
 
         public int getCol() {
             return col;
+        }
+    }
+
+
+    class SessionStatus {
+        private final char shortSessionId;
+        private final String sessionLongName;
+        private final char sessionType;
+        private final boolean isExtended;
+        private final boolean doesSupportProgrammedSymbols;
+        private final int row;
+        private final int column;
+        private final int hostPage;
+
+        public SessionStatus(char shortSessionId, String sessionLongName, char sessionType, boolean isExtended, boolean doesSupportProgrammedSymbols, int row, int column, int hostPage) {
+            this.shortSessionId = shortSessionId;
+            this.sessionLongName = sessionLongName;
+            this.sessionType = sessionType;
+            this.isExtended = isExtended;
+            this.doesSupportProgrammedSymbols = doesSupportProgrammedSymbols;
+            this.row = row;
+            this.column = column;
+            this.hostPage = hostPage;
         }
     }
 }
