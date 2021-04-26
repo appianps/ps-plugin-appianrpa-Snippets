@@ -243,12 +243,12 @@ public class IBM3270Library implements INano {
 		int loc = ehll.search(text,true);
 		server.debug("PS location is: "+loc);
 
-//		String sessionLetter = parameters.get(SESSION_LETTER).toString();
-//		char sessionChar = sessionLetter.charAt(0);
-//		EHll.RowColumn coords = ehll.convertPositionToRowCol(sessionChar,loc);
-//		List<Integer> result = Arrays.asList(coords.getRow(),coords.getCol());
+		String sessionLetter = parameters.get(SESSION_LETTER).toString();
+		char sessionChar = sessionLetter.charAt(0);
+		EHll.RowColumn coords = ehll.convertPositionToRowCol(sessionChar,loc);
+		List<Integer> result = Arrays.asList(coords.getRow(),coords.getCol());
 
-		List<Integer> result = Arrays.asList(loc);
+//		List<Integer> result = Arrays.asList(loc);
 		return result;
 	}
 

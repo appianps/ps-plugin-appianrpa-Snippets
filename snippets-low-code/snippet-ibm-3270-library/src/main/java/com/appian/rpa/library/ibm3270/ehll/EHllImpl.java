@@ -206,8 +206,8 @@ class EHllImpl implements EHll {
     }
 
     private HllApiValue invokeHllApi(int functionNumber, byte[] data, int inputDtaLength, int cursorPosition, Set<Integer> responseCodes, boolean inclusive) throws HllApiInvocationException {
-        Pointer dtaPtr = new Memory(inputDtaLength);
-        dtaPtr.write(0, data, 0, inputDtaLength);
+        Pointer dtaPtr = new Memory(data.length);
+        dtaPtr.write(0, data, 0, data.length);
         IntByReference funcIntPtr = new IntByReference(functionNumber);
         IntByReference dtaLenPtr = new IntByReference(inputDtaLength);
         IntByReference posIntPtr = new IntByReference(cursorPosition);
