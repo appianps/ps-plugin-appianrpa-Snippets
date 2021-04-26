@@ -23,6 +23,14 @@ public class HllApiInvocationException extends Exception {
     }
 
     /**
+     * Custom message for invocation exception for the dll
+     */
+    public HllApiInvocationException(String message) {
+        super(message);
+        this.responseCode = -1;
+    }
+
+    /**
      * Response code from API can be keyed off of
      *
      * @return - response code
