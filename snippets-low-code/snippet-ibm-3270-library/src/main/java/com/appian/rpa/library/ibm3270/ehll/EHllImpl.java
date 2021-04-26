@@ -20,6 +20,8 @@ class EHllImpl implements EHll {
 
     private static final String SEARCH_FROM_PARAM = "SRCHFROM";
 
+    private static final int EMPTY = 0x00;
+
     private final EHllApi ehllApi;
     public static final Set<Integer> INVALID_POSITION_CONVERSION_CODES = new HashSet<Integer>() {{
         add(0);
@@ -115,12 +117,40 @@ class EHllImpl implements EHll {
         //Connect to window service
         invokeHllApi(EHllApi.HA_CONNECT_WINDOW_SERVICES, String.valueOf(shortSessionName), 0);
 
+        short x = 0x0800;
+        byte[] data = new byte[2];
+        data[0] = (byte) x;
+        data[1] = (byte) (x >>> 8);
+
         byte[] command = new byte[]{
                 (byte) shortSessionName,       //short session name
+                EMPTY,
+                EMPTY,
+                EMPTY,
                 0x01,
-                0x00,
-                0x08,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                EMPTY,
+                data[0],
+                data[1],
+                EMPTY,
+                EMPTY,
+                EMPTY,
+                EMPTY,
+                EMPTY,
+                EMPTY,
+                EMPTY,
+                EMPTY,
+                EMPTY,
+                EMPTY,
+                EMPTY,
+                EMPTY,
+                EMPTY,
+                EMPTY,
+                EMPTY,
+                EMPTY,
+                EMPTY,
+                EMPTY,
+                EMPTY,
+                EMPTY
         };
 
         //Maximize window
@@ -134,7 +164,13 @@ class EHllImpl implements EHll {
     public RowColumn convertPositionToRowCol(char shortSessionName, int cursorPosition) throws HllApiInvocationException {
         byte[] command = new byte[] {
                 (byte) shortSessionName,
-                (byte) 'P'
+                0x00,
+                0x00,
+                0x00,
+                (byte) 'P',
+                0x00,
+                0x00,
+                0x00,
         };
 
         HllApiValue hllApiValue = invokeHllApi(EHllApi.HA_CONVERT_POS_ROW_COL, command, command.length, cursorPosition, INVALID_POSITION_CONVERSION_CODES, false);
@@ -145,7 +181,13 @@ class EHllImpl implements EHll {
     public int convertRowColToCursorPosition(char shortSessionName, int row, int col) throws HllApiInvocationException {
         byte[] command = new byte[] {
                 (byte) shortSessionName,
-                (byte) 'R'
+                0x00,
+                0x00,
+                0x00,
+                (byte) 'R',
+                0x00,
+                0x00,
+                0x00,
         };
 
         //If response code is one of 0, 9998 or 9999 throw an exception. All other codes represent position

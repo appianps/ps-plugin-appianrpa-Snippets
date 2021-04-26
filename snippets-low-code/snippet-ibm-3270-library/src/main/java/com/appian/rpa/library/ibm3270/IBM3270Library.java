@@ -17,8 +17,11 @@ import com.sun.jna.Native;
 import com.sun.jna.win32.W32APIOptions;
 import jodd.util.StringUtil;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.List;
 
@@ -155,10 +158,10 @@ public class IBM3270Library implements INano {
 			}
 	) SDKParameterMap parameters)
 			throws JidokaFatalException, HllApiInvocationException {
-//		String sessionLetter = parameters.get(SESSION_LETTER).toString();
-//		char sessionChar = sessionLetter.charAt(0);
-//		ehll.maximizeWindow(sessionChar);
-		ibm3270Commons.maximizeWindow();
+		String sessionLetter = parameters.get(SESSION_LETTER).toString();
+		char sessionChar = sessionLetter.charAt(0);
+		ehll.maximizeWindow(sessionChar);
+//		ibm3270Commons.maximizeWindow();
 
 		}
 
@@ -266,7 +269,7 @@ public class IBM3270Library implements INano {
 									id = LINE_NUMBER
 							)
 					}
-			) SDKParameterMap parameters) throws JidokaException, HllApiInvocationException {
+			) SDKParameterMap parameters) throws JidokaException, HllApiInvocationException, IOException {
 		String screen;
 		screen = ehll.copyScreen(1920);
 		server.debug("Screen is: "+screen);
@@ -274,7 +277,13 @@ public class IBM3270Library implements INano {
 		int begin = 0+80*(line-1);
 		int end = 79+(80*(line-1));
 		String rowText = screen.substring(begin,end);
-		server.debug("Row text is : "+rowText);
+		server.debug("Row text is : "+rowText.replaceAll("\u0000", "A"));
+
+//		byte data[] = ...
+		FileOutputStream out = new FileOutputStream("C:\\Users\\srd025\\Documents\\appianrpa\\test\\testfile.txt");
+		out.write(screen.getBytes(StandardCharsets.UTF_8));
+		out.close();
+
 		return rowText;
 	}
 
@@ -428,12 +437,10 @@ public class IBM3270Library implements INano {
 		//		move to coordinates
 		Integer column = Integer.valueOf(parameters.get(COLUMN_NUMBER).toString());
 		Integer row = Integer.valueOf(parameters.get(ROW_NUMBER).toString());
-		Integer loc = ((row-1)*80)+column; // update once supports row col
-		server.debug("Old calc is: "+loc);
-//		String sessionLetter = parameters.get(SESSION_LETTER).toString();
-//		char sessionChar = sessionLetter.charAt(0);
-//		int loc2 = ehll.convertRowColToCursorPosition(sessionChar,row,column);
-//		server.debug("New calc is: "+loc2);
+		String sessionLetter = parameters.get(SESSION_LETTER).toString();
+		char sessionChar = sessionLetter.charAt(0);
+		int loc = ehll.convertRowColToCursorPosition(sessionChar,row,column);
+//		server.debug("PS position is: "+loc);
 		String text = parameters.get(TEXT_TO_WRITE).toString();
 		ehll.sendKeyAtCoordinates(text,loc);
 	}
