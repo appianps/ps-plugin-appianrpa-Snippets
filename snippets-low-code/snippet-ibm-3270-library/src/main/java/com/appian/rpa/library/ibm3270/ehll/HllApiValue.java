@@ -35,11 +35,21 @@ public final class HllApiValue {
      */
     private final String dataString;
 
-    public HllApiValue(int function, int responseCode, int dataLength, String dataString) {
+    /**
+     * Bytes from data source
+     */
+    private final byte[] bytes;
+
+    public HllApiValue(int function, int responseCode, int dataLength, String dataString, byte[] bytes) {
         this.function = function;
         this.responseCode = responseCode;
         this.dataLength = dataLength;
         this.dataString = dataString;
+        this.bytes = bytes;
+    }
+
+    public byte[] getBytes() {
+        return bytes;
     }
 
     public int getFunction() {

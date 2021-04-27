@@ -5,7 +5,6 @@ import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.win32.W32APIOptions;
-import jdk.internal.joptsimple.internal.Strings;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
@@ -202,12 +201,7 @@ class EHllImpl implements EHll {
     @Override
     public SessionStatus querySessionStatus() throws HllApiInvocationException {
         HllApiValue hllApiValue = invokeHllApi(22, new byte[20], 0);
-        byte[] sessionBytes;
-        try {
-            sessionBytes = hllApiValue.getDataString().getBytes(Native.getDefaultStringEncoding());
-        } catch (UnsupportedEncodingException e) {
-            sessionBytes = hllApiValue.getDataString().getBytes(StandardCharsets.UTF_8);
-        }
+        byte[] sessionBytes = hllApiValue.getBytes();
         char sessionChar = (char)sessionBytes[0];
         String string =  new String(Arrays.copyOfRange(sessionBytes,4,11));
         char sessionType = (char)sessionBytes[12];
@@ -292,7 +286,7 @@ class EHllImpl implements EHll {
         checkResponseCode(responseCode, responseCodes, inclusive);
 
         //Make sure to set the default string encoding to be appropriate using jna.encoding
-        return new HllApiValue(funcIntPtr.getValue(), responseCode, dtaLenPtr.getValue(), dtaPtr.getString(0));
+        return new HllApiValue(funcIntPtr.getValue(), responseCode, dtaLenPtr.getValue(), dtaPtr.getString(0), dtaPtr.getByteArray(0, data.length));
     }
 
 
@@ -323,7 +317,7 @@ class EHllImpl implements EHll {
      * @return short session name represented as a single byte
      */
     private byte getSessionNameAsByte(String sessionName) throws HllApiInvocationException {
-        if(Strings.isNullOrEmpty(sessionName)) {
+        if(sessionName.isEmpty()) {
             throw new HllApiInvocationException("Session name must be provided");
         }
         return (byte) sessionName.charAt(0);

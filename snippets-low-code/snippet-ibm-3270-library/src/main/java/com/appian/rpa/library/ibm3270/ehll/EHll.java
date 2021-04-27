@@ -504,6 +504,7 @@ public interface EHll {
 
 
     class SessionStatus {
+
         private final char shortSessionId;
         private final String sessionLongName;
         private final char sessionType;
@@ -522,6 +523,52 @@ public interface EHll {
             this.row = row;
             this.column = column;
             this.hostPage = hostPage;
+        }
+
+        public char getShortSessionId() {
+            return shortSessionId;
+        }
+
+        public String getSessionLongName() {
+            return sessionLongName;
+        }
+
+        public char getSessionType() {
+            return sessionType;
+        }
+
+        public boolean isExtended() {
+            return isExtended;
+        }
+
+        public boolean isDoesSupportProgrammedSymbols() {
+            return doesSupportProgrammedSymbols;
+        }
+
+        public int getRow() {
+            return row;
+        }
+
+        public int getColumn() {
+            return column;
+        }
+
+        public int getHostPage() {
+            return hostPage;
+        }
+
+        @Override
+        public String toString() {
+            return "SessionStatus{" +
+                    "shortSessionId=" + shortSessionId +
+                    ", sessionLongName='" + sessionLongName + '\'' +
+                    ", sessionType=" + sessionType +
+                    ", isExtended=" + isExtended +
+                    ", doesSupportProgrammedSymbols=" + doesSupportProgrammedSymbols +
+                    ", row=" + row +
+                    ", column=" + column +
+                    ", hostPage=" + hostPage +
+                    '}';
         }
     }
 }

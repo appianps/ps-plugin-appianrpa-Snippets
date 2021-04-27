@@ -1,15 +1,13 @@
 package com.appian.rpa.library.ibm3270;
 
-import com.appian.rpa.library.ibm3270.clients.PCOMMEmulatorCommons;
-import com.appian.rpa.library.ibm3270.clients.WC3270EmulatorCommons;
 import com.appian.rpa.library.ibm3270.ehll.EHll;
 import com.appian.rpa.library.ibm3270.ehll.EHllApi;
 import com.appian.rpa.library.ibm3270.ehll.HllApiInvocationException;
+import com.appian.rpa.library.ibm3270.ehll.HllApiValue;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.novayre.jidoka.client.api.*;
 import com.novayre.jidoka.client.api.annotations.FieldLink;
 import com.novayre.jidoka.client.api.annotations.Nano;
-import com.novayre.jidoka.client.api.exceptions.JidokaException;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.client.api.execution.IUsernamePassword;
 import com.novayre.jidoka.client.api.multios.IClient;
@@ -17,11 +15,8 @@ import com.sun.jna.Native;
 import com.sun.jna.win32.W32APIOptions;
 import jodd.util.StringUtil;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.List;
 
@@ -30,8 +25,6 @@ import java.lang.*;
 @Nano
 public class IBM3270Library implements INano {
 
-	private static final String WINDOW_TITLE_XPATH = "Window Title Xpath";
-	private static final String EMULATOR_TYPE = "Emulator Type";
 	private static final String SESSION_LETTER = "Session Letter (A for example)";
 	private static final String DLL_FOLDER_PATH = "Path to folder containing DLL file";
 	private static final String DLL_FILE_NAME = "Name of DLL file (extension NOT needed)";
@@ -61,9 +54,7 @@ public class IBM3270Library implements INano {
 	@FieldLink("::robot")
 	private IRobot robot;
 
-	IBM3270Commons ibm3270Commons;
 	EHll ehll;
-	HllApiCommons apiCommons;
 	EHllApi eHllApi;
 
 	/**
@@ -75,34 +66,6 @@ public class IBM3270Library implements INano {
 	) {
 		server = (IJidokaServer<Serializable>) JidokaFactory.getServer();
 		client = IClient.getInstance(robot);
-	}
-
-	/**
-	 * Set emulator (PCOMM or W3270)
-	 */
-	@JidokaMethod(name = "IBM Set Emulator", description ="IBM3270Library:v2.0.0: Sets the correct emulator type (PCOMM or W3270)")
-	public void setEmulator(
-			@JidokaParameter(
-					name = "Nested parameters",
-					type = EJidokaParameterType.NESTED,
-					nestedParameters = {
-							@JidokaNestedParameter(
-									name = WINDOW_TITLE_XPATH,
-									id = WINDOW_TITLE_XPATH
-							),
-							@JidokaNestedParameter(
-									name = EMULATOR_TYPE,
-									id = EMULATOR_TYPE
-							)
-					}
-			) SDKParameterMap parameters) {
-		if (parameters.get(EMULATOR_TYPE).toString().toUpperCase().equals("WC3270")) {
-			ibm3270Commons = new WC3270EmulatorCommons(robot, parameters.get(WINDOW_TITLE_XPATH).toString());
-		} else if (parameters.get(EMULATOR_TYPE).toString().toUpperCase().equals("PCOMM")) {
-			ibm3270Commons = new PCOMMEmulatorCommons(robot, parameters.get(WINDOW_TITLE_XPATH).toString());
-		} else {
-			throw new JidokaFatalException("Only [WC3270] or [PCOMM] emulTypes are valid");
-		}
 	}
 
 	/**
@@ -133,11 +96,6 @@ public class IBM3270Library implements INano {
 		String sessionLetter = parameters.get(SESSION_LETTER).toString();
 		ehll = EHll.create(path,name);
 		ehll.connect(sessionLetter);
-//		ehll.setSessionParams("ATTRB,EAB");
-//		ehll.setSessionParams("EAB");
-//		ehll.setSessionParams("ATTRB");
-
-		apiCommons = new HllApiCommons();
 		System.setProperty("jna.library.path", parameters.get(DLL_FOLDER_PATH).toString());
 		eHllApi = Native.loadLibrary(parameters.get(DLL_FILE_NAME).toString(), EHllApi.class, W32APIOptions.DEFAULT_OPTIONS);
 
@@ -160,13 +118,10 @@ public class IBM3270Library implements INano {
 			throws JidokaFatalException, HllApiInvocationException {
 		String sessionLetter = parameters.get(SESSION_LETTER).toString();
 		ehll.maximizeWindow(sessionLetter);
-//		ibm3270Commons.maximizeWindow();
-
 		}
 
 	/**
-	 * Enters credentials for an application with specific username
-	 * handling special character entry
+	 * Enter Credential
 	 */
 	@JidokaMethod(name = "IBM Enter Credential", description = "IBM3270Library:v2.0.0: Enters credentials into emulator")
 	public void enterCredentialByUsername(
@@ -216,7 +171,6 @@ public class IBM3270Library implements INano {
 		if (isUsername == EJidokaParameterBoolean.YES) {
 			ehll.sendKey(credential.getUsername());
 		} else {
-			String textToWrite = credential.getPassword();
 			ehll.sendKey(credential.getPassword());
 		}
 	}
@@ -239,17 +193,22 @@ public class IBM3270Library implements INano {
 									id = SESSION_LETTER
 							)
 					}
-			) SDKParameterMap parameters) throws JidokaException, HllApiInvocationException {
+			) SDKParameterMap parameters) throws HllApiInvocationException {
 
 		String text = parameters.get(TEXT_TO_LOCATE).toString();
-		int loc = ehll.search(text,true);
-		server.debug("PS location is: "+loc);
-
+		int loc;
+		try {
+			loc = ehll.search(text,true);
+		}catch (HllApiInvocationException e){
+			if(e.getResponseCode()==24){
+				return null;
+			}
+			throw e;
+		}
+//		server.debug("PS location is: "+loc);
 		String sessionLetter = parameters.get(SESSION_LETTER).toString();
 		EHll.RowColumn coords = ehll.convertPositionToRowCol(sessionLetter,loc);
 		List<Integer> result = Arrays.asList(coords.getRow(),coords.getCol());
-
-//		List<Integer> result = Arrays.asList(loc);
 		return result;
 	}
 
@@ -267,21 +226,17 @@ public class IBM3270Library implements INano {
 									id = LINE_NUMBER
 							)
 					}
-			) SDKParameterMap parameters) throws JidokaException, HllApiInvocationException, IOException {
+			) SDKParameterMap parameters) throws HllApiInvocationException, IOException {
 		String screen;
-		screen = ehll.copyScreen(1920);
+		EHll.SessionStatus sessionStatus = ehll.querySessionStatus();
+		server.debug("Session is : "+sessionStatus.toString());
+		screen = ehll.copyScreen(sessionStatus.getRow()* sessionStatus.getColumn());
 		server.debug("Screen is: "+screen);
 		int line = Integer.valueOf(parameters.get(LINE_NUMBER).toString());
 		int begin = 0+80*(line-1);
-		int end = 79+(80*(line-1));
+		int end = 80+(80*(line-1));
 		String rowText = screen.substring(begin,end);
-		server.debug("Row text is : "+rowText.replaceAll("\u0000", "A"));
-
-//		byte data[] = ...
-		FileOutputStream out = new FileOutputStream("C:\\Users\\srd025\\Documents\\appianrpa\\test\\testfile.txt");
-		out.write(screen.getBytes(StandardCharsets.UTF_8));
-		out.close();
-
+		server.debug("Row text is : "+rowText);
 		return rowText;
 	}
 
@@ -307,13 +262,12 @@ public class IBM3270Library implements INano {
 									id = TEXT_LENGTH
 							)
 					}
-			) SDKParameterMap parameters) throws JidokaException {
-		List<String> screen;
-		screen = ibm3270Commons.scrapeScreen();
+			) SDKParameterMap parameters) throws HllApiInvocationException {
+		String screen = screen = ehll.copyScreen(1920);
 		Integer y = Integer.valueOf(parameters.get(ROW_NUMBER).toString());
 		Integer x = Integer.valueOf(parameters.get(COLUMN_NUMBER).toString());
 		Integer length = Integer.valueOf(parameters.get(TEXT_LENGTH).toString());
-		String rowText = screen.get(y - 1);
+		String rowText = screen; // need to fix
 		Integer min = x - 1;
 		Integer max = x - 1 + length;
 		if (max > rowText.length()) {
@@ -326,7 +280,6 @@ public class IBM3270Library implements INano {
 	/**
 	 * Action 'Go to Text Position'.
 	 *
-	 * @throws JidokaException
 	 */
 	@JidokaMethod(name = "IBM Go to Text Position", description = "IBM3270Library:v1.0.0: Takes in a text string and goes to that position in emulator")
 	public void goToTextPosition(
@@ -345,19 +298,24 @@ public class IBM3270Library implements INano {
 							@JidokaNestedParameter(
 									name = COLUMN_OFFSET,
 									id = COLUMN_OFFSET
+							),
+							@JidokaNestedParameter(
+									name = SESSION_LETTER,
+									id = SESSION_LETTER
 							)
 					}
-			) SDKParameterMap parameters) throws JidokaException, HllApiInvocationException {
+			) SDKParameterMap parameters) throws HllApiInvocationException {
 		String text = parameters.get(TEXT_TO_LOCATE).toString();
 		Integer colOff = Integer.valueOf(parameters.get(COLUMN_OFFSET).toString());
-		Integer rowOff = Integer.valueOf(parameters.get(ROW_OFFSET).toString());
+//		Integer rowOff = Integer.valueOf(parameters.get(ROW_OFFSET).toString());
+//		String sessionLetter = parameters.get(SESSION_LETTER).toString();
+//		EHll.RowColumn coords = ehll.convertPositionToRowCol(sessionLetter,loc);
+//		List<Integer> result = Arrays.asList(coords.getRow(),coords.getCol());
 		ehll.setCursorPosition(colOff); //update this once it supports row col
 	}
 
 	/**
 	 * Action 'Go to Coordinates'.
-	 *
-	 * @throws JidokaException
 	 */
 	@JidokaMethod(name = "IBM Go to Coordinates", description = "IBM3270Library:v2.0.0: Takes in a row and column then moves the cursor to that position in emulator")
 	public void goToCoordinates(
@@ -372,19 +330,23 @@ public class IBM3270Library implements INano {
 							@JidokaNestedParameter(
 									name = COLUMN_NUMBER,
 									id = COLUMN_NUMBER
+							),
+							@JidokaNestedParameter(
+									name = SESSION_LETTER,
+									id = SESSION_LETTER
 							)
 					}
-			) SDKParameterMap parameters) throws JidokaException, HllApiInvocationException {
+			) SDKParameterMap parameters) throws HllApiInvocationException {
 		Integer column = Integer.valueOf(parameters.get(COLUMN_NUMBER).toString());
 		Integer row = Integer.valueOf(parameters.get(ROW_NUMBER).toString());
-		Integer loc = ((row-1)*80)+column;
-		ehll.setCursorPosition(loc); //update this once it supports row col
+		String sessionLetter = parameters.get(SESSION_LETTER).toString();
+		int loc = ehll.convertRowColToCursorPosition(sessionLetter,row,column);
+//		server.debug("PS position is: "+loc);
+		ehll.setCursorPosition(loc);
 	}
 
 	/**
 	 * Action 'Write Here'.
-	 *
-	 * @throws JidokaException
 	 */
 	@JidokaMethod(name = "IBM Write Here", description = "IBM3270Library:v2.0.0: Enters text in emulator at current location")
 	public void writeHere(
@@ -397,15 +359,13 @@ public class IBM3270Library implements INano {
 									id = TEXT_TO_WRITE
 							)
 					}
-			) SDKParameterMap parameters) throws JidokaException, HllApiInvocationException {
+			) SDKParameterMap parameters) throws HllApiInvocationException {
 		String text = parameters.get(TEXT_TO_WRITE).toString();
 		ehll.sendKey(text);
 	}
 
 	/**
 	 * Action 'Write at Coordinates'.
-	 *
-	 * @throws JidokaException
 	 */
 	@JidokaMethod(name = "IBM Write at Coordinates", description = "IBM3270Library:v2.0.0: Enters text in emulator at specified location")
 	public void writeAtCoordinates(
@@ -430,14 +390,12 @@ public class IBM3270Library implements INano {
 									id = SESSION_LETTER
 							)
 					}
-			) SDKParameterMap parameters) throws JidokaException, HllApiInvocationException {
+			) SDKParameterMap parameters) throws HllApiInvocationException {
 
-		//		move to coordinates
 		Integer column = Integer.valueOf(parameters.get(COLUMN_NUMBER).toString());
 		Integer row = Integer.valueOf(parameters.get(ROW_NUMBER).toString());
 		String sessionLetter = parameters.get(SESSION_LETTER).toString();
-		char sessionChar = sessionLetter.charAt(0);
-		int loc = ehll.convertRowColToCursorPosition("" +sessionChar,row,column);
+		int loc = ehll.convertRowColToCursorPosition(sessionLetter,row,column);
 //		server.debug("PS position is: "+loc);
 		String text = parameters.get(TEXT_TO_WRITE).toString();
 		ehll.sendKeyAtCoordinates(text,loc);
@@ -445,8 +403,6 @@ public class IBM3270Library implements INano {
 
 	/**
 	 * Action 'Bulk Write at Coordinates'.
-	 *
-	 * @throws JidokaException
 	 */
 	@JidokaMethod(name = "IBM Bulk Write at Coordinates", description = "IBM3270Library:v2.0.0: Enters text in bulk at specified locations.")
 	public void bulkWriteAtCoordinates(
@@ -458,30 +414,32 @@ public class IBM3270Library implements INano {
 									name = BULK_TEXT_AND_COORDINATES,
 									id = BULK_TEXT_AND_COORDINATES,
 									instructionalText = "Expects JSON list object with fields 'text', 'row', and 'column' - for example a!toJson({{text:\"test1\",row:1,column:1},{text:\"test2\",row:5,column:5}})"
+							),
+							@JidokaNestedParameter(
+									name = SESSION_LETTER,
+									id = SESSION_LETTER
 							)
 					}
-			) SDKParameterMap parameters) throws JidokaException, IOException, HllApiInvocationException {
+			) SDKParameterMap parameters) throws IOException, HllApiInvocationException {
 		String json = parameters.get(BULK_TEXT_AND_COORDINATES).toString();
+		String sessionLetter = parameters.get(SESSION_LETTER).toString();
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<HashMap> hmap = objectMapper.readValue(json, List.class);
 //		server.debug("Map is: "+hmap);
 		for (int i = 0; i < hmap.size(); i++) {
 //			server.debug("begin loop, Key: "+hmap.get(i).keySet() + " & Value: " + hmap.get(i).entrySet());
-
 			String text = hmap.get(i).get("text").toString();
 			Integer column = Integer.valueOf((int) hmap.get(i).get("column"));
 			Integer row = Integer.valueOf((int) hmap.get(i).get("row"));
-			Integer loc = ((row-1)*80)+column; // update once supports row col
+			int loc = ehll.convertRowColToCursorPosition(sessionLetter,row,column);
+//			server.debug("PS position is: "+loc);
 			ehll.sendKeyAtCoordinates(text,loc);
-
 //			server.debug("end loop, Key: "+hmap.get(i).keySet() + " & Value: " + hmap.get(i).entrySet());
 		}
 	}
 
 	/**
 	 * Action 'Write at Label'.
-	 *
-	 * @throws JidokaException
 	 */
 	@JidokaMethod(name = "IBM Write at Label", description = "IBM3270Library:v1.0.0: Writes text in emulator at specified label with optional offset (handles slow typing & special characters")
 	public void writeAtLabel(
@@ -506,7 +464,7 @@ public class IBM3270Library implements INano {
 									id = TEXT_TO_WRITE
 							)
 					}
-			) SDKParameterMap parameters) throws JidokaException, HllApiInvocationException {
+			) SDKParameterMap parameters) throws HllApiInvocationException {
 		String field = parameters.get(FIELD_LABEL).toString();
 		int loc = ehll.search(field,true);
 		server.debug("Location is: "+loc);
