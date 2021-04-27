@@ -1,16 +1,15 @@
 package com.appian.rpa.library.ibm3270.ehll;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.win32.W32APIOptions;
-
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 class EHllImpl implements EHll {
 
@@ -94,12 +93,14 @@ class EHllImpl implements EHll {
     }
 
     @Override
-    public int search(String textToSearch, boolean searchForwards, int cursorPosition) throws HllApiInvocationException {
+    public int search(String textToSearch, boolean searchForwards, int cursorPosition)
+        throws HllApiInvocationException {
         setSessionParams(SEARCH_FROM_PARAM);
         return searchInternal(textToSearch, searchForwards, cursorPosition);
     }
 
-    private int searchInternal(String textToSearch, boolean firstOccurrence, int cursorPosition) throws HllApiInvocationException {
+    private int searchInternal(String textToSearch, boolean firstOccurrence, int cursorPosition)
+        throws HllApiInvocationException {
         if (firstOccurrence) {
             setSessionParams(SEARCH_FORWARD_PARAM);
         } else {
@@ -121,39 +122,12 @@ class EHllImpl implements EHll {
 
         short x = 0x0800;
         byte[] data = new byte[2];
-        data[0] = (byte) x;
-        data[1] = (byte) (x >>> 8);
+        data[0] = (byte)x;
+        data[1] = (byte)(x >>> 8);
 
-        byte[] command = new byte[]{
-                getSessionNameAsByte(shortSessionName),       //short session name
-                EMPTY,
-                EMPTY,
-                EMPTY,
-                0x01,
-                EMPTY,
-                data[0],
-                data[1],
-                EMPTY,
-                EMPTY,
-                EMPTY,
-                EMPTY,
-                EMPTY,
-                EMPTY,
-                EMPTY,
-                EMPTY,
-                EMPTY,
-                EMPTY,
-                EMPTY,
-                EMPTY,
-                EMPTY,
-                EMPTY,
-                EMPTY,
-                EMPTY,
-                EMPTY,
-                EMPTY,
-                EMPTY,
-                EMPTY
-        };
+        byte[] command = new byte[] {getSessionNameAsByte(shortSessionName),       //short session name
+            EMPTY, EMPTY, EMPTY, 0x01, EMPTY, data[0], data[1], EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
+            EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY};
 
         //Maximize window
         invokeHllApi(EHllApi.WINDOW_STATUS, command, 0);
@@ -163,37 +137,25 @@ class EHllImpl implements EHll {
     }
 
     @Override
-    public RowColumn convertPositionToRowCol(String shortSessionName, int cursorPosition) throws HllApiInvocationException {
-        byte[] command = new byte[] {
-                getSessionNameAsByte(shortSessionName),
-                0x00,
-                0x00,
-                0x00,
-                (byte) 'P',
-                0x00,
-                0x00,
-                0x00,
-        };
+    public RowColumn convertPositionToRowCol(String shortSessionName, int cursorPosition)
+        throws HllApiInvocationException {
+        byte[] command = new byte[] {getSessionNameAsByte(shortSessionName), 0x00, 0x00, 0x00, (byte)'P',
+            0x00, 0x00, 0x00,};
 
-        HllApiValue hllApiValue = invokeHllApi(EHllApi.HA_CONVERT_POS_ROW_COL, command, command.length, cursorPosition, INVALID_POSITION_CONVERSION_CODES, false);
+        HllApiValue hllApiValue = invokeHllApi(EHllApi.HA_CONVERT_POS_ROW_COL, command, command.length,
+            cursorPosition, INVALID_POSITION_CONVERSION_CODES, false);
         return new RowColumn(hllApiValue.getDataLength(), hllApiValue.getResponseCode());
     }
 
     @Override
-    public int convertRowColToCursorPosition(String shortSessionName, int row, int col) throws HllApiInvocationException {
-        byte[] command = new byte[] {
-                getSessionNameAsByte(shortSessionName),
-                0x00,
-                0x00,
-                0x00,
-                (byte) 'R',
-                0x00,
-                0x00,
-                0x00,
-        };
+    public int convertRowColToCursorPosition(String shortSessionName, int row, int col)
+        throws HllApiInvocationException {
+        byte[] command = new byte[] {getSessionNameAsByte(shortSessionName), 0x00, 0x00, 0x00, (byte)'R',
+            0x00, 0x00, 0x00,};
 
         //If response code is one of 0, 9998 or 9999 throw an exception. All other codes represent position
-        HllApiValue hllApiValue = invokeHllApi(EHllApi.HA_CONVERT_POS_ROW_COL, command, row, col, INVALID_POSITION_CONVERSION_CODES, false);
+        HllApiValue hllApiValue = invokeHllApi(EHllApi.HA_CONVERT_POS_ROW_COL, command, row, col,
+            INVALID_POSITION_CONVERSION_CODES, false);
 
         return hllApiValue.getResponseCode();
     }
@@ -203,7 +165,7 @@ class EHllImpl implements EHll {
         HllApiValue hllApiValue = invokeHllApi(22, new byte[20], 0);
         byte[] sessionBytes = hllApiValue.getBytes();
         char sessionChar = (char)sessionBytes[0];
-        String string =  new String(Arrays.copyOfRange(sessionBytes,4,11));
+        String string = new String(Arrays.copyOfRange(sessionBytes, 4, 11));
         char sessionType = (char)sessionBytes[12];
         byte booleanByte = sessionBytes[13];
         boolean isExtended = isBitTrue(booleanByte, 0);
@@ -211,7 +173,8 @@ class EHllImpl implements EHll {
         int row = sessionBytes[14] ^ sessionBytes[15] << 8;
         int col = sessionBytes[16] ^ sessionBytes[17] << 8;
         int page = sessionBytes[18] ^ sessionBytes[19] << 8;
-        return new SessionStatus(sessionChar, string, sessionType, isExtended, doesSupportSymbols, row, col, page);
+        return new SessionStatus(sessionChar, string, sessionType, isExtended, doesSupportSymbols, row, col,
+            page);
     }
 
     /**
@@ -222,7 +185,8 @@ class EHllImpl implements EHll {
     }
 
     @Override
-    public HllApiValue invoke(int function, byte[] data, int dataLength, int cursorPosition) throws HllApiInvocationException{
+    public HllApiValue invoke(int function, byte[] data, int dataLength, int cursorPosition)
+        throws HllApiInvocationException {
         return invokeHllApi(function, data, dataLength, cursorPosition);
     }
 
@@ -235,7 +199,8 @@ class EHllImpl implements EHll {
      * @return Collection with modified values
      * @throws HllApiInvocationException - when response code != 0 is returned
      */
-    private HllApiValue invokeHllApi(int functionNumber, String input, int cursorPosition) throws HllApiInvocationException {
+    private HllApiValue invokeHllApi(int functionNumber, String input, int cursorPosition)
+        throws HllApiInvocationException {
         input = input == null ? "ignored" : input;
         byte[] data = input.getBytes(StandardCharsets.UTF_8);
         return invokeHllApi(functionNumber, data, cursorPosition);
@@ -250,7 +215,8 @@ class EHllImpl implements EHll {
      * @return Collection with modified values
      * @throws HllApiInvocationException - when response code != 0 is returned
      */
-    private HllApiValue invokeHllApi(int functionNumber, byte[] data, int cursorPosition) throws HllApiInvocationException {
+    private HllApiValue invokeHllApi(int functionNumber, byte[] data, int cursorPosition)
+        throws HllApiInvocationException {
         int inputDtaLength = data.length;
 
         return invokeHllApi(functionNumber, data, inputDtaLength, cursorPosition);
@@ -266,13 +232,20 @@ class EHllImpl implements EHll {
      * @return API value
      * @throws HllApiInvocationException
      */
-    private HllApiValue invokeHllApi(int functionNumber, byte[] data, int inputDtaLength, int cursorPosition) throws HllApiInvocationException {
+    private HllApiValue invokeHllApi(int functionNumber, byte[] data, int inputDtaLength, int cursorPosition)
+        throws HllApiInvocationException {
         Set<Integer> set = new HashSet<>();
         set.add(0);
         return invokeHllApi(functionNumber, data, inputDtaLength, cursorPosition, set, true);
     }
 
-    private HllApiValue invokeHllApi(int functionNumber, byte[] data, int inputDtaLength, int cursorPosition, Set<Integer> responseCodes, boolean inclusive) throws HllApiInvocationException {
+    private HllApiValue invokeHllApi(
+        int functionNumber,
+        byte[] data,
+        int inputDtaLength,
+        int cursorPosition,
+        Set<Integer> responseCodes,
+        boolean inclusive) throws HllApiInvocationException {
         Pointer dtaPtr = new Memory(data.length);
         dtaPtr.write(0, data, 0, data.length);
         IntByReference funcIntPtr = new IntByReference(functionNumber);
@@ -286,25 +259,26 @@ class EHllImpl implements EHll {
         checkResponseCode(responseCode, responseCodes, inclusive);
 
         //Make sure to set the default string encoding to be appropriate using jna.encoding
-        return new HllApiValue(funcIntPtr.getValue(), responseCode, dtaLenPtr.getValue(), dtaPtr.getString(0), dtaPtr.getByteArray(0, data.length));
+        return new HllApiValue(funcIntPtr.getValue(), responseCode, dtaLenPtr.getValue(), dtaPtr.getString(0),
+            dtaPtr.getByteArray(0, data.length));
     }
-
 
     /**
      * Handle response code throwing exception if not 0
      *
-     * @param responseCode - dll invocation response code
+     * @param responseCode  - dll invocation response code
      * @param responseCodes - response codes
-     * @param inclusive - only accept response codes in the set else only accept codes out of the set
+     * @param inclusive     - only accept response codes in the set else only accept codes out of the set
      * @throws HllApiInvocationException - if response code is non 0
      */
-    private void checkResponseCode(int responseCode, Set<Integer> responseCodes, boolean inclusive) throws HllApiInvocationException {
-        if(inclusive) {
-            if(!responseCodes.contains(responseCode)) {
+    private void checkResponseCode(int responseCode, Set<Integer> responseCodes, boolean inclusive)
+        throws HllApiInvocationException {
+        if (inclusive) {
+            if (!responseCodes.contains(responseCode)) {
                 throw new HllApiInvocationException(responseCode);
             }
-        } else  {
-            if(responseCodes.contains(responseCode)) {
+        } else {
+            if (responseCodes.contains(responseCode)) {
                 throw new HllApiInvocationException(responseCode);
             }
         }
@@ -317,9 +291,9 @@ class EHllImpl implements EHll {
      * @return short session name represented as a single byte
      */
     private byte getSessionNameAsByte(String sessionName) throws HllApiInvocationException {
-        if(sessionName.isEmpty()) {
+        if (sessionName.isEmpty()) {
             throw new HllApiInvocationException("Session name must be provided");
         }
-        return (byte) sessionName.charAt(0);
+        return (byte)sessionName.charAt(0);
     }
 }
