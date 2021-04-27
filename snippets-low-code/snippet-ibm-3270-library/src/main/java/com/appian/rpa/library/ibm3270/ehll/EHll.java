@@ -1,7 +1,5 @@
 package com.appian.rpa.library.ibm3270.ehll;
 
-import java.util.Arrays;
-
 /**
  * Interact with mainframe application through ehll dll
  */
@@ -11,7 +9,7 @@ public interface EHll {
      * Creates EHll instance
      *
      * @param pathToDll - path to dll
-     * @param dllName - dll name
+     * @param dllName   - dll name
      * @return Default EHll instance
      */
     static EHll create(String pathToDll, String dllName) {
@@ -22,8 +20,8 @@ public interface EHll {
      * Creates EHll instance
      *
      * @param pathToDll - path to dll
-     * @param dllName - dll name
-     * @param encoding - valid character encoding
+     * @param dllName   - dll name
+     * @param encoding  - valid character encoding
      * @return Default EHll instance
      */
     static EHll create(String pathToDll, String dllName, String encoding) {
@@ -32,15 +30,14 @@ public interface EHll {
 
     /**
      * Connect to a session
-     *
      * Return codes:
      * <p>
-     *  0 The function was successful.
-     *  1 An invalid host PS short session ID was entered.
-     *  4 The host PS was busy.
-     *  5 The host PS was locked.
-     *  9 A system error occurred.
-     *  11 The requested PS was in use by another application.
+     * 0 The function was successful.
+     * 1 An invalid host PS short session ID was entered.
+     * 4 The host PS was busy.
+     * 5 The host PS was locked.
+     * 9 A system error occurred.
+     * 11 The requested PS was in use by another application.
      * </p>
      *
      * @param sessionName - name of the session to connect to
@@ -52,20 +49,17 @@ public interface EHll {
      * any PS keyboard reservation, but does not reset session parameters to defaults.
      * After calling this function, the application cannot call functions that depend on
      * connection to a PS.
-     *
      * Return Code
      * <p>
      * 0 The function was successful.
      * 1 The application was not connected with a host PS.
      * 9 A system error occurred.
      * </p>
-     *
      */
     void disconnect() throws HllApiInvocationException;
 
     /**
      * Copies the presentation space to a string
-     *
      * Applicable values set in {@link EHll#setSessionParams(String)}
      * <p>
      * NOATTRB (default)
@@ -94,16 +88,14 @@ public interface EHll {
      * application program to display the copied buffer in the presentation window without
      * displaying confidential information, such as passwords.
      * </p>
-     *
      * Data Model (expected bytes)
      * <p>
      * model           bytes
-     *  2       1920 (3840 with EABs)
-     *  3       2560 (5120 with EABs)
-     *  4       3440 (6880 with EABs)
-     *  5       3564 (7128 with EABs)
+     * 2       1920 (3840 with EABs)
+     * 3       2560 (5120 with EABs)
+     * 4       3440 (6880 with EABs)
+     * 5       3564 (7128 with EABs)
      * </p>
-     *
      * <p>
      * 0 Success; text from the PS has been copied to data string.
      * 1 The application was not connected with a host PS.
@@ -118,7 +110,6 @@ public interface EHll {
 
     /**
      * Send a key to the current cursor position
-     *
      * Return codes:
      * <p>
      * 0 The function was successful.
@@ -135,7 +126,6 @@ public interface EHll {
 
     /**
      * Send a key to the provided cursor position
-     *
      * Return codes:
      * <p>
      * 0 The function was successful.
@@ -147,14 +137,13 @@ public interface EHll {
      * 9 A system error occurred.
      * </p>
      *
-     * @param key - A string of maximum 255 characters
+     * @param key            - A string of maximum 255 characters
      * @param cursorPosition - cursor position to send key too
      */
     void sendKeyAtCoordinates(String key, int cursorPosition) throws HllApiInvocationException;
 
     /**
      * Sets session parameters using comma separated string
-     *
      * Valid Parameters
      * <p>
      * Copy parameters
@@ -171,67 +160,63 @@ public interface EHll {
      * NODISPLAY - Non-display fields are copied to the target buffer as nulls.
      * BLANK (default) -Null characters are converted to spaces (returned as X'20').
      * NOBLANK -Null characters are not converted (returned as X'00').
-     *
      * Connect parameters
      * The following session parameters affect Function 1, “Connect Presentation Space,”
      * and Function 2, “Disconnect Presentation Space.”
      * CONLOG (default)
-     *  When Function 1, “Connect Presentation Space,” is called, the emulator session
-     *  corresponding to the target PS does not become the active application. The calling
-     *  application remains active. Likewise, when Function 2, “Disconnect Presentation
-     *  Space,” is called, the calling application remains active.
+     * When Function 1, “Connect Presentation Space,” is called, the emulator session
+     * corresponding to the target PS does not become the active application. The calling
+     * application remains active. Likewise, when Function 2, “Disconnect Presentation
+     * Space,” is called, the calling application remains active.
      * CONPHYS
-     *  Calling Function 1, “Connect Presentation Space,” makes the emulator session
-     *  corresponding to the target PS the active application (does a physical connect). Note
-     *  that this parameter is honored only when there is host access software attached to
-     *  the session. During Function 2, “Disconnect Presentation Space,” the host access
-     *  software becomes the active application.
+     * Calling Function 1, “Connect Presentation Space,” makes the emulator session
+     * corresponding to the target PS the active application (does a physical connect). Note
+     * that this parameter is honored only when there is host access software attached to
+     * the session. During Function 2, “Disconnect Presentation Space,” the host access
+     * software becomes the active application.
      * WRITE_SUPER (default)
-     *  This parameter is set by a client application program that requires write access and
-     *  allows only supervisory applications to connect to its PS.
+     * This parameter is set by a client application program that requires write access and
+     * allows only supervisory applications to connect to its PS.
      * WRITE_WRITE
-     *  This parameter is set by a client application program that requires write access and
-     *  allows other applications that have predictable behavior to connect to its PS.
+     * This parameter is set by a client application program that requires write access and
+     * allows other applications that have predictable behavior to connect to its PS.
      * WRITE_READ
-     *  This parameter is set by a client application program that requires write access and
-     *  allows other applications to use read-only functions on its PS.
+     * This parameter is set by a client application program that requires write access and
+     * allows other applications to use read-only functions on its PS.
      * WRITE_NONE
-     *  This parameter is set by a client application program that requires exclusive access
-     *  to its PS. No other applications will have access to its PS.
+     * This parameter is set by a client application program that requires exclusive access
+     * to its PS. No other applications will have access to its PS.
      * SUPER_WRITE
-     *  This parameter is set by a supervisory client application program that allows
-     *  applications with write access to share the connected PS. The client application
-     *  program setting this parameter will not cause errors for other applications, but will
-     *  provide only supervisory-type functions.
+     * This parameter is set by a supervisory client application program that allows
+     * applications with write access to share the connected PS. The client application
+     * program setting this parameter will not cause errors for other applications, but will
+     * provide only supervisory-type functions.
      * WRITE_READ
-     *  This parameter is set by a client application program that requires read-only access
-     *  and allows other applications that perform read-only functions to connect to its PS.
+     * This parameter is set by a client application program that requires read-only access
+     * and allows other applications that perform read-only functions to connect to its PS.
      * KEY$nnnnnnnn
-     *  This parameter allows the client application program to restrict sharing the PS. The
-     *  keyword must be exactly 8 bytes long.
+     * This parameter allows the client application program to restrict sharing the PS. The
+     * keyword must be exactly 8 bytes long.
      * NOKEY (default)
-     *  This parameter allows the client application program to be compatible with existing
-     *  applications that do not specify the KEY parameter.
-     *
+     * This parameter allows the client application program to be compatible with existing
+     * applications that do not specify the KEY parameter.
      * Esc/Reset parameters
      * The following session parameters affect Function 3, “Send Key,” and Function
      * 51,“Get Key.”
      * ESC= char
-     *  Specifies the escape character for keystroke mnemonics (“@” is the default). Blank is
-     *  not a valid escape value.
+     * Specifies the escape character for keystroke mnemonics (“@” is the default). Blank is
+     * not a valid escape value.
      * AUTORESET (default)
-     *  Attempts to reset all inhibited conditions by adding the prefix RESET to all keystroke
-     *  strings sent using Function 3, “Send Key. ”
+     * Attempts to reset all inhibited conditions by adding the prefix RESET to all keystroke
+     * strings sent using Function 3, “Send Key. ”
      * NORESET
-     *  Does not add RESET prefix to function 3 key strings.
-     *
+     * Does not add RESET prefix to function 3 key strings.
      * Search parameters
      * The following session parameters affect all search functions.
      * SRCHALL (default) - Scans the entire PS or field.
      * SRCHFROM - Starts the scan from a specified location in the PS or field.
      * SCRCHFRWD (default) - Performs the scan in an ascending direction.
      * SRCHBKWD -Performs the scan in a descending direction through the PS or field.
-     *
      * Wait parameters
      * The following session parameters affect Function 4, “Wait,” and Function 51, “Get
      * Key.”
@@ -318,12 +303,11 @@ public interface EHll {
      * NOBLANK
      * Null characters are not converted (returned as X'00')
      * </p>
-     *
      * Response Code:
      * <p>
-     *  0 The function was successful.
-     *  2 One or more parameter names were not recognized; all recognized parameters were accepted.
-     *  9 A system error occurred.
+     * 0 The function was successful.
+     * 2 One or more parameter names were not recognized; all recognized parameters were accepted.
+     * 9 A system error occurred.
      * </p>
      *
      * @param params - Session parameters separated by commas
@@ -332,7 +316,6 @@ public interface EHll {
 
     /**
      * Sets the current cursor position
-     *
      * Return codes:
      * <p>
      * 0 The function was successful
@@ -346,7 +329,6 @@ public interface EHll {
      */
     void setCursorPosition(int cursorPosition) throws HllApiInvocationException;
 
-
     /**
      * Scans the entire current presentation space for a specified string
      * <p>
@@ -357,13 +339,13 @@ public interface EHll {
      * 9 A system error occurred.
      * 24 The specified text was not found.
      * </p>
-     * @param textToSearch - the text to search
+     *
+     * @param textToSearch   - the text to search
      * @param searchForwards - if true, search will find the first occurrence of the specified string from the cursorPosition
-     *                          if false, search will find the last occurrence of the specified string from the cursorPosition
+     *                       if false, search will find the last occurrence of the specified string from the cursorPosition
      * @return
      */
     int search(String textToSearch, boolean searchForwards) throws HllApiInvocationException;
-
 
     /**
      * Scans the current presentation space at the given location for a specified string
@@ -375,17 +357,18 @@ public interface EHll {
      * 9 A system error occurred.
      * 24 The specified text was not found.
      * </p>
-     * @param textToSearch - the text to search
+     *
+     * @param textToSearch   - the text to search
      * @param searchForwards - if true, search will find the first occurrence of the specified string from the cursorPosition
-     *                         if false, search will find the last occurrence of the specified string from the cursorPosition
+     *                       if false, search will find the last occurrence of the specified string from the cursorPosition
      * @param cursorPosition - single number representing the cursor position
      * @return
      */
-    int search(String textToSearch, boolean searchForwards, int cursorPosition) throws HllApiInvocationException;
+    int search(String textToSearch, boolean searchForwards, int cursorPosition)
+        throws HllApiInvocationException;
 
     /**
      * Connects to the window, Maximizes the window and Disconnects from the window
-     *
      * Byte Description
      * <p>
      * 1 A 1-character session short name.
@@ -412,7 +395,6 @@ public interface EHll {
      * • X’00000003’ — Place window in front of siblings
      * • X’00000004’ — Place window behind siblings
      * </p>
-     *
      * Return Codes
      * <p>
      * 0 The function was successful.
@@ -421,6 +403,7 @@ public interface EHll {
      * 9 A system error occurred.
      * 12 The host session was stopped.
      * </p>
+     *
      * @param shortSessionName - String representing the shortSessionName
      */
     void maximizeWindow(String shortSessionName) throws HllApiInvocationException;
@@ -429,38 +412,40 @@ public interface EHll {
      * Converts an absolute cursor position on the presentation space to a RowColumn object
      * Return codes are:
      * <p>
-     *     * 0 An invalid PS position or column was specified.
-     *     * >0 The PS position or column number, depending on the type of
-     *          conversion being performed.
-     *     * 9998 An invalid session short name was specified.
-     *     * 9999 Second character in data string was not an uppercase “P” or “R.”
+     * 0 An invalid PS position or column was specified.
+     * >0 The PS position or column number, depending on the type of
+     * conversion being performed.
+     * 9998 An invalid session short name was specified.
+     * 9999 Second character in data string was not an uppercase “P” or “R.”
      * </p>
      *
      * @param shortSessionName - single character short name of the session
-     * @param cursorPosition - current absolute cursor position
+     * @param cursorPosition   - current absolute cursor position
      * @return absolute position as row, column
      * @throws HllApiInvocationException - when api invocation returns invalid code
      */
-    RowColumn convertPositionToRowCol(String shortSessionName, int cursorPosition) throws HllApiInvocationException;
+    RowColumn convertPositionToRowCol(String shortSessionName, int cursorPosition)
+        throws HllApiInvocationException;
 
     /**
      * Converts rows and columns to absolute cursor position on the presentation space
-     *
      * Response Code
      * <p>
-     *     0 An invalid PS position or column was specified.
-     *     >0 The PS position or column number, depending on the type of
-     *     conversion being performed.
-     *     9998 An invalid session short name was specified.
-     *     9999 Second character in data string was not an uppercase “P” or “R.”
+     * 0 An invalid PS position or column was specified.
+     * >0 The PS position or column number, depending on the type of
+     * conversion being performed.
+     * 9998 An invalid session short name was specified.
+     * 9999 Second character in data string was not an uppercase “P” or “R.”
      * </p>
+     *
      * @param shortSessionName- single character short name of the session
-     * @param row - row
-     * @param col - col
+     * @param row               - row
+     * @param col               - col
      * @return absolute position
      * @throws HllApiInvocationException - response code is invalid
      */
-    int convertRowColToCursorPosition(String shortSessionName, int row, int col) throws HllApiInvocationException;
+    int convertRowColToCursorPosition(String shortSessionName, int row, int col)
+        throws HllApiInvocationException;
 
     /**
      * Queries the session status and parses to recognizable format
@@ -468,21 +453,21 @@ public interface EHll {
      * @return session status
      * @throws HllApiInvocationException - if response code is not zero
      */
-	SessionStatus querySessionStatus() throws HllApiInvocationException;
+    SessionStatus querySessionStatus() throws HllApiInvocationException;
 
-	/**
+    /**
      * Used to invoke functions not defined in this API
-     *
      * Prefer using functions defined in API. For functions not implemented here this generic invoke can be used
      *
-     * @param function - function number to invoke
-     * @param data - value to send
-     * @param dataLength - most of the time will be length of data array, in some operations this can mean something else
+     * @param function       - function number to invoke
+     * @param data           - value to send
+     * @param dataLength     - most of the time will be length of data array, in some operations this can mean something else
      * @param cursorPosition - position of cursor, in some operations this can mean something else
      * @return All values returned by invoking dll
      * @throws HllApiInvocationException - if response code is not 0
      */
-    HllApiValue invoke(int function, byte[] data, int dataLength, int cursorPosition) throws HllApiInvocationException;
+    HllApiValue invoke(int function, byte[] data, int dataLength, int cursorPosition)
+        throws HllApiInvocationException;
 
     class RowColumn {
         private final int row;
@@ -502,7 +487,6 @@ public interface EHll {
         }
     }
 
-
     class SessionStatus {
 
         private final char shortSessionId;
@@ -514,7 +498,15 @@ public interface EHll {
         private final int column;
         private final int hostPage;
 
-        public SessionStatus(char shortSessionId, String sessionLongName, char sessionType, boolean isExtended, boolean doesSupportProgrammedSymbols, int row, int column, int hostPage) {
+        public SessionStatus(
+            char shortSessionId,
+            String sessionLongName,
+            char sessionType,
+            boolean isExtended,
+            boolean doesSupportProgrammedSymbols,
+            int row,
+            int column,
+            int hostPage) {
             this.shortSessionId = shortSessionId;
             this.sessionLongName = sessionLongName;
             this.sessionType = sessionType;
@@ -559,16 +551,10 @@ public interface EHll {
 
         @Override
         public String toString() {
-            return "SessionStatus{" +
-                    "shortSessionId=" + shortSessionId +
-                    ", sessionLongName='" + sessionLongName + '\'' +
-                    ", sessionType=" + sessionType +
-                    ", isExtended=" + isExtended +
-                    ", doesSupportProgrammedSymbols=" + doesSupportProgrammedSymbols +
-                    ", row=" + row +
-                    ", column=" + column +
-                    ", hostPage=" + hostPage +
-                    '}';
+            return "SessionStatus{" + "shortSessionId=" + shortSessionId + ", sessionLongName='" +
+                sessionLongName + '\'' + ", sessionType=" + sessionType + ", isExtended=" + isExtended +
+                ", doesSupportProgrammedSymbols=" + doesSupportProgrammedSymbols + ", row=" + row +
+                ", column=" + column + ", hostPage=" + hostPage + '}';
         }
     }
 }
