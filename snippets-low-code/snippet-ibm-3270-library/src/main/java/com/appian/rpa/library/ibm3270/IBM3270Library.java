@@ -3,7 +3,6 @@ package com.appian.rpa.library.ibm3270;
 import com.appian.rpa.library.ibm3270.ehll.EHll;
 import com.appian.rpa.library.ibm3270.ehll.EHllApi;
 import com.appian.rpa.library.ibm3270.ehll.HllApiInvocationException;
-import com.appian.rpa.library.ibm3270.ehll.HllApiValue;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.novayre.jidoka.client.api.*;
 import com.novayre.jidoka.client.api.annotations.FieldLink;
@@ -29,7 +28,6 @@ public class IBM3270Library implements INano {
 	private static final String DLL_FOLDER_PATH = "Path to folder containing DLL file";
 	private static final String DLL_FILE_NAME = "Name of DLL file (extension NOT needed)";
 	private static final String TEXT_TO_LOCATE = "Text to Locate";
-	private static final String LINE_NUMBER = "Line Number";
 	private static final String ROW_NUMBER = "Row number (Starts with 1 at top of emulator)";
 	private static final String COLUMN_NUMBER = "Column number (Starts with 1 at left of emulator)";
 	private static final String TEXT_LENGTH = "Text Length to Read";
@@ -40,6 +38,8 @@ public class IBM3270Library implements INano {
 	private static final String CREDS_APPLICATION = "Application Name for Credentials";
 	private static final String CREDS_USERNAME = "Username for Credentials";
 	private static final String CREDS_TYPE_IS_USERNAME = "Is Username? Otherwise Password";
+	private static final String GO_FIRST_OR_LAST_CHAR = "Go to first character of word? Otherwise last character";
+	private static final String WRITE_FIRST_OR_LAST_CHAR = "Write at first character of word? Otherwise last character. Use last character & column offset of 2 to write text one full space to the right of a label end";
 	private static final String BULK_TEXT_AND_COORDINATES = "Bulk Text & Rol/Col Coordinates (JSON)";
 
 	/**
@@ -101,22 +101,20 @@ public class IBM3270Library implements INano {
 
 	}
 
+	@JidokaMethod(name = "IBM Disconnect from Emulator", description = "IBM3270Library:v2.0.0: Disconnects from the connected emulator session")
+	public void disconnectFromEmulator() throws HllApiInvocationException {
+		ehll.disconnect();
+	}
+
 	/**
 	 * Maximize Window
 	 */
 	@JidokaMethod(name = "IBM Maximize Window", description = "IBM3270Library:v2.0.0: Maximizes the window")
-	public void maximizeWindow(@JidokaParameter(
-			name = "Nested parameters",
-			type = EJidokaParameterType.NESTED,
-			nestedParameters = {
-					@JidokaNestedParameter(
-							name = SESSION_LETTER,
-							id = SESSION_LETTER
-					)
-			}
-	) SDKParameterMap parameters)
+	public void maximizeWindow()
 			throws JidokaFatalException, HllApiInvocationException {
-		String sessionLetter = parameters.get(SESSION_LETTER).toString();
+		EHll.SessionStatus sessionStatus = ehll.querySessionStatus();
+		char sessionChar = sessionStatus.getShortSessionId();
+		String sessionLetter = Character.toString(sessionChar);
 		ehll.maximizeWindow(sessionLetter);
 		}
 
@@ -178,7 +176,7 @@ public class IBM3270Library implements INano {
 	/**
 	 * Action 'Find Text'
 	 */
-	@JidokaMethod(name = "IBM Find Text", description = "IBM3270Library:v2.0.0: Takes in a text string and returns the row/col location (integer array) in the emulator")
+	@JidokaMethod(name = "IBM Find Text", description = "IBM3270Library:v2.0.0: Takes in a text string and returns the row/col location (integer array) in the emulator. Returns null if not found")
 	public List<Integer> findText(
 			@JidokaParameter(
 					name = "Nested parameters",
@@ -187,14 +185,9 @@ public class IBM3270Library implements INano {
 							@JidokaNestedParameter(
 									name = TEXT_TO_LOCATE,
 									id = TEXT_TO_LOCATE
-							),
-							@JidokaNestedParameter(
-									name = SESSION_LETTER,
-									id = SESSION_LETTER
 							)
 					}
 			) SDKParameterMap parameters) throws HllApiInvocationException {
-
 		String text = parameters.get(TEXT_TO_LOCATE).toString();
 		int loc;
 		try {
@@ -206,7 +199,9 @@ public class IBM3270Library implements INano {
 			throw e;
 		}
 //		server.debug("PS location is: "+loc);
-		String sessionLetter = parameters.get(SESSION_LETTER).toString();
+		EHll.SessionStatus sessionStatus = ehll.querySessionStatus();
+		char sessionChar = sessionStatus.getShortSessionId();
+		String sessionLetter = Character.toString(sessionChar);
 		EHll.RowColumn coords = ehll.convertPositionToRowCol(sessionLetter,loc);
 		List<Integer> result = Arrays.asList(coords.getRow(),coords.getCol());
 		return result;
@@ -222,28 +217,30 @@ public class IBM3270Library implements INano {
 					type = EJidokaParameterType.NESTED,
 					nestedParameters = {
 							@JidokaNestedParameter(
-									name = LINE_NUMBER,
-									id = LINE_NUMBER
+									name = ROW_NUMBER,
+									id = ROW_NUMBER
 							)
 					}
-			) SDKParameterMap parameters) throws HllApiInvocationException, IOException {
-		String screen;
+			) SDKParameterMap parameters) throws HllApiInvocationException, IOException { ;
 		EHll.SessionStatus sessionStatus = ehll.querySessionStatus();
-		server.debug("Session is : "+sessionStatus.toString());
-		screen = ehll.copyScreen(sessionStatus.getRow()* sessionStatus.getColumn());
-		server.debug("Screen is: "+screen);
-		int line = Integer.valueOf(parameters.get(LINE_NUMBER).toString());
-		int begin = 0+80*(line-1);
-		int end = 80+(80*(line-1));
+//		server.debug("Session is : "+sessionStatus.toString());
+		int rowSize = sessionStatus.getRow();
+		int colSize = sessionStatus.getColumn();
+		int screenSize = rowSize*colSize;
+		String screen = ehll.copyScreen(screenSize);
+//		server.debug("Screen is: "+screen);
+		int rowNum = Integer.valueOf(parameters.get(ROW_NUMBER).toString());
+		int begin = colSize*(rowNum-1);
+		int end = colSize*(rowNum);
 		String rowText = screen.substring(begin,end);
-		server.debug("Row text is : "+rowText);
+//		server.debug("Row text is : "+rowText);
 		return rowText;
 	}
 
 	/**
 	 * Action 'Get Text at Coordinate'
 	 */
-	@JidokaMethod(name = "IBM Get Text at Coordinate", description = "IBM3270Library:v1.0.0: Takes in a coordinate(emulator x y coordinate starting at 1) and length of text to return from that line, then returns the text located there")
+	@JidokaMethod(name = "IBM Get Text at Coordinate", description = "IBM3270Library:v2.0.0: Takes in a coordinate(emulator row/col coordinate starting at 1) and length of text to return from that line, then returns the text located there")
 	public String getTextAtCoordinate(
 			@JidokaParameter(
 					name = "Nested parameters",
@@ -263,17 +260,21 @@ public class IBM3270Library implements INano {
 							)
 					}
 			) SDKParameterMap parameters) throws HllApiInvocationException {
-		String screen = screen = ehll.copyScreen(1920);
-		Integer y = Integer.valueOf(parameters.get(ROW_NUMBER).toString());
-		Integer x = Integer.valueOf(parameters.get(COLUMN_NUMBER).toString());
+		EHll.SessionStatus sessionStatus = ehll.querySessionStatus();
+		int rowSize = sessionStatus.getRow();
+		int colSize = sessionStatus.getColumn();
+		int screenSize = rowSize*colSize;
+		String screen = ehll.copyScreen(screenSize);
+//		server.debug("Screen is: "+screen);
+		Integer rowNum = Integer.valueOf(parameters.get(ROW_NUMBER).toString());
+		Integer colNum = Integer.valueOf(parameters.get(COLUMN_NUMBER).toString());
 		Integer length = Integer.valueOf(parameters.get(TEXT_LENGTH).toString());
-		String rowText = screen; // need to fix
-		Integer min = x - 1;
-		Integer max = x - 1 + length;
-		if (max > rowText.length()) {
-			max = rowText.length();
+		int begin = (colSize*(rowNum-1))+colNum-1;
+		int end = (colSize*(rowNum-1))+colNum+length-1;
+		if (end > rowSize*colSize) {
+			end = rowSize*colSize;
 		}
-		String coordinateText = rowText.substring(min, max);
+		String coordinateText = screen.substring(begin, end);
 		return coordinateText;
 	}
 
@@ -281,7 +282,7 @@ public class IBM3270Library implements INano {
 	 * Action 'Go to Text Position'.
 	 *
 	 */
-	@JidokaMethod(name = "IBM Go to Text Position", description = "IBM3270Library:v1.0.0: Takes in a text string and goes to that position in emulator")
+	@JidokaMethod(name = "IBM Go to Text Position", description = "IBM3270Library:v2.0.0: Takes in a text string (case-sensitive) and goes to that position in emulator")
 	public void goToTextPosition(
 			@JidokaParameter(
 					name = "Nested parameters",
@@ -292,26 +293,52 @@ public class IBM3270Library implements INano {
 									id = TEXT_TO_LOCATE
 							),
 							@JidokaNestedParameter(
+									name = GO_FIRST_OR_LAST_CHAR,
+									id = GO_FIRST_OR_LAST_CHAR,
+									clazz = "com.novayre.jidoka.client.api.EJidokaParameterBoolean",
+									type = EJidokaParameterType.ENUMERATOR,
+									rendition = {EJidokaParameterRendition.OPTIONS_EXPAND_HORIZONTALLY},
+									optionsService = EOptionsService.JIDOKA_PARAMETER_BOOLEAN
+							),
+							@JidokaNestedParameter(
 									name = ROW_OFFSET,
 									id = ROW_OFFSET
 							),
 							@JidokaNestedParameter(
 									name = COLUMN_OFFSET,
 									id = COLUMN_OFFSET
-							),
-							@JidokaNestedParameter(
-									name = SESSION_LETTER,
-									id = SESSION_LETTER
 							)
 					}
 			) SDKParameterMap parameters) throws HllApiInvocationException {
 		String text = parameters.get(TEXT_TO_LOCATE).toString();
+		EJidokaParameterBoolean isFirst = (EJidokaParameterBoolean) parameters.get(GO_FIRST_OR_LAST_CHAR);
 		Integer colOff = Integer.valueOf(parameters.get(COLUMN_OFFSET).toString());
-//		Integer rowOff = Integer.valueOf(parameters.get(ROW_OFFSET).toString());
-//		String sessionLetter = parameters.get(SESSION_LETTER).toString();
-//		EHll.RowColumn coords = ehll.convertPositionToRowCol(sessionLetter,loc);
-//		List<Integer> result = Arrays.asList(coords.getRow(),coords.getCol());
-		ehll.setCursorPosition(colOff); //update this once it supports row col
+		Integer rowOff = Integer.valueOf(parameters.get(ROW_OFFSET).toString());
+		EHll.SessionStatus sessionStatus = ehll.querySessionStatus();
+		char sessionChar = sessionStatus.getShortSessionId();
+		String sessionLetter = Character.toString(sessionChar);
+		int loc;
+		try {
+			loc = ehll.search(text,true);
+		}catch (HllApiInvocationException e){
+			if(e.getResponseCode()==24){
+				server.debug("Not moving cursor as text string not found: "+text);
+				return;
+			}
+			throw e;
+		}
+//		server.debug("PS position 1 is: "+loc);
+		EHll.RowColumn coords = ehll.convertPositionToRowCol(sessionLetter,loc);
+		int colNum;
+		if(isFirst == EJidokaParameterBoolean.YES){
+			colNum = coords.getCol()+colOff;
+		} else{
+			colNum = coords.getCol()+colOff+text.length()-1;
+		}
+		int rowNum=coords.getRow()+rowOff;
+		loc = ehll.convertRowColToCursorPosition(sessionLetter,rowNum,colNum);
+//		server.debug("PS position 2 is: "+loc);
+		ehll.setCursorPosition(loc);
 	}
 
 	/**
@@ -330,16 +357,14 @@ public class IBM3270Library implements INano {
 							@JidokaNestedParameter(
 									name = COLUMN_NUMBER,
 									id = COLUMN_NUMBER
-							),
-							@JidokaNestedParameter(
-									name = SESSION_LETTER,
-									id = SESSION_LETTER
 							)
 					}
 			) SDKParameterMap parameters) throws HllApiInvocationException {
 		Integer column = Integer.valueOf(parameters.get(COLUMN_NUMBER).toString());
 		Integer row = Integer.valueOf(parameters.get(ROW_NUMBER).toString());
-		String sessionLetter = parameters.get(SESSION_LETTER).toString();
+		EHll.SessionStatus sessionStatus = ehll.querySessionStatus();
+		char sessionChar = sessionStatus.getShortSessionId();
+		String sessionLetter = Character.toString(sessionChar);
 		int loc = ehll.convertRowColToCursorPosition(sessionLetter,row,column);
 //		server.debug("PS position is: "+loc);
 		ehll.setCursorPosition(loc);
@@ -384,17 +409,14 @@ public class IBM3270Library implements INano {
 							@JidokaNestedParameter(
 									name = TEXT_TO_WRITE,
 									id = TEXT_TO_WRITE
-							),
-							@JidokaNestedParameter(
-									name = SESSION_LETTER,
-									id = SESSION_LETTER
 							)
 					}
 			) SDKParameterMap parameters) throws HllApiInvocationException {
-
 		Integer column = Integer.valueOf(parameters.get(COLUMN_NUMBER).toString());
 		Integer row = Integer.valueOf(parameters.get(ROW_NUMBER).toString());
-		String sessionLetter = parameters.get(SESSION_LETTER).toString();
+		EHll.SessionStatus sessionStatus = ehll.querySessionStatus();
+		char sessionChar = sessionStatus.getShortSessionId();
+		String sessionLetter = Character.toString(sessionChar);
 		int loc = ehll.convertRowColToCursorPosition(sessionLetter,row,column);
 //		server.debug("PS position is: "+loc);
 		String text = parameters.get(TEXT_TO_WRITE).toString();
@@ -414,15 +436,13 @@ public class IBM3270Library implements INano {
 									name = BULK_TEXT_AND_COORDINATES,
 									id = BULK_TEXT_AND_COORDINATES,
 									instructionalText = "Expects JSON list object with fields 'text', 'row', and 'column' - for example a!toJson({{text:\"test1\",row:1,column:1},{text:\"test2\",row:5,column:5}})"
-							),
-							@JidokaNestedParameter(
-									name = SESSION_LETTER,
-									id = SESSION_LETTER
 							)
 					}
 			) SDKParameterMap parameters) throws IOException, HllApiInvocationException {
 		String json = parameters.get(BULK_TEXT_AND_COORDINATES).toString();
-		String sessionLetter = parameters.get(SESSION_LETTER).toString();
+		EHll.SessionStatus sessionStatus = ehll.querySessionStatus();
+		char sessionChar = sessionStatus.getShortSessionId();
+		String sessionLetter = Character.toString(sessionChar);
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<HashMap> hmap = objectMapper.readValue(json, List.class);
 //		server.debug("Map is: "+hmap);
@@ -441,7 +461,7 @@ public class IBM3270Library implements INano {
 	/**
 	 * Action 'Write at Label'.
 	 */
-	@JidokaMethod(name = "IBM Write at Label", description = "IBM3270Library:v1.0.0: Writes text in emulator at specified label with optional offset (handles slow typing & special characters")
+	@JidokaMethod(name = "IBM Write at Label", description = "IBM3270Library:v2.0.0: Writes text in emulator at specified label (case-sensitive) with optional offset")
 	public void writeAtLabel(
 			@JidokaParameter(
 					name = "Nested parameters",
@@ -450,6 +470,14 @@ public class IBM3270Library implements INano {
 							@JidokaNestedParameter(
 									name = FIELD_LABEL,
 									id = FIELD_LABEL
+							),
+							@JidokaNestedParameter(
+									name = WRITE_FIRST_OR_LAST_CHAR,
+									id = WRITE_FIRST_OR_LAST_CHAR,
+									clazz = "com.novayre.jidoka.client.api.EJidokaParameterBoolean",
+									type = EJidokaParameterType.ENUMERATOR,
+									rendition = {EJidokaParameterRendition.OPTIONS_EXPAND_HORIZONTALLY},
+									optionsService = EOptionsService.JIDOKA_PARAMETER_BOOLEAN
 							),
 							@JidokaNestedParameter(
 									name = ROW_OFFSET,
@@ -465,12 +493,37 @@ public class IBM3270Library implements INano {
 							)
 					}
 			) SDKParameterMap parameters) throws HllApiInvocationException {
-		String field = parameters.get(FIELD_LABEL).toString();
-		int loc = ehll.search(field,true);
-		server.debug("Location is: "+loc);
-		int colOff = Integer.valueOf(parameters.get(COLUMN_OFFSET).toString());
-		int rowOff = Integer.valueOf(parameters.get(ROW_OFFSET).toString());
-		String text = parameters.get(FIELD_LABEL).toString();
-		ehll.sendKeyAtCoordinates(text,loc); // update once supports row col
+		String textToSearch = parameters.get(FIELD_LABEL).toString();
+		EJidokaParameterBoolean isFirst = (EJidokaParameterBoolean) parameters.get(WRITE_FIRST_OR_LAST_CHAR);
+		String textToWrite = parameters.get(TEXT_TO_WRITE).toString();
+		Integer colOff = Integer.valueOf(parameters.get(COLUMN_OFFSET).toString());
+		Integer rowOff = Integer.valueOf(parameters.get(ROW_OFFSET).toString());
+		EHll.SessionStatus sessionStatus = ehll.querySessionStatus();
+		char sessionChar = sessionStatus.getShortSessionId();
+		String sessionLetter = Character.toString(sessionChar);
+		int loc;
+		try {
+			loc = ehll.search(textToSearch,true);
+		}catch (HllApiInvocationException e){
+			if(e.getResponseCode()==24){
+				server.debug("Not writing as text string not found: "+textToSearch);
+				return;
+			}
+			throw e;
+		}
+//		server.debug("PS position 1 is: "+loc);
+		EHll.RowColumn coords = ehll.convertPositionToRowCol(sessionLetter,loc);
+//		server.debug("Coords are: "+coords.getRow()+","+coords.getCol());
+		int colNum;
+		if(isFirst == EJidokaParameterBoolean.YES){
+			colNum = coords.getCol()+colOff;
+		} else{
+			colNum = coords.getCol()+colOff+textToSearch.length()-1;
+		}
+		int rowNum=coords.getRow()+rowOff;
+//		server.debug("Updated coords are: "+rowNum+","+colNum);
+		loc = ehll.convertRowColToCursorPosition(sessionLetter,rowNum,colNum);
+//		server.debug("PS position 2 is: "+loc);
+		ehll.sendKeyAtCoordinates(textToWrite,loc); // update once supports row col
 	}
 }
