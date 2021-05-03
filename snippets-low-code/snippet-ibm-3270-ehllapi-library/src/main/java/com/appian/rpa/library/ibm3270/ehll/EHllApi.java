@@ -17,7 +17,7 @@ public interface EHllApi extends StdCallLibrary {
 
     int HA_SET_SESSION_PARMS = 9;
 
-    int HA_COPY_FIELD_TO_STRING = 40;
+    int HA_COPY_FIELD_TO_STRING = 34;
 
     int HA_SET_CURSOR = 40;
 
