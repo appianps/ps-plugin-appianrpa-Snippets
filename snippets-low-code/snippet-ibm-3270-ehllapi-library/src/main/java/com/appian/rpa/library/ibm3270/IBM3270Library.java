@@ -32,6 +32,7 @@ public class IBM3270Library implements INano {
 	private static final String COLUMN_NUMBER = "Column number (Starts with 1 at left of emulator)";
 	private static final String TEXT_LENGTH = "Text Length to Read";
 	private static final String TEXT_TO_WRITE = "Text to Write";
+	private static final String CHARACTER_SEQUENCE = "Sequence of characters that make up the keyboard mnemonics, ASCII characters representing the special function keys of the keyboard in the workstation";
 	private static final String FIELD_LABEL = "Field Label";
 	private static final String COLUMN_OFFSET = "Column Offset";
 	private static final String ROW_OFFSET = "Row Offset";
@@ -41,6 +42,7 @@ public class IBM3270Library implements INano {
 	private static final String GO_FIRST_OR_LAST_CHAR = "Go to first character of word? Otherwise last character";
 	private static final String WRITE_FIRST_OR_LAST_CHAR = "Write at first character of word? Otherwise last character. Use last character & column offset of 2 to write text one full space to the right of a label end";
 	private static final String BULK_TEXT_AND_COORDINATES = "Bulk Text & Rol/Col Coordinates (JSON)";
+	private static final String CLEAR_FIELD_FIRST = "Clear the current data in the field before writing?";
 
 	/**
 	 * Server instance
@@ -56,6 +58,7 @@ public class IBM3270Library implements INano {
 
 	EHll ehll;
 	EHllApi eHllApi;
+	char escapeChar = "@".charAt(0);
 
 	/**
 	 * Initialization of the library. This method is called prior to any other
@@ -371,6 +374,51 @@ public class IBM3270Library implements INano {
 	}
 
 	/**
+	 * Action 'Send Special Control Key'.
+	 */
+	@JidokaMethod(name = "IBM Send Special Control Key", description = "IBM3270Library:v2.0.0: Sends special control key using keyboard mnemonic, which is escape character (default is @) + symbol. Examples: send @E for enter, send @T for tab.")
+	public void sendSpecialControlKey(
+			@JidokaParameter(
+					name = "Nested parameters",
+					type = EJidokaParameterType.NESTED,
+					nestedParameters = {
+							@JidokaNestedParameter(
+									name = CHARACTER_SEQUENCE,
+									id = CHARACTER_SEQUENCE
+							)
+					}
+			) SDKParameterMap parameters) throws HllApiInvocationException {
+		String sequence = parameters.get(CHARACTER_SEQUENCE).toString();
+		ehll.sendKey(sequence);
+	}
+
+	/**
+	 * Prep send key text
+	 *
+	 * By default @ symbol is the escape character (Enter is @E, for example) so sending the @ symbol requires
+	 * sending it as @@
+	 *
+	 * @param text  - text to send to emulator
+	 * @param escapeChar  - current escape character
+	 * @throws HllApiInvocationException - if response code is non 0
+	 */
+	private String prepSendKeyText(String text, char escapeChar)
+			throws HllApiInvocationException {
+		if (text.isEmpty()) {
+			throw new HllApiInvocationException("Text string must be provided");
+		}
+		String newText = "";
+		for (int i = 0; i < text.length(); i++) {
+			if(text.charAt(i) != escapeChar){
+				newText = newText + text.charAt(i);
+			} else{
+				newText = newText + escapeChar + escapeChar;
+			}
+		}
+		return newText;
+	}
+
+	/**
 	 * Action 'Write Here'.
 	 */
 	@JidokaMethod(name = "IBM Write Here", description = "IBM3270Library:v2.0.0: Enters text in emulator at current location")
@@ -382,11 +430,24 @@ public class IBM3270Library implements INano {
 							@JidokaNestedParameter(
 									name = TEXT_TO_WRITE,
 									id = TEXT_TO_WRITE
+							),
+							@JidokaNestedParameter(
+									name = CLEAR_FIELD_FIRST,
+									id = CLEAR_FIELD_FIRST,
+									clazz = "com.novayre.jidoka.client.api.EJidokaParameterBoolean",
+									type = EJidokaParameterType.ENUMERATOR,
+									rendition = {EJidokaParameterRendition.OPTIONS_EXPAND_HORIZONTALLY},
+									optionsService = EOptionsService.JIDOKA_PARAMETER_BOOLEAN
 							)
 					}
 			) SDKParameterMap parameters) throws HllApiInvocationException {
+		EJidokaParameterBoolean clearField = (EJidokaParameterBoolean) parameters.get(CLEAR_FIELD_FIRST);
+		if(clearField == EJidokaParameterBoolean.YES){
+			ehll.sendKey(escapeChar+"F");
+		}
 		String text = parameters.get(TEXT_TO_WRITE).toString();
-		ehll.sendKey(text);
+		String prepText = prepSendKeyText(text,escapeChar);
+		ehll.sendKey(prepText);
 	}
 
 	/**
@@ -409,6 +470,14 @@ public class IBM3270Library implements INano {
 							@JidokaNestedParameter(
 									name = TEXT_TO_WRITE,
 									id = TEXT_TO_WRITE
+							),
+							@JidokaNestedParameter(
+									name = CLEAR_FIELD_FIRST,
+									id = CLEAR_FIELD_FIRST,
+									clazz = "com.novayre.jidoka.client.api.EJidokaParameterBoolean",
+									type = EJidokaParameterType.ENUMERATOR,
+									rendition = {EJidokaParameterRendition.OPTIONS_EXPAND_HORIZONTALLY},
+									optionsService = EOptionsService.JIDOKA_PARAMETER_BOOLEAN
 							)
 					}
 			) SDKParameterMap parameters) throws HllApiInvocationException {
@@ -419,8 +488,13 @@ public class IBM3270Library implements INano {
 		String sessionLetter = Character.toString(sessionChar);
 		int loc = ehll.convertRowColToCursorPosition(sessionLetter,row,column);
 //		server.debug("PS position is: "+loc);
+		EJidokaParameterBoolean clearField = (EJidokaParameterBoolean) parameters.get(CLEAR_FIELD_FIRST);
+		if(clearField == EJidokaParameterBoolean.YES){
+			ehll.sendKeyAtCoordinates(escapeChar+"F",loc);
+		}
 		String text = parameters.get(TEXT_TO_WRITE).toString();
-		ehll.sendKeyAtCoordinates(text,loc);
+		String prepText = prepSendKeyText(text,escapeChar);
+		ehll.sendKeyAtCoordinates(prepText,loc);
 	}
 
 	/**
@@ -436,6 +510,14 @@ public class IBM3270Library implements INano {
 									name = BULK_TEXT_AND_COORDINATES,
 									id = BULK_TEXT_AND_COORDINATES,
 									instructionalText = "Expects JSON list object with fields 'text', 'row', and 'column' - for example a!toJson({{text:\"test1\",row:1,column:1},{text:\"test2\",row:5,column:5}})"
+							),
+							@JidokaNestedParameter(
+									name = CLEAR_FIELD_FIRST,
+									id = CLEAR_FIELD_FIRST,
+									clazz = "com.novayre.jidoka.client.api.EJidokaParameterBoolean",
+									type = EJidokaParameterType.ENUMERATOR,
+									rendition = {EJidokaParameterRendition.OPTIONS_EXPAND_HORIZONTALLY},
+									optionsService = EOptionsService.JIDOKA_PARAMETER_BOOLEAN
 							)
 					}
 			) SDKParameterMap parameters) throws IOException, HllApiInvocationException {
@@ -448,12 +530,17 @@ public class IBM3270Library implements INano {
 //		server.debug("Map is: "+hmap);
 		for (int i = 0; i < hmap.size(); i++) {
 //			server.debug("begin loop, Key: "+hmap.get(i).keySet() + " & Value: " + hmap.get(i).entrySet());
-			String text = hmap.get(i).get("text").toString();
 			Integer column = Integer.valueOf((int) hmap.get(i).get("column"));
 			Integer row = Integer.valueOf((int) hmap.get(i).get("row"));
 			int loc = ehll.convertRowColToCursorPosition(sessionLetter,row,column);
 //			server.debug("PS position is: "+loc);
-			ehll.sendKeyAtCoordinates(text,loc);
+			EJidokaParameterBoolean clearField = (EJidokaParameterBoolean) parameters.get(CLEAR_FIELD_FIRST);
+			if(clearField == EJidokaParameterBoolean.YES){
+				ehll.sendKeyAtCoordinates(escapeChar+"F",loc);
+			}
+			String text = hmap.get(i).get("text").toString();
+			String prepText = prepSendKeyText(text,escapeChar);
+			ehll.sendKeyAtCoordinates(prepText,loc);
 //			server.debug("end loop, Key: "+hmap.get(i).keySet() + " & Value: " + hmap.get(i).entrySet());
 		}
 	}
@@ -490,12 +577,18 @@ public class IBM3270Library implements INano {
 							@JidokaNestedParameter(
 									name = TEXT_TO_WRITE,
 									id = TEXT_TO_WRITE
+							),
+							@JidokaNestedParameter(
+									name = CLEAR_FIELD_FIRST,
+									id = CLEAR_FIELD_FIRST,
+									clazz = "com.novayre.jidoka.client.api.EJidokaParameterBoolean",
+									type = EJidokaParameterType.ENUMERATOR,
+									rendition = {EJidokaParameterRendition.OPTIONS_EXPAND_HORIZONTALLY},
+									optionsService = EOptionsService.JIDOKA_PARAMETER_BOOLEAN
 							)
 					}
 			) SDKParameterMap parameters) throws HllApiInvocationException {
 		String textToSearch = parameters.get(FIELD_LABEL).toString();
-		EJidokaParameterBoolean isFirst = (EJidokaParameterBoolean) parameters.get(WRITE_FIRST_OR_LAST_CHAR);
-		String textToWrite = parameters.get(TEXT_TO_WRITE).toString();
 		Integer colOff = Integer.valueOf(parameters.get(COLUMN_OFFSET).toString());
 		Integer rowOff = Integer.valueOf(parameters.get(ROW_OFFSET).toString());
 		EHll.SessionStatus sessionStatus = ehll.querySessionStatus();
@@ -515,6 +608,7 @@ public class IBM3270Library implements INano {
 		EHll.RowColumn coords = ehll.convertPositionToRowCol(sessionLetter,loc);
 //		server.debug("Coords are: "+coords.getRow()+","+coords.getCol());
 		int colNum;
+		EJidokaParameterBoolean isFirst = (EJidokaParameterBoolean) parameters.get(WRITE_FIRST_OR_LAST_CHAR);
 		if(isFirst == EJidokaParameterBoolean.YES){
 			colNum = coords.getCol()+colOff;
 		} else{
@@ -524,6 +618,12 @@ public class IBM3270Library implements INano {
 //		server.debug("Updated coords are: "+rowNum+","+colNum);
 		loc = ehll.convertRowColToCursorPosition(sessionLetter,rowNum,colNum);
 //		server.debug("PS position 2 is: "+loc);
-		ehll.sendKeyAtCoordinates(textToWrite,loc); // update once supports row col
+		EJidokaParameterBoolean clearField = (EJidokaParameterBoolean) parameters.get(CLEAR_FIELD_FIRST);
+		if(clearField == EJidokaParameterBoolean.YES){
+			ehll.sendKeyAtCoordinates(escapeChar+"F",loc);
+		}
+		String text = parameters.get(TEXT_TO_WRITE).toString();
+		String prepText = prepSendKeyText(text,escapeChar);
+		ehll.sendKeyAtCoordinates(prepText,loc);
 	}
 }
