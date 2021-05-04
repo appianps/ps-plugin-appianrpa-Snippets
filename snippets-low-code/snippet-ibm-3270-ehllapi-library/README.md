@@ -45,55 +45,81 @@ The IBM 3270 Workflow Library is a low code workflow library to ease the managem
 
 # Method Details
 
-## IBM Set Emulator
-  - This method must be called at the beginning of the RPA workflow, before calling any other IBM methods in the workflow library.
-  - The emulator type (PCOMM or WC3270) must be passed because different logic is used by the workflow library depending on the emulator.
-  - The window xpath for the emulator window title (example: .\*Session.\*) must be passed because the workflow library activates the window before every interaction
+## IBM Connect to Emulator
+  - This method must be called at the beginning of the RPA workflow, after the application has launched, before calling any other IBM methods in the workflow library.
+  - The DLL file is located inside the emulator installation on the machine running the agent
+    - Example DLL inputs
+      - C:\Program Files (x86)\IBM\Personal Communications
+      - pcshll32
+    - Example session letter input
+      - If window title is Session A - [24 x 80], then session letter is A
+
+## IBM Disconnect from Emulator
+  - This method disconnects from the current connected session
+  - Use this when switching between multiple emulator sessions on the same machine
+  - Use this when done using an emulator or just close the application
 
 ## IBM Maximize Window
   - Maximizes the emulator window
   
 ## IBM Enter Credential
-  - This method will get credentials from the Appian RPA Console and enter them into the emulator at the current cursor position, hanlding for special characters.
+  - This method will get credentials from the Appian RPA Console and enter them into the emulator at the current cursor position.
+  - If credentials must be entered at a position different than the current cursor position, use 'IBM Go To Coordinates' to navigate first.
   - This method will reserve the credentials and release them once the robotic execution is complete (same as the OOTB credentials methods), which only matters if the credentials have a "max use" value set in the Appian RPA Console
 
 ## IBM Find Text
-  - Returns the XY coordinate location (Appian data type of multiple number integer) of the search string
+  - Returns the row column coordinate location of the search string
+  - Case-sensitive
+  - Output is an Appian map with fields: row & column. Returns null if not found.
+    - Example is: {"column":"40","row":"1"}
 
 ## IBM Get Text at Line
   - Returns the full text string on the specificed line number
 
-## IBM Get Text at Coordinate
+## IBM Get Text at Coordinates
   - Returns the text string of specified length starting at the speciified coordinate
-  - This only returns text on the same line as the coordinate (stops at the end of the row)
+  - If the specified length goes past the current row, the result will contain text from multiple rows
+
+## IBM Get Field at Coordinates
+  - Reads a field from the specified row column locations
+  - Returns the full text string from the mainframe application field
+
+## IBM Bulk Get Field at Coordinates
+  - Reads multiple fields from the specified row column locations
+  - Returns the full text strings from the mainframe application fields
+  - Useful when reading multiple pieces of data on the same page
+  - Input is JSON list object with fields: row, column
+    - Example is a!toJson({{row:1,column:1},{row:5,column:5}}
+  - Output is Appian map (multiple) with fields: field, row, column
+    - Example is [{"field":"Smith","column":"20","row":"6"},{"field":"John","column":"20","row":"7"}]
 
 ## IBM Go to Text Position (with Offset)
-  - Navigates to the location of the first character of the search string
-  - Accepts offset for moving to the right of the search string (x offset of len(pv!searchString)+1)
-  - Case sensitive
-  - Designed to retry search 3 times, then exception if text not found (use IBM Find Text to check if text exists on screen as it handles nulls)
+  - Navigates to the location of the search string on the screen
+  - Option to go to the first character or last character of the found string
+  - Accepts offset for moving one full space to the right of the search string (go to last character, column offset of 2)
+  - Case-sensitive
 
 ## IBM Go to Coordinates
-  - Navigates to the specified XY location
+  - Navigates to the specified row column location
 
 ## IBM Write Here
   - Writes text at the current cursor position
-  - Handles special character entry and character pauses
+  - Option to clear the current field before writing
 
 ## IBM Write at Coordinates
-  - Writes text at the specified XY location
-  - Handles special character entry and character pauses
-  - Combination of IBM Go to Coordinates and IBM Write Here
+  - Writes text at the specified row column location
+  - Option to clear the field at the location before writing
+  - Combination of 'IBM Go to Coordinates' and 'IBM Write Here'
 
 ## IBM Bulk Write at Coordinates
-  - Writes multiple text strings at the specified XY locations
-  - Handles special character entry and character pauses
-  - Useful when entering lots of data on the same page
-  - Expects fields: text, x, y
-  - Example is a!toJson({{text:"test1",x:1,y:1},{text:"test2",x:5,y:5}}
+  - Writes multiple text strings at the specified row column locations
+  - Option to clear the fields at the locations before writing
+  - Useful when entering multiple pieces of data on the same page
+  - Input is JSON list object with fields: text, row, column
+    - Example is a!toJson({{text:"test1",row:1,column:1},{text:"test2",row:5,column:5}}
 
 ## IBM Write at Label (with Offset)
-  - Writes text at the location of the first character of the search string
-  - Accepts offset for writing the text to the right of the label (x offset of len(pv!searchString)+1)
-  - Case sensitive
-  - Designed to retry search 3 times, then exception if label not found (use IBM Find Text to check if text exists on screen as it handles nulls)
+  - Writes text at the location of the search string on the screen
+  - Option to write at the first character or last character of the found label
+  - Accepts offset for writing the text one full space to the right of the label (write at last character, column offset of 2)
+  - Case-sensitive
