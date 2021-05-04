@@ -1,6 +1,7 @@
 # Appian RPA - IBM 3270 Workflow Library - Keyboard
 
 The IBM 3270 Workflow Library is a low code workflow library to ease the management of an IBM3270 terminal using Appian RPA. These low code methods handle:
+
   - Entering special characters into the emulator for both regular text and credentials
   - Typing with character pauses to ensure proper data entry
   - Navigating to input fields using calculations and keystrokes
