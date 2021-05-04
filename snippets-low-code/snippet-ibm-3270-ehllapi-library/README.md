@@ -4,10 +4,10 @@ The IBM 3270 Workflow Library is a low code workflow library to ease the managem
   - Interaction with an emulator using EHLLAPI using the emulator DLL
   - Abstraction of complex EHLLAPI function inputs and outputs
 
-This workflow libraby was developed using IBM Personal Communications v12 emulator & corresponding EHLLAPI documentation:
+This workflow libraby was developed and tested using IBM Personal Communications v12 emulator & corresponding EHLLAPI documentation:
 https://www.ibm.com/docs/en/personal-communications/12.0?topic=SSEQ5Y_12.0.0/com.ibm.pcomm.doc/books/html/emulator_programming08.htm
 
-The library as-is may work with other emulators that support EHLLAPI, but changes may also be needed.
+The library as-is might work with other emulators that support EHLLAPI, but changes might also be needed.
 
 # Methods
 
