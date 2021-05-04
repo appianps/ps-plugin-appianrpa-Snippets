@@ -22,6 +22,7 @@ The library as-is might work with other emulators that support EHLLAPI, but chan
   - IBM Bulk Get Field at Coordinates
   - IBM Go to Text Position (with Offset)
   - IBM Go to Coordinates
+  - IBM Send Special Control Key
   - IBM Write Here
   - IBM Write at Coordinates
   - IBM Bulk Write at Coordinates
@@ -106,6 +107,14 @@ The library as-is might work with other emulators that support EHLLAPI, but chan
 
 ## IBM Go to Coordinates
   - Navigates to the specified row column location
+
+## IBM Send Special Control Key
+- Used for sending keystrokes other than standard characters
+- Only this method sends these types of keystrokes since it handles the escape character entry (default is @)
+- 'Keyboard Mnemonics' section in linked IBM documentation lists all the character options
+- Common Examples
+  - @E sends the enter key
+  - @T sends the tab key
 
 ## IBM Write Here
   - Writes text at the current cursor position
