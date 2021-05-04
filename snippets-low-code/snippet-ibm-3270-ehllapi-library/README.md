@@ -1,19 +1,20 @@
-# Appian RPA - IBM 3270 Workflow Library
+# Appian RPA - IBM 3270 Workflow Library - EHLLAPI
 
-The IBM 3270 Workflow Library is a low code workflow library to ease the management of an IBM3270 terminal using Appian RPA. These low code methods handle:
-  - Entering special characters into the emulator for both regular text and credentials
-  - Typing with character pauses to ensure proper data entry
-  - Navigating to input fields using calculations and keystrokes
-  - Extracting text on the current screen via various selection parameters
+The IBM 3270 Workflow Library is a low code workflow library to ease the management of an IBM3270 terminal using Appian RPA. Using EHLLAPI, these methods execute faster than using the keyboard with the emulator. These low code methods handle:
+  - Interaction with an emulator using EHLLAPI using the emulator DLL
+  - Abstraction of complex EHLLAPI function inputs and outputs
 
 # Methods
 
-  - IBM Set Emulator
+  - IBM Connect to Emulator
+  - IBM Disconnect from Emulator
   - IBM Maximize Window
   - IBM Enter Credential 
   - IBM Find Text
   - IBM Get Text at Line
-  - IBM Get Text at Coordinate
+  - IBM Get Text at Coordinates
+  - IBM Get Field at Coordinates
+  - IBM Bulk Get Field at Coordinates
   - IBM Go to Text Position (with Offset)
   - IBM Go to Coordinates
   - IBM Write Here
@@ -21,15 +22,26 @@ The IBM 3270 Workflow Library is a low code workflow library to ease the managem
   - IBM Bulk Write at Coordinates
   - IBM Write at Label (with Offset)
 
+# Getting Started
+
+  - Use Appian low-code method 'Press Keyboard Shortcuts' for Win + (R) to start the application
+  - To get the session letter after starting the application, do the following:
+  -- Use Appian low-code method 'Wait active window title' with 'List of regular expressions' set to '.*Session.*'
+  -- If previous step true, use Appian low-code method 'Get active window title' and save the value (example: Session A - [24 x 80]) into a variable pv!windowTitle
+  -- Use Appian low-code method 'Evaluate expression' to extract the session letter with an expression such as: index(extract(pv!windowTitle,"Session "," -"),1,null)
+  -- The session letter is needed when connecting to the emulator session
+  - Once connected, use the other methods in this library to interact with the emulator
+  - If interacting with 2 or more emulators at the same time, disconnect from the current and connect to another in order to switch between the emulators
+  - Use Appian low-code methods 'Activate Window' and 'Press Keyboard Shortcuts' for Alt + Function Key (4) to close the application
+
 # Tips
 
-  - Use Appian keyboard low-code module method 'Types windows key + letter' (R) to start the application
-  - Use Appian low-code methods 'Activate Window' and 'Types alt + function key' (4) to close the application
-  - The X coordinate in these methods corresponds to the column number, starting at 1 and incrementing by 1 moving from left to right
-  - The Y coordinate in these methods corresponds to the row number, starting at 1 and incrementing by 1 moving from top to bottom
-  - The emulator will show the coordinate position (y,x) in the bottom right of the app and inside the OIA info bar if shown (View > Expanded OIA)
+  - The column coordinate in these methods match the column number displayed in the emulator, starting at 1 and incrementing by 1 moving from left to right
+  - The row coordinate in these methods match the row number displayed in the emulator, starting at 1 and incrementing by 1 moving from top to bottom
+  - The emulator will show the coordinate position (row,column) in the bottom right of the app and also inside the OIA info bar if shown (View > Expanded OIA)
   - To consolidate actions, use IBM Write at Coordinates instead of IBM Go to Coordinates then IBM Write Here
-  - To consolidate actions, use IBM Bulk Write at Coordinates when entering lots of data on the same screen
+  - To consolidate actions, use IBM Bulk Write at Coordinates when entering mutliple pieces of data on the same screen
+  - To consolidate actions, use IBM Bulk Get Field at Coordinates when reading mutliple pieces of data on the same screen
 
 # Method Details
 
