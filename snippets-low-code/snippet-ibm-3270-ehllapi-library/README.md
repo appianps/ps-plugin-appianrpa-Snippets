@@ -26,10 +26,10 @@ The IBM 3270 Workflow Library is a low code workflow library to ease the managem
 
   - Use Appian low-code method 'Press Keyboard Shortcuts' for Win + (R) to start the application
   - To get the session letter after starting the application, do the following:
-  -- Use Appian low-code method 'Wait active window title' with 'List of regular expressions' set to '.*Session.*'
-  -- If previous step true, use Appian low-code method 'Get active window title' and save the value (example: Session A - [24 x 80]) into a variable pv!windowTitle
-  -- Use Appian low-code method 'Evaluate expression' to extract the session letter with an expression such as: index(extract(pv!windowTitle,"Session "," -"),1,null)
-  -- The session letter is needed when connecting to the emulator session
+    - Use Appian low-code method 'Wait active window title' with 'List of regular expressions' set to: .\*Session.\*
+    - If previous step true, use Appian low-code method 'Get active window title' and save the value (example: Session A - [24 x 80]) into a variable pv!windowTitle
+    - Use Appian low-code method 'Evaluate expression' to extract the session letter with an expression such as: index(extract(pv!windowTitle,"Session "," -"),1,null)
+    - The session letter is needed when connecting to the emulator session
   - Once connected, use the other methods in this library to interact with the emulator
   - If interacting with 2 or more emulators at the same time, disconnect from the current and connect to another in order to switch between the emulators
   - Use Appian low-code methods 'Activate Window' and 'Press Keyboard Shortcuts' for Alt + Function Key (4) to close the application
