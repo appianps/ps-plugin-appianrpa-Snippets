@@ -1,7 +1,9 @@
 package com.appian.rpa.snippets.browsermanager;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.WebDriver;
@@ -14,66 +16,49 @@ import com.novayre.jidoka.browser.api.EBrowsers;
 import com.novayre.jidoka.browser.api.IWebBrowserSupport;
 import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
-import com.novayre.jidoka.client.api.IWaitFor;
 import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
 import com.novayre.jidoka.client.api.exceptions.JidokaItemException;
 import com.novayre.jidoka.client.api.exceptions.JidokaUnsatisfiedConditionException;
-import com.novayre.jidoka.windows.api.EShowWindowState;
-import com.novayre.jidoka.windows.api.IWindows;
+import com.novayre.jidoka.client.api.multios.EClientShowWindowType;
 
 /**
  * This utility let the robot manage a web browser (Chrome, Firefox and
  * IExplorer are supported). Your process should include an instance for each
  * browser window involved in the robot actions.
  */
-public class BrowserManager {
-
-	/** Browser module instance */
-	protected IWebBrowserSupport browser;
-
-	/** Client module instance */
-	private IWindows windows;
-
-	/** WaitFor instance */
-	private IWaitFor waitFor;
+public class BrowserManager extends SelectorsManager {
 
 	/** Selected browser */
 	private EBrowsers selectedBrowser;
 
-	/** SelectorsManager instance */
-	private SelectorsManager selectorsManager;
-	
 	/** ScreenshotManager instance */
 	private ScreenshotsManager screenShotsManager;
 
 	/**
 	 * BrowserManager constructor
 	 * 
-	 * @param robot           IRobot instance
 	 * @param selectedBrowser Browser to initialize
+	 * @param selectorsFiles  List of files containing the web element selectors
 	 */
-	public BrowserManager(EBrowsers selectedBrowser) {
-
+	public BrowserManager(EBrowsers selectedBrowser, List<File> selectorsFiles) {
+		super.init(selectorsFiles);
 		IRobot robot = IRobot.getDummyInstance();
 
-		windows = IWindows.getInstance(robot);
-		waitFor = windows.waitFor(robot);
-
-		browser = IWebBrowserSupport.getInstance(robot, windows);
+		browser = IWebBrowserSupport.getInstance(robot, client);
 		browser.setTimeoutSeconds(120);
-		selectorsManager = new SelectorsManager();
+
 		screenShotsManager = new ScreenshotsManager();
-		
+
 		if (selectedBrowser == null) {
 			throw new JidokaFatalException("You must select the browser to open");
 		}
 
 		this.selectedBrowser = selectedBrowser;
-		
+
 		// Sets the browser type
 		browser.setBrowserType(this.selectedBrowser);
-		
+
 	}
 
 	/**
@@ -137,9 +122,9 @@ public class BrowserManager {
 
 		try {
 			// Focus on app and activate the window on client module
-			windows.activateWindow(getBrowserWindowTitle());
+			client.activateWindow(getBrowserWindowTitle());
 
-			windows.showWindow(windows.getWindow(getBrowserWindowTitle()).gethWnd(), EShowWindowState.SW_MAXIMIZE);
+			client.showWindow(client.getWindow(getBrowserWindowTitle()).getId(), EClientShowWindowType.MAXIMIZE);
 
 			// Navigate to URL
 			browser.navigate(url);
@@ -150,8 +135,6 @@ public class BrowserManager {
 		}
 	}
 
-	
-	
 	/**
 	 * Navigates to the given {@code url} and waits until the given
 	 * {@code selectorKey} element is loaded. Before that, the browser window is
@@ -162,8 +145,8 @@ public class BrowserManager {
 	 * 
 	 * @param url         as String contains the target website
 	 * @param selectorKey Selector key on the selectors.properties file
-	 * @param message Console message
-	 * @param seconds Waiting time in seconds
+	 * @param message     Console message
+	 * @param seconds     Waiting time in seconds
 	 * @return True if the element has been loaded
 	 * 
 	 */
@@ -174,9 +157,9 @@ public class BrowserManager {
 		return waitForElement(selectorKey, message, seconds);
 	}
 
-
 	/**
-	 * Waits for the given {@code selectorKey} element to load 10 seconds by default.
+	 * Waits for the given {@code selectorKey} element to load 10 seconds by
+	 * default.
 	 * 
 	 * @param selectorKey Selector key on the selectors.properties file
 	 * @return True if the element has been loaded
@@ -185,14 +168,13 @@ public class BrowserManager {
 
 		return waitForElement(selectorKey, message, 10);
 	}
-	
-	
+
 	/**
 	 * Waits for the given {@code selectorKey} element to load.
 	 * 
 	 * @param selectorKey Selector key on the selectors.properties file
-	 * @param message Console message
-	 * @param seconds Waiting time in seconds
+	 * @param message     Console message
+	 * @param seconds     Waiting time in seconds
 	 * @return True if the element has been loaded
 	 */
 	public boolean waitForElement(String selectorKey, String message, Integer seconds) {
@@ -201,7 +183,9 @@ public class BrowserManager {
 			return waitFor.wait(seconds, message, false, () -> {
 				try {
 
-					return selectorsManager.getElement(selectorKey) != null;
+					return super.getElement(selectorKey) != null;
+				} catch (JidokaFatalException e) {
+					throw new JidokaFatalException(e.getMessage(), e);
 				} catch (Exception e) {
 					return false;
 				}
@@ -263,29 +247,20 @@ public class BrowserManager {
 		JidokaFactory.getServer().info("Killing webdriver process from windows module");
 		switch (selectedBrowser) {
 		case CHROME:
-			windows.killAllProcesses("chromedriver.exe", 1000);
+			client.killAllProcesses("chromedriver.exe", 1000);
 			break;
 		case INTERNET_EXPLORER:
-			windows.killAllProcesses("IEDriverServer.exe", 1000);
-			windows.killAllProcesses("iexplore.exe", 1000);
+			client.killAllProcesses("IEDriverServer.exe", 1000);
+			client.killAllProcesses("iexplore.exe", 1000);
 			break;
 		case FIREFOX:
-			windows.killAllProcesses("geckodriver.exe", 1000);
+			client.killAllProcesses("geckodriver.exe", 1000);
 			break;
 		default:
 			break;
 		}
 	}
 
-	/**
-	 * Get the {@link SelectorsManager} instance
-	 * 
-	 * @return The {@link SelectorsManager} instance
-	 */
-	public SelectorsManager getSelectorsManager() {
-		return this.selectorsManager;
-	}
-	
 	/**
 	 * Get the {@link ScreenShotsManager} instance
 	 * 
@@ -294,97 +269,104 @@ public class BrowserManager {
 	public ScreenshotsManager getScreenShotManager() {
 		return this.screenShotsManager;
 	}
-	
+
 	/**
 	 * Click on the given element
+	 * 
 	 * @param selectorKey Selector key on the selectors.properties file
 	 * @return True if click was success
 	 */
 	public boolean clickOnElement(String selectorKeyClick) {
-		
-		WebElement ele = selectorsManager.getElement(selectorKeyClick);
-		
-		try {	
-			ele.click();	
+
+		WebElement ele = super.getElement(selectorKeyClick);
+
+		try {
+			ele.click();
 		} catch (Exception e) {
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Click on the given element and wait until find another element
+	 * 
 	 * @param selectorKey Selector key on the selectors.properties file
-	 * @param message Console message
-	 * @param seconds Waiting time in seconds
+	 * @param message     Console message
+	 * @param seconds     Waiting time in seconds
 	 * @return True if click was success
 	 */
 	public boolean clickOnElement(String selectorKeyClick, String selectorKeyWait, String message, int seconds) {
-		
-		WebElement ele = selectorsManager.getElement(selectorKeyClick);
-		
-		try {	
-			ele.click();	
+
+		WebElement ele = super.getElement(selectorKeyClick);
+
+		try {
+			ele.click();
 		} catch (Exception e) {
 			return false;
 		}
-		
+
 		if (selectorKeyWait != null) {
-			
+
 			return waitForElement(selectorKeyWait, message, seconds);
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Sets the given non-mandatory {@link WebElement} text
-	 * @param key Selector key on the selectors file
-	 * @param text Text to set on the given element
+	 * 
+	 * @param key   Selector key on the selectors file
+	 * @param text  Text to set on the given element
 	 * @param clear If true clears the found text field before setting the new value
 	 */
 	public void setElementText(String key, String text, Boolean clear) {
-		
+
 		setElementText(key, text, clear, false);
 	}
-	
+
 	/**
 	 * Sets the given {@link WebElement} text
-	 * @param key Selector key on the selectors file
-	 * @param text Text to set on the given element
-	 * @param clear If true clears the found text field before setting the new value
+	 * 
+	 * @param key       Selector key on the selectors file
+	 * @param text      Text to set on the given element
+	 * @param clear     If true clears the found text field before setting the new
+	 *                  value
 	 * @param mandatory True if the field is mandatory
 	 */
 	public void setElementText(String key, String text, Boolean clear, Boolean mandatory) {
-		if(!mandatory) {
-			if(!StringUtils.isEmpty(text)) {
-				browser.textFieldSet(selectorsManager.getBy(key), text, clear);
+		if (!mandatory) {
+			if (!StringUtils.isEmpty(text)) {
+				browser.textFieldSet(super.getBy(key), text, clear);
 			}
 		} else {
-			if(StringUtils.isEmpty(text)) {
+			if (StringUtils.isEmpty(text)) {
 				throw new JidokaItemException("A mandatory field can't be null or empty");
 			} else {
-				browser.textFieldSet(selectorsManager.getBy(key), text, clear);	
+				browser.textFieldSet(super.getBy(key), text, clear);
 			}
 		}
-		
+
 	}
-	
+
 	/**
 	 * Moves to the given element
+	 * 
 	 * @param key Selector key on the selectors file
 	 */
 	public void moveToElement(String key) {
-		browser.moveTo(selectorsManager.getElement(key));
+		browser.moveTo(super.getElement(key));
 	}
-	
+
 	/**
 	 * Return the web driver
+	 * 
 	 * @return
 	 */
 	public WebDriver getDriver() {
 		return browser.getDriver();
 	}
-	
+
 }

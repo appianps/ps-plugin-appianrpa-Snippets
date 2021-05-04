@@ -1,10 +1,9 @@
 package com.appian.rpa.snippets.browsermanager;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,9 +14,10 @@ import org.openqa.selenium.WebElement;
 
 import com.novayre.jidoka.browser.api.IWebBrowserSupport;
 import com.novayre.jidoka.client.api.IRobot;
-import com.novayre.jidoka.client.api.JidokaFactory;
+import com.novayre.jidoka.client.api.IWaitFor;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
-import com.novayre.jidoka.windows.api.IWindows;
+import com.novayre.jidoka.client.api.exceptions.JidokaUnsatisfiedConditionException;
+import com.novayre.jidoka.client.api.multios.IClient;
 
 /**
  * Most of the web elements from a website (checkboxes, text, buttons) are
@@ -34,7 +34,10 @@ public class SelectorsManager {
 	protected IWebBrowserSupport browser;
 
 	/** Client module instance */
-	private IWindows windows;
+	protected IClient client;
+	
+	/** WaitFor instance */
+	protected IWaitFor waitFor;
 
 	/** Selectors map */
 	private Map<String, String> selectorsMapper = new HashMap<>();
@@ -50,43 +53,46 @@ public class SelectorsManager {
 
 	/** Id selector suffix */
 	private static final String ID_SUFFIX = "id";
-	
+
 	/** Name selector suffix */
 	private static final String NAME_SUFFIX = "name";
 
 	/**
-	 * SelectorsManager Constructor
+	 * SelectorsManager init method
 	 * 
-	 * @param robot    The IRobot instance
-	 * @param filePath Selectors properties file path
+	 * @param selectorsFiles Selectors properties files list
 	 */
-	public SelectorsManager() {
+	protected void init(List<File> selectorsFiles) {
 
 		IRobot robot = IRobot.getDummyInstance();
 
-		Path filePath = Paths.get(JidokaFactory.getServer().getCurrentDir(), "browser", "selectors.properties");
-
-		if (filePath == null || !filePath.toFile().exists()) {
-			JidokaFactory.getServer().info("No selectors file configured");
-			return;
+		if (selectorsFiles.isEmpty()) {
+			throw new JidokaFatalException("There are no files on the list");
 		}
 
-		try (InputStream input = new FileInputStream(filePath.toFile())) {
+		for (File file : selectorsFiles) {
 
-			Properties selectorsFile = new Properties();
-
-			selectorsFile.load(input);
-
-			for (String key : selectorsFile.stringPropertyNames()) {
-				String value = selectorsFile.getProperty(key);
-				selectorsMapper.put(key, String.valueOf(value));
+			if (file == null || !file.exists()) {
+				throw new JidokaFatalException("The selectors file " + file.getName() + " does not exist.");
 			}
-		} catch (IOException ex) {
-			throw new JidokaFatalException("Error reading the selectors file", ex);
+
+			try (InputStream input = new FileInputStream(file)) {
+
+				Properties selectorsFile = new Properties();
+
+				selectorsFile.load(input);
+
+				for (String key : selectorsFile.stringPropertyNames()) {
+					String value = selectorsFile.getProperty(key);
+					selectorsMapper.put(key, String.valueOf(value));
+				}
+			} catch (IOException ex) {
+				throw new JidokaFatalException("Error reading the selectors file " + file.getName(), ex);
+			}
 		}
 
-		this.windows = IWindows.getInstance(robot);
-		this.browser = IWebBrowserSupport.getInstance(robot, windows);
+		this.client = IClient.getInstance(robot);
+		this.waitFor = client.getWaitFor(robot);
 	}
 
 	/**
@@ -103,8 +109,8 @@ public class SelectorsManager {
 	 * Finds the {@link WebElement} object using the selector saved in the selectors
 	 * file, which is found filtering by the given {@code key}. The selector key
 	 * must end in: {@link #XPATH_SUFFIX}, {@link #CSS_SUFFIX},
-	 * {@link #CLASSNAME_SUFFIX}, {@link #ID_SUFFIX} or {@link #NAME_SUFFIX}. If the key does not end in
-	 * one of these suffixes, it is returned null.
+	 * {@link #CLASSNAME_SUFFIX}, {@link #ID_SUFFIX} or {@link #NAME_SUFFIX}. If the
+	 * key does not end in one of these suffixes, it is returned null.
 	 * 
 	 * @param key Selector key from selectors.properties file (String)
 	 * @return The {@link WebElement} object resulting from the selector search.
@@ -115,9 +121,11 @@ public class SelectorsManager {
 
 		return getElement(by);
 	}
-	
+
 	/**
-	 * Finds the {@link WebElement} object using {@link By}, if not found return null.
+	 * Finds the {@link WebElement} object using {@link By}, if not found return
+	 * null.
+	 * 
 	 * @param by
 	 * @return
 	 */
@@ -157,8 +165,9 @@ public class SelectorsManager {
 	 * Find all {@link WebElement} objects using the selector saved in the selectors
 	 * file, which can be found searching by the given {@code key}. The selector key
 	 * must ends with {@link #XPATH_SUFFIX}, {@link #CSS_SUFFIX},
-	 * {@link #CLASSNAME_SUFFIX}, {@link #ID_SUFFIX} or {@link#NAME_SUFFIX}. If the key does not end with
-	 * one of these suffixes, the function will return an empty list.
+	 * {@link #CLASSNAME_SUFFIX}, {@link #ID_SUFFIX} or {@link#NAME_SUFFIX}. If the
+	 * key does not end with one of these suffixes, the function will return an
+	 * empty list.
 	 * 
 	 * @param key Selector key on the selectors file
 	 * @return The @{@link List} of {@link WebElement} objects resulting from the
@@ -170,9 +179,11 @@ public class SelectorsManager {
 
 		return getAllElements(by);
 	}
-	
+
 	/**
-	 * Find all {@link WebElement} objects using {@link By}, if none element found return empty list.
+	 * Find all {@link WebElement} objects using {@link By}, if none element found
+	 * return empty list.
+	 * 
 	 * @param by
 	 * @return
 	 */
@@ -185,7 +196,7 @@ public class SelectorsManager {
 
 		return null;
 	}
-	
+
 	/**
 	 * Check if the {@link WebElement} exists in the DOM using the saved selector in
 	 * selectors file, which can found filtering by the given {@code key}. Searches
@@ -203,9 +214,10 @@ public class SelectorsManager {
 
 		return existsElement(by);
 	}
-	
+
 	/**
 	 * Check if the {@link WebElement} exists in the DOM using the given {@link By}
+	 * 
 	 * @param by By of the element to check
 	 */
 	public Boolean existsElement(By by) {
@@ -216,6 +228,30 @@ public class SelectorsManager {
 		}
 
 		return false;
+	}
+	
+	/**
+	 * Waits for the given {@code selectorKey} element to load.
+	 * 
+	 * @param selectorKey Selector key on the selectors.properties file
+	 * @param message Console message
+	 * @param seconds Waiting time in seconds
+	 * @return True if the element has been loaded
+	 */
+	public boolean waitForElement(String selectorKey, String message, Integer seconds) {
+
+		try {
+			return waitFor.wait(seconds, message, false, () -> {
+				try {
+
+					return this.getElement(selectorKey) != null;
+				} catch (Exception e) {
+					return false;
+				}
+			});
+		} catch (JidokaUnsatisfiedConditionException e) {
+			throw new JidokaFatalException("Error waiting for the given web element to load", e);
+		}
 	}
 
 }
