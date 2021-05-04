@@ -1,6 +1,7 @@
 # Appian RPA - IBM 3270 Workflow Library - EHLLAPI
 
 The IBM 3270 Workflow Library is a low code workflow library to ease the management of an IBM3270 terminal using Appian RPA. Using EHLLAPI, these methods execute faster than using the keyboard with the emulator. These low code methods handle:
+
   - Interaction with an emulator using EHLLAPI using the emulator DLL
   - Abstraction of complex EHLLAPI function inputs and outputs
 
