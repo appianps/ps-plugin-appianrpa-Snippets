@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.appian.rpa.library</groupId>
 	<artifactId>ibm-3270-library</artifactId>
-	<version>1.0.0</version>
+	<version>2.0.0</version>
   <parent>
     <groupId>com.novayre.jidoka.robot</groupId>
     <artifactId>jidoka-robot-parent</artifactId>
