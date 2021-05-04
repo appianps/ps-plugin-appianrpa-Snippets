@@ -71,6 +71,12 @@ class EHllImpl implements EHll {
     }
 
     @Override
+    public String copyField(int cursorPosition, int fieldSize) throws HllApiInvocationException {
+        HllApiValue hllApiValue = invokeHllApi(EHllApi.HA_COPY_FIELD_TO_STRING, new byte[fieldSize], cursorPosition);
+        return hllApiValue.getDataString();
+    }
+
+    @Override
     public void sendKey(String key) throws HllApiInvocationException {
         invokeHllApi(EHllApi.HA_SENDKEY, key, 0);
     }

@@ -109,6 +109,29 @@ public interface EHll {
     String copyScreen(int screenSize) throws HllApiInvocationException;
 
     /**
+     * Transfers characters from a field in the host-connected presentation space into a string
+     * Return codes:
+     * <p>
+     * 0 The function was successful.
+     * 1 The application was not connected with a host PS.
+     * 2 An incorrect parameter was entered.
+     * 6 The data to be copied and the target field are not the same size.
+     *   The data is truncated if the string length is smaller than the field copied.
+     * 7 The host presentation space position is not valid.
+     * 9 A system error occurred.
+     * 24 Unformatted host presentation space.
+     * </p>
+     *
+     * @param cursorPosition - a cursor position within the field
+     * Identifies the target field. This can be the PS position of any byte within the target field.
+     * Copy always starts at the beginning of the field.
+     * @param fieldSize - 	preallocated target data string
+     *
+     * @return - field as a string
+     */
+    String copyField(int cursorPosition, int fieldSize) throws HllApiInvocationException;
+
+    /**
      * Send a key to the current cursor position
      * Return codes:
      * <p>

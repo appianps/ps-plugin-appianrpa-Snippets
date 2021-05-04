@@ -28,8 +28,8 @@ public class IBM3270Library implements INano {
 	private static final String DLL_FOLDER_PATH = "Path to folder containing DLL file";
 	private static final String DLL_FILE_NAME = "Name of DLL file (extension NOT needed)";
 	private static final String TEXT_TO_LOCATE = "Text to Locate";
-	private static final String ROW_NUMBER = "Row number (Starts with 1 at top of emulator)";
-	private static final String COLUMN_NUMBER = "Column number (Starts with 1 at left of emulator)";
+	private static final String ROW_NUMBER = "Row number (starts with 1 at top of emulator)";
+	private static final String COLUMN_NUMBER = "Column number (starts with 1 at left of emulator)";
 	private static final String TEXT_LENGTH = "Text Length to Read";
 	private static final String TEXT_TO_WRITE = "Text to Write";
 	private static final String CHARACTER_SEQUENCE = "Sequence of characters that make up the keyboard mnemonics, ASCII characters representing the special function keys of the keyboard in the workstation";
@@ -42,6 +42,7 @@ public class IBM3270Library implements INano {
 	private static final String GO_FIRST_OR_LAST_CHAR = "Go to first character of word? Otherwise last character";
 	private static final String WRITE_FIRST_OR_LAST_CHAR = "Write at first character of word? Otherwise last character. Use last character & column offset of 2 to write text one full space to the right of a label end";
 	private static final String BULK_TEXT_AND_COORDINATES = "Bulk Text & Rol/Col Coordinates (JSON)";
+	private static final String BULK_COORDINATES = "Bulk Rol/Col Coordinates (JSON)";
 	private static final String CLEAR_FIELD_FIRST = "Clear the current data in the field before writing?";
 
 	/**
@@ -58,7 +59,11 @@ public class IBM3270Library implements INano {
 
 	EHll ehll;
 	EHllApi eHllApi;
+//	functionality first built based on the IBM Personal Communications v12 emulator:
+//	https://www.ibm.com/docs/en/personal-communications/12.0?topic=SSEQ5Y_12.0.0/com.ibm.pcomm.doc/books/html/emulator_programming08.htm
 	char escapeChar = "@".charAt(0);
+//	this is the default escape character and unlikely to be different
+//	if a mainframe app uses something else, expose a low-code RPA method to update this variable
 
 	/**
 	 * Initialization of the library. This method is called prior to any other
@@ -179,8 +184,8 @@ public class IBM3270Library implements INano {
 	/**
 	 * Action 'Find Text'
 	 */
-	@JidokaMethod(name = "IBM Find Text", description = "IBM3270Library:v2.0.0: Takes in a text string and returns the row/col location (integer array) in the emulator. Returns null if not found")
-	public List<Integer> findText(
+	@JidokaMethod(name = "IBM Find Text", description = "IBM3270Library:v2.0.0: Takes in a text string and returns a map of the text location with fields: row & column. Returns null if not found. Save into an Appian variable of type map, single. Example output is: {\"column\":\"40\",\"row\":\"1\"}")
+	public HashMap<String,String> findText(
 			@JidokaParameter(
 					name = "Nested parameters",
 					type = EJidokaParameterType.NESTED,
@@ -206,7 +211,9 @@ public class IBM3270Library implements INano {
 		char sessionChar = sessionStatus.getShortSessionId();
 		String sessionLetter = Character.toString(sessionChar);
 		EHll.RowColumn coords = ehll.convertPositionToRowCol(sessionLetter,loc);
-		List<Integer> result = Arrays.asList(coords.getRow(),coords.getCol());
+		HashMap<String,String> result = new HashMap<>();
+		result.put("row", String.valueOf(coords.getRow()));
+		result.put("column", String.valueOf(coords.getCol()));
 		return result;
 	}
 
@@ -230,6 +237,8 @@ public class IBM3270Library implements INano {
 		int rowSize = sessionStatus.getRow();
 		int colSize = sessionStatus.getColumn();
 		int screenSize = rowSize*colSize;
+//		although usually 1x, depending on session settings screenSize input can need to be 2x or 4x the value of row*col
+//		starting support at base session settings and support for different configurations could be added later
 		String screen = ehll.copyScreen(screenSize);
 //		server.debug("Screen is: "+screen);
 		int rowNum = Integer.valueOf(parameters.get(ROW_NUMBER).toString());
@@ -243,7 +252,7 @@ public class IBM3270Library implements INano {
 	/**
 	 * Action 'Get Text at Coordinate'
 	 */
-	@JidokaMethod(name = "IBM Get Text at Coordinate", description = "IBM3270Library:v2.0.0: Takes in a coordinate(emulator row/col coordinate starting at 1) and length of text to return from that line, then returns the text located there")
+	@JidokaMethod(name = "IBM Get Text at Coordinate", description = "IBM3270Library:v2.0.0: Takes in a coordinate (emulator row/col coordinate starting at 1) and length of text to return from that line, then returns the text located there")
 	public String getTextAtCoordinate(
 			@JidokaParameter(
 					name = "Nested parameters",
@@ -267,6 +276,8 @@ public class IBM3270Library implements INano {
 		int rowSize = sessionStatus.getRow();
 		int colSize = sessionStatus.getColumn();
 		int screenSize = rowSize*colSize;
+//		although usually 1x, depending on session settings screenSize input can need to be 2x or 4x the value of row*col
+//		starting support at base session settings and support for different configurations could be added later
 		String screen = ehll.copyScreen(screenSize);
 //		server.debug("Screen is: "+screen);
 		Integer rowNum = Integer.valueOf(parameters.get(ROW_NUMBER).toString());
@@ -274,11 +285,94 @@ public class IBM3270Library implements INano {
 		Integer length = Integer.valueOf(parameters.get(TEXT_LENGTH).toString());
 		int begin = (colSize*(rowNum-1))+colNum-1;
 		int end = (colSize*(rowNum-1))+colNum+length-1;
+//		the end index might go beyond the screen space, so capping the value
 		if (end > rowSize*colSize) {
 			end = rowSize*colSize;
 		}
 		String coordinateText = screen.substring(begin, end);
 		return coordinateText;
+	}
+
+	/**
+	 * Action 'Get Field at Coordinates'
+	 */
+	@JidokaMethod(name = "IBM Get Field at Coordinates", description = "IBM3270Library:v2.0.0: Takes in a coordinate pair (emulator row/col coordinate starting at 1), then returns the value of the field that the coordinate is within (copy always starts at the beginning of the field)")
+	public String getFieldAtCoordinates(
+			@JidokaParameter(
+					name = "Nested parameters",
+					type = EJidokaParameterType.NESTED,
+					nestedParameters = {
+							@JidokaNestedParameter(
+									name = ROW_NUMBER,
+									id = ROW_NUMBER
+							),
+							@JidokaNestedParameter(
+									name = COLUMN_NUMBER,
+									id = COLUMN_NUMBER
+							)
+					}
+			) SDKParameterMap parameters) throws HllApiInvocationException {
+		Integer rowNum = Integer.valueOf(parameters.get(ROW_NUMBER).toString());
+		Integer colNum = Integer.valueOf(parameters.get(COLUMN_NUMBER).toString());
+		EHll.SessionStatus sessionStatus = ehll.querySessionStatus();
+		int colSize = sessionStatus.getColumn();
+		int maxFieldSize = colSize*4;
+		//		although usually 1x, depending on session settings fieldSize input can need to be 4x the actual field size
+//		setting to 4x the full page width since a field is unlikely to be longer than the full page width
+		char sessionChar = sessionStatus.getShortSessionId();
+		String sessionLetter = Character.toString(sessionChar);
+		int loc = ehll.convertRowColToCursorPosition(sessionLetter,rowNum,colNum);
+		String field = ehll.copyField(loc,maxFieldSize);
+//		server.debug("Field is: "+field);
+		return field;
+	}
+
+	/**
+	 * Action 'Bulk Get Field at Coordinates'.
+	 * @return
+	 */
+	@JidokaMethod(name = "IBM Bulk Get Field at Coordinates", description = "IBM3270Library:v2.0.0: Gets fields in bulk at specified locations. Save this into an Appian variable of type map (multiple). Example output is [{\"field\":\"Smith\",\"column\":\"20\",\"row\":\"6\"},{\"field\":\"John\",\"column\":\"20\",\"row\":\"7\"}]")
+	public List<HashMap> bulkGetFieldAtCoordinates(
+			@JidokaParameter(
+					name = "Nested parameters",
+					type = EJidokaParameterType.NESTED,
+					nestedParameters = {
+							@JidokaNestedParameter(
+									name = BULK_COORDINATES,
+									id = BULK_COORDINATES,
+									instructionalText = "Expects JSON list object with fields 'row', and 'column' - for example a!toJson({{row:1,column:1},{row:5,column:5}})"
+							)
+					}
+			) SDKParameterMap parameters) throws IOException, HllApiInvocationException {
+		String json = parameters.get(BULK_COORDINATES).toString();
+		EHll.SessionStatus sessionStatus = ehll.querySessionStatus();
+		char sessionChar = sessionStatus.getShortSessionId();
+		String sessionLetter = Character.toString(sessionChar);
+		int colSize = sessionStatus.getColumn();
+		int maxFieldSize = colSize*4;
+//		although usually 1x, depending on session settings fieldSize input can need to be 4x the actual field size
+//		setting to 4x the full page width since a field is unlikely to be longer than the full page width
+		ObjectMapper objectMapper = new ObjectMapper();
+		List<HashMap> hmapInput = objectMapper.readValue(json, List.class);
+//		hmapInput is the JSON text input turned into a hashmap
+		List<HashMap> hmapOutput = new ArrayList();
+//		hmapOutput is a hashmap that should be saved into an Appian map variable
+//		server.debug("Map is: "+hmapInput);
+		for (int i = 0; i < hmapInput.size(); i++) {
+//			server.debug("begin loop, Key: "+hmapInput.get(i).keySet() + " & Value: " + hmapInput.get(i).entrySet());
+			Integer column = Integer.valueOf((int) hmapInput.get(i).get("column"));
+			Integer row = Integer.valueOf((int) hmapInput.get(i).get("row"));
+			int loc = ehll.convertRowColToCursorPosition(sessionLetter,row,column);
+//			server.debug("PS position is: "+loc);
+			String field = ehll.copyField(loc,maxFieldSize);
+			HashMap<String, String> tempHmap = new HashMap<>();
+			tempHmap.put("row",row.toString());
+			tempHmap.put("column",column.toString());
+			tempHmap.put("field",field);
+			hmapOutput.add(i,tempHmap);
+//			server.debug("end loop, Key: "+hmapInput.get(i).keySet() + " & Value: " + hmapInput.get(i).entrySet());
+		}
+		return hmapOutput;
 	}
 
 	/**
@@ -335,8 +429,10 @@ public class IBM3270Library implements INano {
 		int colNum;
 		if(isFirst == EJidokaParameterBoolean.YES){
 			colNum = coords.getCol()+colOff;
+//			goes to the first character of the found word
 		} else{
 			colNum = coords.getCol()+colOff+text.length()-1;
+//			goes to the last character of the found word
 		}
 		int rowNum=coords.getRow()+rowOff;
 		loc = ehll.convertRowColToCursorPosition(sessionLetter,rowNum,colNum);
@@ -408,6 +504,10 @@ public class IBM3270Library implements INano {
 			throw new HllApiInvocationException("Text string must be provided");
 		}
 		String newText = "";
+//		moves through each character to write, checking if it is escape character, usually @ symbol
+//		if it is, the single @ symbol is replaced with a double @@ symbol so it gets written correctly
+//		for example smith@ex.com gets translated to smith@@ex.com so that smith@ex.com gets written in the emulator
+//		this is necessary since @e will actually send a special command code, rather than the text
 		for (int i = 0; i < text.length(); i++) {
 			if(text.charAt(i) != escapeChar){
 				newText = newText + text.charAt(i);
@@ -444,6 +544,7 @@ public class IBM3270Library implements INano {
 		EJidokaParameterBoolean clearField = (EJidokaParameterBoolean) parameters.get(CLEAR_FIELD_FIRST);
 		if(clearField == EJidokaParameterBoolean.YES){
 			ehll.sendKey(escapeChar+"F");
+//			this clears the field by sending @F to the emulator
 		}
 		String text = parameters.get(TEXT_TO_WRITE).toString();
 		String prepText = prepSendKeyText(text,escapeChar);
@@ -491,6 +592,7 @@ public class IBM3270Library implements INano {
 		EJidokaParameterBoolean clearField = (EJidokaParameterBoolean) parameters.get(CLEAR_FIELD_FIRST);
 		if(clearField == EJidokaParameterBoolean.YES){
 			ehll.sendKeyAtCoordinates(escapeChar+"F",loc);
+//			this clears the field by sending @F to the emulator
 		}
 		String text = parameters.get(TEXT_TO_WRITE).toString();
 		String prepText = prepSendKeyText(text,escapeChar);
@@ -526,22 +628,24 @@ public class IBM3270Library implements INano {
 		char sessionChar = sessionStatus.getShortSessionId();
 		String sessionLetter = Character.toString(sessionChar);
 		ObjectMapper objectMapper = new ObjectMapper();
-		List<HashMap> hmap = objectMapper.readValue(json, List.class);
-//		server.debug("Map is: "+hmap);
-		for (int i = 0; i < hmap.size(); i++) {
-//			server.debug("begin loop, Key: "+hmap.get(i).keySet() + " & Value: " + hmap.get(i).entrySet());
-			Integer column = Integer.valueOf((int) hmap.get(i).get("column"));
-			Integer row = Integer.valueOf((int) hmap.get(i).get("row"));
+		List<HashMap> hmapInput = objectMapper.readValue(json, List.class);
+//		hmapInput is the JSON text input turned into a hashmap
+//		server.debug("Map is: "+hmapInput);
+		for (int i = 0; i < hmapInput.size(); i++) {
+//			server.debug("begin loop, Key: "+hmapInput.get(i).keySet() + " & Value: " + hmapInput.get(i).entrySet());
+			Integer column = Integer.valueOf((int) hmapInput.get(i).get("column"));
+			Integer row = Integer.valueOf((int) hmapInput.get(i).get("row"));
 			int loc = ehll.convertRowColToCursorPosition(sessionLetter,row,column);
 //			server.debug("PS position is: "+loc);
 			EJidokaParameterBoolean clearField = (EJidokaParameterBoolean) parameters.get(CLEAR_FIELD_FIRST);
 			if(clearField == EJidokaParameterBoolean.YES){
 				ehll.sendKeyAtCoordinates(escapeChar+"F",loc);
+//				this clears the field by sending @F to the emulator
 			}
-			String text = hmap.get(i).get("text").toString();
+			String text = hmapInput.get(i).get("text").toString();
 			String prepText = prepSendKeyText(text,escapeChar);
 			ehll.sendKeyAtCoordinates(prepText,loc);
-//			server.debug("end loop, Key: "+hmap.get(i).keySet() + " & Value: " + hmap.get(i).entrySet());
+//			server.debug("end loop, Key: "+hmapInput.get(i).keySet() + " & Value: " + hmapInput.get(i).entrySet());
 		}
 	}
 
@@ -611,8 +715,10 @@ public class IBM3270Library implements INano {
 		EJidokaParameterBoolean isFirst = (EJidokaParameterBoolean) parameters.get(WRITE_FIRST_OR_LAST_CHAR);
 		if(isFirst == EJidokaParameterBoolean.YES){
 			colNum = coords.getCol()+colOff;
+//			goes to the first character of the found label
 		} else{
 			colNum = coords.getCol()+colOff+textToSearch.length()-1;
+//			goes to the last character of the found label
 		}
 		int rowNum=coords.getRow()+rowOff;
 //		server.debug("Updated coords are: "+rowNum+","+colNum);
@@ -621,6 +727,7 @@ public class IBM3270Library implements INano {
 		EJidokaParameterBoolean clearField = (EJidokaParameterBoolean) parameters.get(CLEAR_FIELD_FIRST);
 		if(clearField == EJidokaParameterBoolean.YES){
 			ehll.sendKeyAtCoordinates(escapeChar+"F",loc);
+//			this clears the field by sending @F to the emulator
 		}
 		String text = parameters.get(TEXT_TO_WRITE).toString();
 		String prepText = prepSendKeyText(text,escapeChar);
