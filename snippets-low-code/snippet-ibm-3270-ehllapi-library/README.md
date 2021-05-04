@@ -115,6 +115,8 @@ The library as-is might work with other emulators that support EHLLAPI, but chan
 - Common Examples
   - @E sends the enter key
   - @T sends the tab key
+  - @F clears the current field
+  - @A@F clears all fields
 
 ## IBM Write Here
   - Writes text at the current cursor position
