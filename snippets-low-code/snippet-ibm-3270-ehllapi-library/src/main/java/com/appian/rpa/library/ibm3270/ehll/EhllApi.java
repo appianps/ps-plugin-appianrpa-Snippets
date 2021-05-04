@@ -4,7 +4,7 @@ import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.win32.StdCallLibrary;
 
-public interface EHllApi extends StdCallLibrary {
+public interface EhllApi extends StdCallLibrary {
     int HA_CONNECT_PS = 1;
 
     int HA_DISCONNECT_PS = 2;

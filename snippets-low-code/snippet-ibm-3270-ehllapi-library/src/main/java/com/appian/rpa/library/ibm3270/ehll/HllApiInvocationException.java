@@ -3,7 +3,7 @@ package com.appian.rpa.library.ibm3270.ehll;
 /**
  * Thrown when non 0 return code is returned from dll
  *
- * See documentation in {@link EHll} method for additional return code information
+ * See documentation in {@link Ehll} method for additional return code information
  */
 public class HllApiInvocationException extends Exception {
 

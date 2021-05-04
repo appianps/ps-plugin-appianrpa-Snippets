@@ -11,7 +11,7 @@ import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.win32.W32APIOptions;
 
-class EHllImpl implements EHll {
+class EhllImpl implements Ehll {
 
     private static final String SEARCH_ALL_PARAM = "SRCHALL";
 
@@ -23,7 +23,7 @@ class EHllImpl implements EHll {
 
     private static final int EMPTY = 0x00;
 
-    private final EHllApi ehllApi;
+    private final EhllApi ehllApi;
     public static final Set<Integer> INVALID_POSITION_CONVERSION_CODES = new HashSet<Integer>() {{
         add(0);
         add(9998);
@@ -36,9 +36,9 @@ class EHllImpl implements EHll {
      * @param pathToDlls - path to dll
      * @param dllName    - name of dll
      */
-    EHllImpl(String pathToDlls, String dllName) {
+    EhllImpl(String pathToDlls, String dllName) {
         System.setProperty("jna.library.path", pathToDlls);
-        ehllApi = Native.loadLibrary(dllName, EHllApi.class, W32APIOptions.DEFAULT_OPTIONS);
+        ehllApi = Native.loadLibrary(dllName, EhllApi.class, W32APIOptions.DEFAULT_OPTIONS);
     }
 
     /**
@@ -48,48 +48,48 @@ class EHllImpl implements EHll {
      * @param dllName    - name of dll
      * @param encoding   - must be a valid characterset
      */
-    EHllImpl(String pathToDlls, String dllName, String encoding) {
+    EhllImpl(String pathToDlls, String dllName, String encoding) {
         System.setProperty("jna.library.path", pathToDlls);
         System.setProperty("jna.encoding", encoding);
-        ehllApi = Native.loadLibrary(dllName, EHllApi.class, W32APIOptions.DEFAULT_OPTIONS);
+        ehllApi = Native.loadLibrary(dllName, EhllApi.class, W32APIOptions.DEFAULT_OPTIONS);
     }
 
     @Override
     public void connect(String sessionName) throws HllApiInvocationException {
-        invokeHllApi(EHllApi.HA_CONNECT_PS, sessionName, 0);
+        invokeHllApi(EhllApi.HA_CONNECT_PS, sessionName, 0);
     }
 
     @Override
     public void disconnect() throws HllApiInvocationException {
-        invokeHllApi(EHllApi.HA_DISCONNECT_PS, "ignored", 0);
+        invokeHllApi(EhllApi.HA_DISCONNECT_PS, "ignored", 0);
     }
 
     @Override
     public String copyScreen(int screenSize) throws HllApiInvocationException {
-        HllApiValue hllApiValue = invokeHllApi(EHllApi.HA_COPY_PS, new byte[screenSize], 0);
+        HllApiValue hllApiValue = invokeHllApi(EhllApi.HA_COPY_PS, new byte[screenSize], 0);
         return hllApiValue.getDataString();
     }
 
     @Override
     public String copyField(int cursorPosition, int fieldSize) throws HllApiInvocationException {
-        HllApiValue hllApiValue = invokeHllApi(EHllApi.HA_COPY_FIELD_TO_STRING, new byte[fieldSize], cursorPosition);
+        HllApiValue hllApiValue = invokeHllApi(EhllApi.HA_COPY_FIELD_TO_STRING, new byte[fieldSize], cursorPosition);
         return hllApiValue.getDataString();
     }
 
     @Override
     public void sendKey(String key) throws HllApiInvocationException {
-        invokeHllApi(EHllApi.HA_SENDKEY, key, 0);
+        invokeHllApi(EhllApi.HA_SENDKEY, key, 0);
     }
 
     @Override
     public void sendKeyAtCoordinates(String key, int cursorPosition) throws HllApiInvocationException {
         setCursorPosition(cursorPosition);
-        invokeHllApi(EHllApi.HA_SENDKEY, key, 0);
+        invokeHllApi(EhllApi.HA_SENDKEY, key, 0);
     }
 
     @Override
     public void setSessionParams(String params) throws HllApiInvocationException {
-        invokeHllApi(EHllApi.HA_SET_SESSION_PARMS, params, 0);
+        invokeHllApi(EhllApi.HA_SET_SESSION_PARMS, params, 0);
     }
 
     @Override
@@ -112,19 +112,19 @@ class EHllImpl implements EHll {
         } else {
             setSessionParams(SEARCH_BACKWARD_PARAM);
         }
-        HllApiValue hllApiValue = invokeHllApi(EHllApi.HA_SEARCH_PS, textToSearch, cursorPosition);
+        HllApiValue hllApiValue = invokeHllApi(EhllApi.HA_SEARCH_PS, textToSearch, cursorPosition);
         return hllApiValue.getDataLength();
     }
 
     @Override
     public void setCursorPosition(int cursorPosition) throws HllApiInvocationException {
-        invokeHllApi(EHllApi.HA_SET_CURSOR, "ignored", cursorPosition);
+        invokeHllApi(EhllApi.HA_SET_CURSOR, "ignored", cursorPosition);
     }
 
     @Override
     public void maximizeWindow(String shortSessionName) throws HllApiInvocationException {
         //Connect to window service
-        invokeHllApi(EHllApi.HA_CONNECT_WINDOW_SERVICES, String.valueOf(shortSessionName), 0);
+        invokeHllApi(EhllApi.HA_CONNECT_WINDOW_SERVICES, String.valueOf(shortSessionName), 0);
 
         short x = 0x0800;
         byte[] data = new byte[2];
@@ -136,10 +136,10 @@ class EHllImpl implements EHll {
             EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY};
 
         //Maximize window
-        invokeHllApi(EHllApi.WINDOW_STATUS, command, 0);
+        invokeHllApi(EhllApi.WINDOW_STATUS, command, 0);
 
         //Disconnect from window services
-        invokeHllApi(EHllApi.HA_DISCONNECT_WINDOW_SERVICES, String.valueOf(shortSessionName), 0);
+        invokeHllApi(EhllApi.HA_DISCONNECT_WINDOW_SERVICES, String.valueOf(shortSessionName), 0);
     }
 
     @Override
@@ -148,7 +148,7 @@ class EHllImpl implements EHll {
         byte[] command = new byte[] {getSessionNameAsByte(shortSessionName), 0x00, 0x00, 0x00, (byte)'P',
             0x00, 0x00, 0x00,};
 
-        HllApiValue hllApiValue = invokeHllApi(EHllApi.HA_CONVERT_POS_ROW_COL, command, command.length,
+        HllApiValue hllApiValue = invokeHllApi(EhllApi.HA_CONVERT_POS_ROW_COL, command, command.length,
             cursorPosition, INVALID_POSITION_CONVERSION_CODES, false);
         return new RowColumn(hllApiValue.getDataLength(), hllApiValue.getResponseCode());
     }
@@ -160,7 +160,7 @@ class EHllImpl implements EHll {
             0x00, 0x00, 0x00,};
 
         //If response code is one of 0, 9998 or 9999 throw an exception. All other codes represent position
-        HllApiValue hllApiValue = invokeHllApi(EHllApi.HA_CONVERT_POS_ROW_COL, command, row, col,
+        HllApiValue hllApiValue = invokeHllApi(EhllApi.HA_CONVERT_POS_ROW_COL, command, row, col,
             INVALID_POSITION_CONVERSION_CODES, false);
 
         return hllApiValue.getResponseCode();

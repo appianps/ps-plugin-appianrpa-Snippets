@@ -1,7 +1,7 @@
 package com.appian.rpa.library.ibm3270;
 
-import com.appian.rpa.library.ibm3270.ehll.EHll;
-import com.appian.rpa.library.ibm3270.ehll.EHllApi;
+import com.appian.rpa.library.ibm3270.ehll.Ehll;
+import com.appian.rpa.library.ibm3270.ehll.EhllApi;
 import com.appian.rpa.library.ibm3270.ehll.HllApiInvocationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.novayre.jidoka.client.api.*;
@@ -57,8 +57,8 @@ public class IBM3270Library implements INano {
 	@FieldLink("::robot")
 	private IRobot robot;
 
-	EHll ehll;
-	EHllApi eHllApi;
+	Ehll ehll;
+	EhllApi eHllApi;
 //	functionality first built based on the IBM Personal Communications v12 emulator:
 //	https://www.ibm.com/docs/en/personal-communications/12.0?topic=SSEQ5Y_12.0.0/com.ibm.pcomm.doc/books/html/emulator_programming08.htm
 	char escapeChar = "@".charAt(0);
@@ -102,10 +102,10 @@ public class IBM3270Library implements INano {
 		String path = parameters.get(DLL_FOLDER_PATH).toString();
 		String name = parameters.get(DLL_FILE_NAME).toString();
 		String sessionLetter = parameters.get(SESSION_LETTER).toString();
-		ehll = EHll.create(path,name);
+		ehll = Ehll.create(path,name);
 		ehll.connect(sessionLetter);
 		System.setProperty("jna.library.path", parameters.get(DLL_FOLDER_PATH).toString());
-		eHllApi = Native.loadLibrary(parameters.get(DLL_FILE_NAME).toString(), EHllApi.class, W32APIOptions.DEFAULT_OPTIONS);
+		eHllApi = Native.loadLibrary(parameters.get(DLL_FILE_NAME).toString(), EhllApi.class, W32APIOptions.DEFAULT_OPTIONS);
 
 	}
 
@@ -120,7 +120,7 @@ public class IBM3270Library implements INano {
 	@JidokaMethod(name = "IBM Maximize Window", description = "IBM3270Library:v2.0.0: Maximizes the window")
 	public void maximizeWindow()
 			throws JidokaFatalException, HllApiInvocationException {
-		EHll.SessionStatus sessionStatus = ehll.querySessionStatus();
+		Ehll.SessionStatus sessionStatus = ehll.querySessionStatus();
 		char sessionChar = sessionStatus.getShortSessionId();
 		String sessionLetter = Character.toString(sessionChar);
 		ehll.maximizeWindow(sessionLetter);
@@ -207,10 +207,10 @@ public class IBM3270Library implements INano {
 			throw e;
 		}
 //		server.debug("PS location is: "+loc);
-		EHll.SessionStatus sessionStatus = ehll.querySessionStatus();
+		Ehll.SessionStatus sessionStatus = ehll.querySessionStatus();
 		char sessionChar = sessionStatus.getShortSessionId();
 		String sessionLetter = Character.toString(sessionChar);
-		EHll.RowColumn coords = ehll.convertPositionToRowCol(sessionLetter,loc);
+		Ehll.RowColumn coords = ehll.convertPositionToRowCol(sessionLetter,loc);
 		HashMap<String,String> result = new HashMap<>();
 		result.put("row", String.valueOf(coords.getRow()));
 		result.put("column", String.valueOf(coords.getCol()));
@@ -232,7 +232,7 @@ public class IBM3270Library implements INano {
 							)
 					}
 			) SDKParameterMap parameters) throws HllApiInvocationException, IOException { ;
-		EHll.SessionStatus sessionStatus = ehll.querySessionStatus();
+		Ehll.SessionStatus sessionStatus = ehll.querySessionStatus();
 //		server.debug("Session is : "+sessionStatus.toString());
 		int rowSize = sessionStatus.getRow();
 		int colSize = sessionStatus.getColumn();
@@ -250,10 +250,10 @@ public class IBM3270Library implements INano {
 	}
 
 	/**
-	 * Action 'Get Text at Coordinate'
+	 * Action 'Get Text at Coordinates'
 	 */
-	@JidokaMethod(name = "IBM Get Text at Coordinate", description = "IBM3270Library:v2.0.0: Takes in a coordinate (emulator row/col coordinate starting at 1) and length of text to return from that line, then returns the text located there")
-	public String getTextAtCoordinate(
+	@JidokaMethod(name = "IBM Get Text at Coordinates", description = "IBM3270Library:v2.0.0: Takes in a coordinate pair (emulator row/col coordinate starting at 1) and length of text to return from that line, then returns the text located there")
+	public String getTextAtCoordinates(
 			@JidokaParameter(
 					name = "Nested parameters",
 					type = EJidokaParameterType.NESTED,
@@ -272,7 +272,7 @@ public class IBM3270Library implements INano {
 							)
 					}
 			) SDKParameterMap parameters) throws HllApiInvocationException {
-		EHll.SessionStatus sessionStatus = ehll.querySessionStatus();
+		Ehll.SessionStatus sessionStatus = ehll.querySessionStatus();
 		int rowSize = sessionStatus.getRow();
 		int colSize = sessionStatus.getColumn();
 		int screenSize = rowSize*colSize;
@@ -314,7 +314,7 @@ public class IBM3270Library implements INano {
 			) SDKParameterMap parameters) throws HllApiInvocationException {
 		Integer rowNum = Integer.valueOf(parameters.get(ROW_NUMBER).toString());
 		Integer colNum = Integer.valueOf(parameters.get(COLUMN_NUMBER).toString());
-		EHll.SessionStatus sessionStatus = ehll.querySessionStatus();
+		Ehll.SessionStatus sessionStatus = ehll.querySessionStatus();
 		int colSize = sessionStatus.getColumn();
 		int maxFieldSize = colSize*4;
 		//		although usually 1x, depending on session settings fieldSize input can need to be 4x the actual field size
@@ -345,7 +345,7 @@ public class IBM3270Library implements INano {
 					}
 			) SDKParameterMap parameters) throws IOException, HllApiInvocationException {
 		String json = parameters.get(BULK_COORDINATES).toString();
-		EHll.SessionStatus sessionStatus = ehll.querySessionStatus();
+		Ehll.SessionStatus sessionStatus = ehll.querySessionStatus();
 		char sessionChar = sessionStatus.getShortSessionId();
 		String sessionLetter = Character.toString(sessionChar);
 		int colSize = sessionStatus.getColumn();
@@ -411,7 +411,7 @@ public class IBM3270Library implements INano {
 		EJidokaParameterBoolean isFirst = (EJidokaParameterBoolean) parameters.get(GO_FIRST_OR_LAST_CHAR);
 		Integer colOff = Integer.valueOf(parameters.get(COLUMN_OFFSET).toString());
 		Integer rowOff = Integer.valueOf(parameters.get(ROW_OFFSET).toString());
-		EHll.SessionStatus sessionStatus = ehll.querySessionStatus();
+		Ehll.SessionStatus sessionStatus = ehll.querySessionStatus();
 		char sessionChar = sessionStatus.getShortSessionId();
 		String sessionLetter = Character.toString(sessionChar);
 		int loc;
@@ -425,7 +425,7 @@ public class IBM3270Library implements INano {
 			throw e;
 		}
 //		server.debug("PS position 1 is: "+loc);
-		EHll.RowColumn coords = ehll.convertPositionToRowCol(sessionLetter,loc);
+		Ehll.RowColumn coords = ehll.convertPositionToRowCol(sessionLetter,loc);
 		int colNum;
 		if(isFirst == EJidokaParameterBoolean.YES){
 			colNum = coords.getCol()+colOff;
@@ -461,7 +461,7 @@ public class IBM3270Library implements INano {
 			) SDKParameterMap parameters) throws HllApiInvocationException {
 		Integer column = Integer.valueOf(parameters.get(COLUMN_NUMBER).toString());
 		Integer row = Integer.valueOf(parameters.get(ROW_NUMBER).toString());
-		EHll.SessionStatus sessionStatus = ehll.querySessionStatus();
+		Ehll.SessionStatus sessionStatus = ehll.querySessionStatus();
 		char sessionChar = sessionStatus.getShortSessionId();
 		String sessionLetter = Character.toString(sessionChar);
 		int loc = ehll.convertRowColToCursorPosition(sessionLetter,row,column);
@@ -584,7 +584,7 @@ public class IBM3270Library implements INano {
 			) SDKParameterMap parameters) throws HllApiInvocationException {
 		Integer column = Integer.valueOf(parameters.get(COLUMN_NUMBER).toString());
 		Integer row = Integer.valueOf(parameters.get(ROW_NUMBER).toString());
-		EHll.SessionStatus sessionStatus = ehll.querySessionStatus();
+		Ehll.SessionStatus sessionStatus = ehll.querySessionStatus();
 		char sessionChar = sessionStatus.getShortSessionId();
 		String sessionLetter = Character.toString(sessionChar);
 		int loc = ehll.convertRowColToCursorPosition(sessionLetter,row,column);
@@ -624,7 +624,7 @@ public class IBM3270Library implements INano {
 					}
 			) SDKParameterMap parameters) throws IOException, HllApiInvocationException {
 		String json = parameters.get(BULK_TEXT_AND_COORDINATES).toString();
-		EHll.SessionStatus sessionStatus = ehll.querySessionStatus();
+		Ehll.SessionStatus sessionStatus = ehll.querySessionStatus();
 		char sessionChar = sessionStatus.getShortSessionId();
 		String sessionLetter = Character.toString(sessionChar);
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -695,7 +695,7 @@ public class IBM3270Library implements INano {
 		String textToSearch = parameters.get(FIELD_LABEL).toString();
 		Integer colOff = Integer.valueOf(parameters.get(COLUMN_OFFSET).toString());
 		Integer rowOff = Integer.valueOf(parameters.get(ROW_OFFSET).toString());
-		EHll.SessionStatus sessionStatus = ehll.querySessionStatus();
+		Ehll.SessionStatus sessionStatus = ehll.querySessionStatus();
 		char sessionChar = sessionStatus.getShortSessionId();
 		String sessionLetter = Character.toString(sessionChar);
 		int loc;
@@ -709,7 +709,7 @@ public class IBM3270Library implements INano {
 			throw e;
 		}
 //		server.debug("PS position 1 is: "+loc);
-		EHll.RowColumn coords = ehll.convertPositionToRowCol(sessionLetter,loc);
+		Ehll.RowColumn coords = ehll.convertPositionToRowCol(sessionLetter,loc);
 //		server.debug("Coords are: "+coords.getRow()+","+coords.getCol());
 		int colNum;
 		EJidokaParameterBoolean isFirst = (EJidokaParameterBoolean) parameters.get(WRITE_FIRST_OR_LAST_CHAR);

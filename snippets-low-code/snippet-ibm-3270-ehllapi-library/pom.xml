@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.appian.rpa.library</groupId>
 	<artifactId>ibm-3270-library</artifactId>
-	<version>2.0.0</version>
+	<version>1.0.0</version>
   <parent>
     <groupId>com.novayre.jidoka.robot</groupId>
     <artifactId>jidoka-robot-parent</artifactId>
-    <version>7.6.0</version>
+    <version>7.7.0</version>
   </parent>
   <profiles>
     <profile>
@@ -20,7 +20,7 @@
         <repository>
           <id>jidoka</id>
           <name>jidoka</name>
-          <url>https://lincolndev.appiancloud.com/rpa/repo/</url>
+          <url>https://appian-site.com/rpa/repo/</url>
         </repository>
       </distributionManagement>
       <repositories>
@@ -32,12 +32,8 @@
             <enabled>true</enabled>
           </snapshots>
           <id>jidoka</id>
-          <url>https://lincolndev.appiancloud.com/rpa/repo/</url>
+          <url>https://appian-site.com/rpa/repo/</url>
         </repository>
-          <repository>
-              <id>lib</id>
-              <url>https://lincolndev.appiancloud.com/rpa/repo/</url>
-          </repository>
       </repositories>
       <pluginRepositories>
         <pluginRepository>
@@ -48,7 +44,7 @@
             <enabled>true</enabled>
           </snapshots>
           <id>jidoka</id>
-          <url>https://lincolndev.appiancloud.com/rpa/repo/</url>
+          <url>https://appian-site.com/rpa/repo/</url>
         </pluginRepository>
       </pluginRepositories>
     </profile>
@@ -59,10 +55,5 @@
 			<artifactId>commons-text</artifactId>
 			<version>1.3</version>
 		</dependency>
-        <dependency>
-          <groupId>net.java.dev.jna</groupId>
-          <artifactId>jna-platform</artifactId>
-          <version>5.6.0</version>
-        </dependency>
-    </dependencies>
+	</dependencies>
 </project>

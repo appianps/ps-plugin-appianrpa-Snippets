@@ -3,7 +3,7 @@ package com.appian.rpa.library.ibm3270.ehll;
 /**
  * Interact with mainframe application through ehll dll
  */
-public interface EHll {
+public interface Ehll {
 
     /**
      * Creates EHll instance
@@ -12,8 +12,8 @@ public interface EHll {
      * @param dllName   - dll name
      * @return Default EHll instance
      */
-    static EHll create(String pathToDll, String dllName) {
-        return new EHllImpl(pathToDll, dllName);
+    static Ehll create(String pathToDll, String dllName) {
+        return new EhllImpl(pathToDll, dllName);
     }
 
     /**
@@ -24,8 +24,8 @@ public interface EHll {
      * @param encoding  - valid character encoding
      * @return Default EHll instance
      */
-    static EHll create(String pathToDll, String dllName, String encoding) {
-        return new EHllImpl(pathToDll, dllName, encoding);
+    static Ehll create(String pathToDll, String dllName, String encoding) {
+        return new EhllImpl(pathToDll, dllName, encoding);
     }
 
     /**
@@ -60,7 +60,7 @@ public interface EHll {
 
     /**
      * Copies the presentation space to a string
-     * Applicable values set in {@link EHll#setSessionParams(String)}
+     * Applicable values set in {@link Ehll#setSessionParams(String)}
      * <p>
      * NOATTRB (default)
      * Attribute bytes and other characters not displayable in ASCII are translated into
