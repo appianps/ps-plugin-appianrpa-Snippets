@@ -14,6 +14,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import com.novayre.jidoka.browser.api.IWebBrowserSupport;
+import com.novayre.jidoka.client.api.IJidokaServer;
 import com.novayre.jidoka.client.api.IRobot;
 import com.novayre.jidoka.client.api.JidokaFactory;
 import com.novayre.jidoka.client.api.exceptions.JidokaFatalException;
@@ -39,6 +40,9 @@ public class SelectorsManager {
 	/** Selectors map */
 	private Map<String, String> selectorsMapper = new HashMap<>();
 
+	/** Server */
+	private IJidokaServer<?> server;
+
 	/** XPath selector suffix */
 	private static final String XPATH_SUFFIX = "xpath";
 
@@ -50,6 +54,7 @@ public class SelectorsManager {
 
 	/** Id selector suffix */
 	private static final String ID_SUFFIX = "id";
+	
 
 	/**
 	 * SelectorsManager Constructor
@@ -63,12 +68,29 @@ public class SelectorsManager {
 
 		Path filePath = Paths.get(JidokaFactory.getServer().getCurrentDir(), "browser", "selectors.properties");
 
-		if (filePath == null || !filePath.toFile().exists()) {
-			JidokaFactory.getServer().info("No selectors file configured");
-			return;
-		}
+		InputStream input;
+			
+		server = JidokaFactory.getServer();
+		
+		try {
+			
+			if (filePath != null && filePath.toFile().exists()) {
+				
+				input = new FileInputStream(filePath.toFile());
+				
+				server.info("Selector file configured from SUPPORT FILES");
+				
+			} else {
+				
+				input = this.getClass().getClassLoader().getResourceAsStream("selectors.properties");
+				
+				server.info("Selector file configured from CLASSPATH");
+			}
 
-		try (InputStream input = new FileInputStream(filePath.toFile())) {
+			if(input == null) {
+				server.info("No selectors file configured in Support Files ");
+				return;
+			}
 
 			Properties selectorsFile = new Properties();
 
